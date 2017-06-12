@@ -2,13 +2,6 @@ from unittest import TestCase
 from experiment import Experiment
 
 
-class TestExperiment(TestCase):
-    def test_experiment_add_location(self):
-        experiment = Experiment()
-        experiment.add_data_point()
-        self.assertTrue(len(experiment.locations) >= 1, 'No data point was added')
-
-
 class TestExperimentLocations(TestCase):
     def setUp(self):
         self.experiment = Experiment()
