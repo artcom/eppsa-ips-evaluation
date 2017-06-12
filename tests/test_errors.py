@@ -30,3 +30,10 @@ class TestErrors(TestCase):
             expected_error,
             self.errors.compute_localization_error_2d()
         )
+
+    def test_compute_localization_error_3d(self):
+        expected_error = math.sqrt(math.pow((3 - 3.3), 2) + math.pow((3 - 4.2), 2) + math.pow((3 - 1.9), 2))
+        self.assertEqual(
+            expected_error,
+            self.errors.compute_localization_error_3d()
+        )

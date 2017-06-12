@@ -1,4 +1,3 @@
-import math
 from unittest import TestCase
 from datapoint import DataPoint
 from experiment import Experiment
@@ -57,21 +56,40 @@ class TestProcessData(TestCase):
             self.experiment.add_data_point(**data_point)
         self.process_data = ProcessData(self.experiment)
 
-    def test_process_data_computes_localization_error_2D(self):
+    def test_process_data_computes_localization_error_2d(self):
         expected_localization_error_2d = {
-                data['point_id']: self.compute_localization_error_2D(
+                data['point_id']: self.compute_localization_error_2d(
                     data
                 ) for data in self.location_data
             }
         self.assertEqual(
             expected_localization_error_2d,
-            self.process_data.localization_error_2D,
+            self.process_data.localization_error_2d,
             'expected: %s, got: %s' % (
                 expected_localization_error_2d,
-                self.process_data.localization_error_2D
+                self.process_data.localization_error_2d
             )
         )
 
-    def compute_localization_error_2D(self, data):
+    def test_process_data_computes_localization_error_3d(self):
+        expected_localization_error_3d = {
+                data['point_id']: self.compute_localization_error_3d(
+                    data
+                ) for data in self.location_data
+            }
+        self.assertEqual(
+            expected_localization_error_3d,
+            self.process_data.localization_error_3d,
+            'expected: %s, got: %s' % (
+                expected_localization_error_3d,
+                self.process_data.localization_error_3d
+            )
+        )
+
+    def compute_localization_error_2d(self, data):
         data_point = DataPoint(**data)
         return Errors(data_point).compute_localization_error_2d()
+
+    def compute_localization_error_3d(self, data):
+        data_point = DataPoint(**data)
+        return Errors(data_point).compute_localization_error_3d()
