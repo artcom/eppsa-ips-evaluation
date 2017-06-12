@@ -86,6 +86,18 @@ class TestProcessData(TestCase):
             )
         )
 
+    def test_process_data_stores_correct_room_data(self):
+        expected_correct_rooms = {1: 0, 2: 1, 3: 1}
+        self.assertEqual(
+            expected_correct_rooms,
+            self.process_data.correct_rooms,
+            'expected: % s, got: % s' % (
+                expected_correct_rooms,
+                self.process_data.correct_rooms
+            )
+        )
+
+
     def compute_localization_error_2d(self, data):
         data_point = DataPoint(**data)
         return Errors(data_point).compute_localization_error_2d()
