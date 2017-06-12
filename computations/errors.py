@@ -3,7 +3,7 @@ import math
 
 class Errors:
     """
-    Computation methods
+    Error computation methods
     """
     def __init__(self, data_point):
         """
