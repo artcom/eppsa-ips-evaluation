@@ -1,0 +1,17 @@
+{
+  "name": "ips-evaluation",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node src/main.js",
+    "watch": "nodemon src/main.js"
+  },
+  "dependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-artcom": "^0.5.1",
+    "eslint-plugin-import": "^2.2.0"
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "pointId": 1,
+    "localizedNodeId": 1,
+    "trueCoordinateX": 1,
+    "trueCoordinateY": 1,
+    "trueCoordinateZ": 1,
+    "trueRoomLabel": "Room_1",
+    "estCoordinateX": 1.1,
+    "estCoordinateY": 1.01,
+    "estCoordinateZ": 1.9,
+    "estRoomLabel": "Room_1_1",
+    "latency": 12.10,
+    "powerConsumption": 2.12
+  },
+  {
+    "pointId": 2,
+    "localizedNodeId": 2,
+    "trueCoordinateX": 2,
+    "trueCoordinateY": 2,
+    "trueCoordinateZ": 2,
+    "trueRoomLabel": "Room_2",
+    "estCoordinateX": 2.1,
+    "estCoordinateY": 2.2,
+    "estCoordinateZ": 2.9,
+    "estRoomLabel": "Room_2",
+    "latency": 11.15,
+    "powerConsumption": 1.87
+  },
+  {
+    "pointId": 3,
+    "localizedNodeId": 3,
+    "trueCoordinateX": 3,
+    "trueCoordinateY": 3,
+    "trueCoordinateZ": 3,
+    "trueRoomLabel": "Room_3",
+    "estCoordinateX": 3.3,
+    "estCoordinateY": 4.2,
+    "estCoordinateZ": 1.9,
+    "estRoomLabel": "Room_3",
+    "latency": 15.15,
+    "powerConsumption": 1.99
+  }
+]
