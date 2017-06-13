@@ -7,7 +7,9 @@
     "watch": "nodemon src/main.js"
   },
   "dependencies": {
-    "nodemon": "^1.11.0"
+    "lodash": "^4.17.4",
+    "nodemon": "^1.11.0",
+    "simple-statistics": "^4.1.0"
   },
   "devDependencies": {
     "eslint": "^3.17.1",
