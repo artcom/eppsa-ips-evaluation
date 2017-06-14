@@ -10,6 +10,9 @@
     "axios": "^0.16.2",
     "lodash": "^4.17.4",
     "nodemon": "^1.11.0",
+    "pg": "^6.2.4",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.1.0",
     "simple-statistics": "^4.1.0"
   },
   "devDependencies": {
