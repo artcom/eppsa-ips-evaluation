@@ -11,7 +11,6 @@ exports.initializePoints = async function initializePoints() {
 
 function createPoints(points) {
   for (const point of points) {
-    console.log()
     Point.create(point)
   }
 }
