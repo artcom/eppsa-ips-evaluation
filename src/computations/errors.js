@@ -2,6 +2,7 @@ module.exports = function computeLocalizationError2d(data) {
   return data.map(point => ({
     pointId: point.pointId,
     localizedNodeId: point.localizedNodeId,
+    localizedNodeName: point.localizedNodeName,
     localizationError2d: pointLocalizationError2d(point),
     localizationError3d: pointLocalizationError3d(point),
     roomAccuracy: pointRoomAccuracy(point)

@@ -2,6 +2,7 @@
   {
     "pointId": 1,
     "localizedNodeId": 1,
+    "localizedNodeName": "Node1",
     "trueCoordinateX": 1,
     "trueCoordinateY": 1,
     "trueCoordinateZ": 1,
@@ -16,6 +17,7 @@
   {
     "pointId": 2,
     "localizedNodeId": 2,
+    "localizedNodeName": "Node2",
     "trueCoordinateX": 2,
     "trueCoordinateY": 2,
     "trueCoordinateZ": 2,
@@ -30,6 +32,7 @@
   {
     "pointId": 3,
     "localizedNodeId": 3,
+    "localizedNodeName": "Node3",
     "trueCoordinateX": 3,
     "trueCoordinateY": 3,
     "trueCoordinateZ": 3,

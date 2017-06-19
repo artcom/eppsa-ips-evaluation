@@ -4,6 +4,7 @@ const db = require("../db")
 
 module.exports = db.define("position_data", {
   localizedNodeId: { type: Sequelize.STRING, allowNull: false },
+  localizedNodeName: { type: Sequelize.STRING, allowNull: false },
   estCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },
