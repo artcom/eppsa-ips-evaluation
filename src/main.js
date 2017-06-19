@@ -1,9 +1,10 @@
-const data = require("../data/point-measurements.json")
+const data = require("../data/pointMeasurements.json")
 const errors = require("./computations/errors")
 const getDataForAllTags = require("./fetchData/getQuuppaData")
 const { initializePoints } = require("./initializeDb")
 const Point = require("./models/point")
 const primaryMetrics = require("./computations/primaryMetrics")
+const storePositionData = require("./storeData/storePositionData")
 
 
 initializePoints()
@@ -16,7 +17,14 @@ initializePoints()
 
 
 getDataForAllTags()
-  .then(response => console.log(response.data))
+  .then(response => storePositionData(response.data.tags.map(tag => ({
+    localizedNodeId: tag.id,
+    localizedNodeName: tag.name,
+    estCoordinateX: tag.smoothedPosition[0],
+    estCoordinateY: tag.smoothedPosition[1],
+    estCoordinateZ: tag.smoothedPosition[2],
+    estRoomLabel: "Room_1"
+  }))))
   .catch(error => console.error(error))
 
 function processData(data) {
