@@ -1,8 +1,9 @@
 const Sequelize = require("sequelize")
 const db = require("../db")
+const Point = require("./point")
 
 
-module.exports = db.define("position_data", {
+const PositionData = db.define("position_data", {
   localizedNodeId: { type: Sequelize.STRING, allowNull: false },
   localizedNodeName: { type: Sequelize.STRING, allowNull: false },
   estCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
@@ -12,3 +13,7 @@ module.exports = db.define("position_data", {
   latency: Sequelize.FLOAT,
   powerConsumption: Sequelize.FLOAT
 })
+
+PositionData.belongsTo(Point)
+
+module.exports = PositionData

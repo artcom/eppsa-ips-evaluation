@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize")
 const db = require("../db")
-const PositionData = require("./positionData")
 
 const Point = db.define("point", {
   pointId: { type: Sequelize.INTEGER, unique: true },
@@ -9,7 +8,5 @@ const Point = db.define("point", {
   trueCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },
   trueRoomLabel: { type: Sequelize.STRING, allowNull: false },
 })
-
-Point.hasMany(PositionData, { sourceKey: "pointId" })
 
 module.exports = Point
