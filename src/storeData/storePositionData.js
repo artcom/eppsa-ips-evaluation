@@ -1,8 +1,6 @@
 const PositionData = require("../models/positionData")
 
 
-module.exports = function storePositionData(data) {
-  for (const datum of data) {
-    PositionData.create(datum)
-  }
+module.exports = async function storePositionData(data) {
+  await PositionData.bulkCreate(data)
 }
