@@ -1,9 +1,9 @@
 const Sequelize = require("sequelize")
 const db = require("../db")
+const Experiment = require("./experiment")
 
 
 const ExperimentMetrics = db.define("experiment_metrics", {
-  experimentId: { type: Sequelize.STRING, allowNull: false },
   error2dAverage: { type: Sequelize.FLOAT, allowNull: false },
   error2dMin: { type: Sequelize.FLOAT, allowNull: false },
   error2dMax: { type: Sequelize.FLOAT, allowNull: false },
@@ -38,5 +38,7 @@ const ExperimentMetrics = db.define("experiment_metrics", {
   powerConsumptionPercentile75: { type: Sequelize.FLOAT },
   powerConsumptionPercentile90: { type: Sequelize.FLOAT }
 })
+
+ExperimentMetrics.belongsTo(Experiment)
 
 module.exports = ExperimentMetrics

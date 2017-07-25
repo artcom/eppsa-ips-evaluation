@@ -2,10 +2,10 @@ const NodePosition = require("../models/nodePosition")
 const quuppa = require("../quuppa")
 const storePositionData = require("../storeData/storePositionData")
 
-module.exports = async function getDataForAllTags(experimentId) {
+module.exports = async function getDataForAllTags(experimentName) {
   const response = await getQuuppaData()
   const nodePositions = await NodePosition.findAll({ where:
-      { localizedNodeId: { $in: response.data.tags.map(tag => tag.id) }, experimentId }
+      { localizedNodeId: { $in: response.data.tags.map(tag => tag.id) }, experimentName }
   })
   await storePositionData(response.data.tags.map(tag => ({
     localizedNodeId: tag.id,
@@ -15,7 +15,7 @@ module.exports = async function getDataForAllTags(experimentId) {
     estCoordinateZ: tag.smoothedPosition[2],
     estRoomLabel: "Room_1",
     pointId: nodePositions.find(position => position.localizedNodeId === tag.id).pointId,
-    experimentId
+    experimentName
   })))
 }
 

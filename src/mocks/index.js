@@ -6,7 +6,7 @@ exports.insertMockPositionData = async function insertMockPositionData() {
   return await storePositionData(data.map(datum => ({
     pointId: datum.pointId,
     localizedNodeId: datum.localizedNodeId,
-    experimentId: "test_1",
+    experimentName: "test_1",
     localizedNodeName: datum.localizedNodeName,
     estCoordinateX: datum.estCoordinateX,
     estCoordinateY: datum.estCoordinateY,

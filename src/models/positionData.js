@@ -1,11 +1,11 @@
 const Sequelize = require("sequelize")
 const db = require("../db")
+const Experiment = require("./experiment")
 const Point = require("./point")
 
 
 const PositionData = db.define("position_data", {
   localizedNodeId: { type: Sequelize.STRING, allowNull: false },
-  experimentId: { type: Sequelize.STRING, allowNull: false },
   localizedNodeName: { type: Sequelize.STRING, allowNull: false },
   estCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
@@ -19,5 +19,6 @@ const PositionData = db.define("position_data", {
 })
 
 PositionData.belongsTo(Point)
+PositionData.belongsTo(Experiment)
 
 module.exports = PositionData

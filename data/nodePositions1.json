@@ -1,0 +1,8 @@
+[
+  { "localizedNodeId": "20914830f65a", "pointId": 0, "experimentName": "test_1" },
+  { "localizedNodeId": "20914830ce00", "pointId": 1, "experimentName": "test_1" },
+  { "localizedNodeId": "6655443322dd", "pointId": 2, "experimentName": "test_1" },
+  { "localizedNodeId": "665544332211", "pointId": 3, "experimentName": "test_1" },
+  { "localizedNodeId": "665544332266", "pointId": 0, "experimentName": "test_1" },
+  { "localizedNodeId": "e0e5cfb58d13", "pointId": 1, "experimentName": "test_1" }
+]
