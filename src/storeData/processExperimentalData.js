@@ -2,6 +2,7 @@ const errors = require("../computations/errors")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const primaryMetrics = require("../computations/primaryMetrics")
+const ExperimentMetrics = require("../models/experimentMetrics")
 
 module.exports = async function processData(experimentId) {
   return await PositionData.findAll({
@@ -9,6 +10,11 @@ module.exports = async function processData(experimentId) {
     include: { model: Point }
   }).then(positionData => {
     const processedData = errors(positionData)
-    console.log(primaryMetrics(processedData, positionData, experimentId))
+    const experimentPrimaryMetrics = primaryMetrics(processedData, positionData, experimentId)
+    storePrimaryMetrics(experimentPrimaryMetrics).then()
   })
+}
+
+async function storePrimaryMetrics(primaryMetrics) {
+  return await ExperimentMetrics.create(primaryMetrics)
 }
