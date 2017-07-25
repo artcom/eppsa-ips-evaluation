@@ -1,25 +1,23 @@
-const data = require("../data/pointMeasurements.json")
 const getDataForAllTags = require("./getExperimentalData/getQuuppaData")
-const { initializePoints } = require("./initializeDb")
+const { initializeDb } = require("./initializeDb")
+const { insertMockPositionData } = require("./mocks")
+const nodePositions = require("../data/nodePositions.json")
+const points = require("../data/points.json")
 const processData = require("./storeData/processExperimentalData")
-const storePositionData = require("./storeData/storePositionData")
+const { setUpNodePositions, setUpPoints } = require("./setUpExperiment")
 
 
-initializePoints()
-  .then(() => insertMockPositionData().then(() => processData("test_1")))
+initializeDb()
+  .then(() => setUpPoints(points)
+    .then(() => setUpNodePositions(nodePositions)
+      .then(() => insertMockPositionData()
+        .then(() => processData("test_1")
+          .then()
+        )
+      )
+    )
+  )
   .catch(error => console.error(error))
 
-async function insertMockPositionData() {
-  return await storePositionData(data.map(datum => ({
-    pointId: datum.pointId,
-    localizedNodeId: datum.localizedNodeId,
-    experimentId: "test_1",
-    localizedNodeName: datum.localizedNodeName,
-    estCoordinateX: datum.estCoordinateX,
-    estCoordinateY: datum.estCoordinateY,
-    estCoordinateZ: datum.estCoordinateZ,
-    estRoomLabel: datum.estRoomLabel
-  })))
-}
 
 getDataForAllTags("test_2")
