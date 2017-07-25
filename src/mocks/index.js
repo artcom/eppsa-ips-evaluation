@@ -11,6 +11,8 @@ exports.insertMockPositionData = async function insertMockPositionData(experimen
     estCoordinateX: datum.estCoordinateX,
     estCoordinateY: datum.estCoordinateY,
     estCoordinateZ: datum.estCoordinateZ,
-    estRoomLabel: datum.estRoomLabel
+    estRoomLabel: datum.estRoomLabel,
+    latency: datum.latency,
+    powerConsumption: datum.powerConsumption
   })))
 }
