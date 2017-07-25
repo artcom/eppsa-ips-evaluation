@@ -2,11 +2,11 @@ const data = require("../../data/pointMeasurements.json")
 const storePositionData = require("../storeData/storePositionData")
 
 
-exports.insertMockPositionData = async function insertMockPositionData() {
+exports.insertMockPositionData = async function insertMockPositionData(experimentName) {
   return await storePositionData(data.map(datum => ({
     pointId: datum.pointId,
     localizedNodeId: datum.localizedNodeId,
-    experimentName: "test_1",
+    experimentName,
     localizedNodeName: datum.localizedNodeName,
     estCoordinateX: datum.estCoordinateX,
     estCoordinateY: datum.estCoordinateY,
