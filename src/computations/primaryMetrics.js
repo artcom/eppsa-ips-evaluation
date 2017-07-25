@@ -1,10 +1,10 @@
 const { mean, min, max, variance, median, rootMeanSquare } = require("simple-statistics")
 
 module.exports = function primaryMetrics(processedData, data) {
-  const error2d = processedData.map(point => point.localizationError2d)
-  const error3d = processedData.map(point => point.localizationError3d)
-  const latency = data.map(point => point.latency)
-  const powerConsumption = data.map(point => point.powerConsumption)
+  const error2d = processedData.map(processedDatum => processedDatum.localizationError2d)
+  const error3d = processedData.map(processedDatum => processedDatum.localizationError3d)
+  const latency = data.map(datum => datum.latency)
+  const powerConsumption = data.map(datum => datum.powerConsumption)
   return {
     error2dAverage: mean(error2d),
     error2dMin: min(error2d),
@@ -22,7 +22,7 @@ module.exports = function primaryMetrics(processedData, data) {
     error3dRMS: rootMeanSquare(error3d),
     error3dPercentile75: percentile(error3d, 0.75),
     error3dPercentile90: percentile(error3d, 0.9),
-    roomAccuracyAverage: mean(processedData.map(point => point.roomAccuracy)),
+    roomAccuracyAverage: mean(processedData.map(processedDatum => processedDatum.roomAccuracy)),
     latencyAverage: mean(latency),
     latencyMin: min(latency),
     latencyMax: max(latency),

@@ -1,38 +1,36 @@
 module.exports = function computeLocalizationError2d(data) {
-  return data.map(point => ({
-    pointId: point.pointId,
-    localizedNodeId: point.localizedNodeId,
-    localizedNodeName: point.localizedNodeName,
-    localizationError2d: pointLocalizationError2d(point),
-    localizationError3d: pointLocalizationError3d(point),
-    roomAccuracy: pointRoomAccuracy(point)
+  return data.map(datum => ({
+    pointId: datum.pointId,
+    localizedNodeId: datum.localizedNodeId,
+    localizedNodeName: datum.localizedNodeName,
+    localizationError2d: pointLocalizationError2d(datum),
+    localizationError3d: pointLocalizationError3d(datum),
+    roomAccuracy: pointRoomAccuracy(datum)
   }))
 }
 
-function pointLocalizationError2d(point) {
-  const { trueCoordinateX, trueCoordinateY, estCoordinateX, estCoordinateY } = point
+function pointLocalizationError2d(datum) {
+  const { point, estCoordinateX, estCoordinateY } = datum
   return Math.sqrt(
-    Math.pow(trueCoordinateX - estCoordinateX, 2)
-    + Math.pow(trueCoordinateY - estCoordinateY, 2)
+    Math.pow(point.trueCoordinateX - estCoordinateX, 2)
+    + Math.pow(point.trueCoordinateY - estCoordinateY, 2)
   )
 }
 
-function pointLocalizationError3d(point) {
+function pointLocalizationError3d(datum) {
   const {
-    trueCoordinateX,
-    trueCoordinateY,
-    trueCoordinateZ,
+    point,
     estCoordinateX,
     estCoordinateY,
     estCoordinateZ
-  } = point
+  } = datum
   return Math.sqrt(
-    Math.pow(trueCoordinateX - estCoordinateX, 2)
-    + Math.pow(trueCoordinateY - estCoordinateY, 2)
-    + Math.pow(trueCoordinateZ - estCoordinateZ, 2)
+    Math.pow(point.trueCoordinateX - estCoordinateX, 2)
+    + Math.pow(point.trueCoordinateY - estCoordinateY, 2)
+    + Math.pow(point.trueCoordinateZ - estCoordinateZ, 2)
   )
 }
 
-function pointRoomAccuracy(point) {
-  return point.trueRoomLabel === point.estRoomLabel ? 1 : 0
+function pointRoomAccuracy(datum) {
+  return datum.point.trueRoomLabel === datum.estRoomLabel ? 1 : 0
 }
