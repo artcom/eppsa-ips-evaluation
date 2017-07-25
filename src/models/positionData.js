@@ -12,7 +12,10 @@ const PositionData = db.define("position_data", {
   estCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },
   estRoomLabel: { type: Sequelize.STRING, allowNull: false },
   latency: Sequelize.FLOAT,
-  powerConsumption: Sequelize.FLOAT
+  powerConsumption: Sequelize.FLOAT,
+  localizationError2d: Sequelize.FLOAT,
+  localizationError3d: Sequelize.FLOAT,
+  roomAccuracy: Sequelize.INTEGER
 })
 
 PositionData.belongsTo(Point)

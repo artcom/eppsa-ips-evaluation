@@ -1,4 +1,4 @@
-module.exports = function computeLocalizationError2d(data) {
+module.exports = function errors(data) {
   return data.map(datum => ({
     pointId: datum.pointId,
     localizedNodeId: datum.localizedNodeId,
