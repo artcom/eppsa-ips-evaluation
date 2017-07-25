@@ -4,7 +4,8 @@ const db = require("../db")
 
 const NodePosition = db.define("node_position", {
   localizedNodeId: { type: Sequelize.STRING, allowNull: false },
-  pointId: { type: Sequelize.INTEGER, allowNull: false }
+  pointId: { type: Sequelize.INTEGER, allowNull: false },
+  experimentId: { type: Sequelize.STRING, allowNull: false }
 })
 
 module.exports = NodePosition

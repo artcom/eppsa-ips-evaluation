@@ -21,11 +21,11 @@
     "trueCoordinateX": 2,
     "trueCoordinateY": 2,
     "trueCoordinateZ": 2,
-    "trueRoomLabel": "Room_2",
+    "trueRoomLabel": "Room_1",
     "estCoordinateX": 2.1,
     "estCoordinateY": 2.2,
     "estCoordinateZ": 2.9,
-    "estRoomLabel": "Room_2",
+    "estRoomLabel": "Room_1",
     "latency": 11.15,
     "powerConsumption": 1.87
   },
@@ -36,11 +36,11 @@
     "trueCoordinateX": 3,
     "trueCoordinateY": 3,
     "trueCoordinateZ": 3,
-    "trueRoomLabel": "Room_3",
+    "trueRoomLabel": "Room_1",
     "estCoordinateX": 3.3,
     "estCoordinateY": 4.2,
     "estCoordinateZ": 1.9,
-    "estRoomLabel": "Room_3",
+    "estRoomLabel": "Room_1",
     "latency": 15.15,
     "powerConsumption": 1.99
   }

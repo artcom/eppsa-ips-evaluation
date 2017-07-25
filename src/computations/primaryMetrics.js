@@ -1,11 +1,12 @@
 const { mean, min, max, variance, median, rootMeanSquare } = require("simple-statistics")
 
-module.exports = function primaryMetrics(processedData, data) {
+module.exports = function primaryMetrics(processedData, data, experimentId) {
   const error2d = processedData.map(processedDatum => processedDatum.localizationError2d)
   const error3d = processedData.map(processedDatum => processedDatum.localizationError3d)
   const latency = data.map(datum => datum.latency)
   const powerConsumption = data.map(datum => datum.powerConsumption)
   return {
+    experimentId,
     error2dAverage: mean(error2d),
     error2dMin: min(error2d),
     error2dMax: max(error2d),
