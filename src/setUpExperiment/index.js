@@ -1,7 +1,7 @@
 const Experiment = require("../models/experiment")
 const NodePosition = require("../models/nodePosition")
-const nodePositions1 = require("../../data/nodePositions1.json")
-const nodePositions2 = require("../../data/nodePositions2.json")
+const nodePositionsMock = require("../../data/nodePositionsMock.json")
+const nodePositionsQuuppa = require("../../data/nodePositionsQuuppa.json")
 const Point = require("../models/point")
 
 exports.setUpPoints = async function setUpPoints(points) {
@@ -15,9 +15,9 @@ exports.setUpExperiment = async function setUpExperiment(experimentName) {
 exports.setUpNodePositions = async function setUpNodePositions(experimentName) {
   switch (experimentName) {
     case "test_mock":
-      await NodePosition.bulkCreate(nodePositions1)
+      await NodePosition.bulkCreate(nodePositionsMock)
       break
     case "test_quuppa":
-      await NodePosition.bulkCreate(nodePositions2)
+      await NodePosition.bulkCreate(nodePositionsQuuppa)
   }
 }
