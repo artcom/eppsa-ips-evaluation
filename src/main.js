@@ -1,6 +1,6 @@
 const data = require("../data/pointMeasurements.json")
 const errors = require("./computations/errors")
-const getDataForAllTags = require("./fetchData/getQuuppaData")
+const getDataForAllTags = require("./getExperimentalData/getQuuppaData")
 const { initializePoints } = require("./initializeDb")
 const NodePosition = require("./models/nodePosition")
 const Point = require("./models/point")
