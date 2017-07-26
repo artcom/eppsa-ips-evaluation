@@ -1,6 +1,13 @@
 {
+  "environment": "environment",
   "database": {
     "database": "db_name",
+    "user": "db_user",
+    "port": 5432,
+    "host": "host_name"
+  },
+  "testDatabase": {
+    "database": "test_db_name",
     "user": "db_user",
     "port": 5432,
     "host": "host_name"

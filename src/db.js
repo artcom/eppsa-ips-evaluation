@@ -2,7 +2,9 @@ const Sequelize = require("sequelize")
 const config = require("../.config.json")
 
 
-const { database, username, password, host } = config.database
+const { database, username, password, host } = config.environment === "test"
+  ? config.testDatabase
+  : config.database
 
 module.exports = new Sequelize(database, username, password, {
   host,
