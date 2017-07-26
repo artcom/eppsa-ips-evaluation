@@ -14,7 +14,7 @@ describe("Model Experiment", () => {
   })
 
   describe("Create experiment", () => {
-    it("can create an experiment", (done) => {
+    it("can create an experiment", done => {
       Experiment.create({ name: "test-experiment" })
         .then(() => {
           Experiment.findAll().then(experiments => {
