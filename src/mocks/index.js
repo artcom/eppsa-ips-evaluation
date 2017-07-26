@@ -1,4 +1,4 @@
-const data = require("../../data/pointMeasurements.json")
+const data = require("../../specs/testData/pointMeasurements.json")
 const storePositionData = require("../storeData/storePositionData")
 
 
