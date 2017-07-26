@@ -1,15 +1,4 @@
-module.exports = function errors(data) {
-  return data.map(datum => ({
-    pointId: datum.pointId,
-    localizedNodeId: datum.localizedNodeId,
-    localizedNodeName: datum.localizedNodeName,
-    localizationError2d: pointLocalizationError2d(datum),
-    localizationError3d: pointLocalizationError3d(datum),
-    roomAccuracy: pointRoomAccuracy(datum)
-  }))
-}
-
-function pointLocalizationError2d(datum) {
+const error2d = function error2d(datum) {
   const { point, estCoordinateX, estCoordinateY } = datum
   return Math.sqrt(
     Math.pow(point.trueCoordinateX - estCoordinateX, 2)
@@ -17,7 +6,7 @@ function pointLocalizationError2d(datum) {
   )
 }
 
-function pointLocalizationError3d(datum) {
+const error3d = function error3d(datum) {
   const {
     point,
     estCoordinateX,
@@ -31,6 +20,22 @@ function pointLocalizationError3d(datum) {
   )
 }
 
-function pointRoomAccuracy(datum) {
+const roomAccuracy = function roomAccuracy(datum) {
   return datum.point.trueRoomLabel === datum.estRoomLabel ? 1 : 0
 }
+
+const errors = function errors(data) {
+  return data.map(datum => ({
+    pointId: datum.pointId,
+    localizedNodeId: datum.localizedNodeId,
+    localizedNodeName: datum.localizedNodeName,
+    localizationError2d: error2d(datum),
+    localizationError3d: error3d(datum),
+    roomAccuracy: roomAccuracy(datum)
+  }))
+}
+
+exports.error2d = error2d
+exports.error3d = error3d
+exports.roomAccuracy = roomAccuracy
+exports.errors = errors

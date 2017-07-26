@@ -1,4 +1,4 @@
-const errors = require("../computations/errors")
+const { errors } = require("../computations/errors")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const primaryMetrics = require("../computations/primaryMetrics")
