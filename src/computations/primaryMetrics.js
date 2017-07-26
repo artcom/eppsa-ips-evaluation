@@ -1,6 +1,21 @@
 const { mean, min, max, variance, median, rootMeanSquare } = require("simple-statistics")
 
-module.exports = function primaryMetrics(processedData, data, experimentName) {
+const percentile = function percentile(arr, p) {
+  if (arr.length === 0) { return 0 }
+  if (p <= 0) { return arr[0] }
+  if (p >= 1) { return arr[arr.length - 1] }
+
+  arr.sort((a, b) => a - b)
+  const index = (arr.length - 1) * p
+  const lower = Math.floor(index)
+  const upper = lower + 1
+  const weight = index % 1
+
+  if (upper >= arr.length) { return arr[lower] }
+  return arr[lower] * (1 - weight) + arr[upper] * weight
+}
+
+const primaryMetrics = function primaryMetrics(processedData, data, experimentName) {
   const error2d = processedData.map(processedDatum => processedDatum.localizationError2d)
   const error3d = processedData.map(processedDatum => processedDatum.localizationError3d)
   const latency = data.map(datum => datum.latency)
@@ -43,17 +58,5 @@ module.exports = function primaryMetrics(processedData, data, experimentName) {
   }
 }
 
-function percentile(arr, p) {
-  if (arr.length === 0) { return 0 }
-  if (p <= 0) { return arr[0] }
-  if (p >= 1) { return arr[arr.length - 1] }
-
-  arr.sort((a, b) => a - b)
-  const index = (arr.length - 1) * p
-  const lower = Math.floor(index)
-  const upper = lower + 1
-  const weight = index % 1
-
-  if (upper >= arr.length) { return arr[lower] }
-  return arr[lower] * (1 - weight) + arr[upper] * weight
-}
+exports.primaryMetrics = primaryMetrics
+exports.percentile = percentile

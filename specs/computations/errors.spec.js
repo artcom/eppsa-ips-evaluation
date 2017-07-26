@@ -1,5 +1,6 @@
 const { describe, it } = require("mocha")
 const { expect } = require("chai")
+const expectedPointErrors = require("../testData/pointErrors.json")
 const pointMeasurements = require("../testData/pointMeasurements.json")
 const {
   roomAccuracy,
@@ -47,43 +48,6 @@ describe("Error computations", () => {
   describe("Errors", () => {
     it("Returns an object with error calculations", () => {
       const pointErrors = errors(pointMeasurements)
-      const expectedPointErrors = [
-        {
-          pointId: 1,
-          localizedNodeId: "20914830f65a",
-          localizedNodeName: "Node1",
-          localizationError2d: Math.sqrt(Math.pow(1 - 1.1, 2) + Math.pow(1 - 1.01, 2)),
-          localizationError3d: Math.sqrt(
-            Math.pow(1 - 1.1, 2)
-            + Math.pow(1 - 1.01, 2)
-            + Math.pow(2 - 1.9, 2)
-          ),
-          roomAccuracy: 0
-        },
-        {
-          pointId: 2,
-          localizedNodeId: "20914830ce00",
-          localizedNodeName: "Node2",
-          localizationError2d: Math.sqrt(Math.pow(2 - 2.1, 2) + Math.pow(2 - 2.2, 2)),
-          localizationError3d: Math.sqrt(
-            Math.pow(2 - 2.1, 2)
-            + Math.pow(2 - 2.2, 2)
-            + Math.pow(3 - 2.9, 2)
-          ),
-          roomAccuracy: 1
-        },
-        {
-          pointId: 3,
-          localizedNodeId: "6655443322dd",
-          localizedNodeName: "Node3",
-          localizationError2d: Math.sqrt(Math.pow(3 - 3.3, 2) + Math.pow(4 - 4.2, 2)),
-          localizationError3d: Math.sqrt(
-            Math.pow(3 - 3.3, 2)
-            + Math.pow(4 - 4.2, 2)
-            + Math.pow(2 - 1.9, 2)
-          ),
-          roomAccuracy: 1
-        }]
 
       expect(pointErrors).to.deep.equal(expectedPointErrors)
     })

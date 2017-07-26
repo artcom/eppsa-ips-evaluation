@@ -1,7 +1,7 @@
 const { errors } = require("../computations/errors")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
-const primaryMetrics = require("../computations/primaryMetrics")
+const { primaryMetrics } = require("../computations/primaryMetrics")
 const ExperimentMetrics = require("../models/experimentMetrics")
 
 module.exports = async function processData(experimentName) {

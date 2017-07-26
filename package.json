@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node src/main.js",
+    "watch": "nodemon ./src/main.js",
     "test": "grunt test",
-    "watch": "grunt watch"
+    "watch-test": "grunt watch"
   },
   "dependencies": {
     "axios": "^0.16.2",
