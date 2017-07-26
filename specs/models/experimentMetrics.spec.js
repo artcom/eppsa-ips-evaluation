@@ -16,8 +16,8 @@ describe("Model ExperimentMetrics", () => {
     dbDrop().then(done).catch(done)
   })
 
-  describe("Create experiment", () => {
-    it("can create an experiment", done => {
+  describe("Create experiment metrics", () => {
+    it("can create experiment metrics", done => {
       Experiment.create({ name: "test-experiment" })
         .then(() => {
           ExperimentMetrics.create(experimentPrimaryMetrics)
@@ -34,9 +34,9 @@ describe("Model ExperimentMetrics", () => {
                   }
                   expect(experimentMetrics[0].experiment.name).to.equal("test-experiment")
                   done()
-                })
+                }).catch(done)
             }).catch(done)
-        })
+        }).catch(done)
     })
   })
 })
