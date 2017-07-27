@@ -1,4 +1,4 @@
-const getDataForAllTags = require("./getExperimentalData/getQuuppaData")
+const { getDataForAllTags } = require("./getExperimentalData/getQuuppaData")
 const { initializeDb } = require("./initializeDb")
 const { insertMockPositionData } = require("./mocks")
 const nodePositionsMock = require("../data/nodePositionsMock.json")
