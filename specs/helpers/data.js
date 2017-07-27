@@ -1,5 +1,6 @@
-const { concat, includes, keys, pick, sortBy } = require("lodash")
+const { concat, includes, keys, omit, pick, sortBy } = require("lodash")
 const { expect } = require("chai")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const positionData = require("../testData/positionData.json")
 
 
@@ -39,5 +40,15 @@ const checkPositionData = function checkPositionData(queryResults) {
   }
 }
 
+const checkPrimaryMetrics = function checkPrimaryMetrics(experimentMetrics) {
+  expect(experimentMetrics[0].experimentName).to.equal("test-experiment")
+  for (const key of keys(omit(experimentPrimaryMetrics, ["experimentName"]))) {
+    expect(experimentMetrics[0][key])
+      .to.be.closeTo(experimentPrimaryMetrics[key], 0.0000000000001)
+  }
+  expect(experimentMetrics[0].experiment.name).to.equal("test-experiment")
+}
+
 exports.positionDataNoErrors = positionDataNoErrors
 exports.checkPositionData = checkPositionData
+exports.checkPrimaryMetrics = checkPrimaryMetrics
