@@ -7,7 +7,7 @@ const nodePositions = require("../testData/nodePositions.json")
 const NodePosition = require("../../src/models/nodePosition")
 
 
-describe("Model ExperimentMetrics", () => {
+describe("Model NodePosition", () => {
   before((done) => {
     dbSync().then(done).catch(done)
   })

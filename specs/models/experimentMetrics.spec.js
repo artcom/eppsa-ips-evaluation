@@ -16,7 +16,7 @@ describe("Model ExperimentMetrics", () => {
     dbDrop().then(done).catch(done)
   })
 
-  describe("Create experiment metrics", () => {
+  describe("Model ExperimentMetrics basic function", () => {
     it("can create experiment metrics", done => {
       Experiment.create({ name: "test-experiment" })
         .then(() => {

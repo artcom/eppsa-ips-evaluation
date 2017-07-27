@@ -1,0 +1,47 @@
+[
+  {
+    "pointId": 1,
+    "experimentName": "test-experiment",
+    "localizedNodeId": "20914830f65a",
+    "localizedNodeName": "Node1",
+    "estCoordinateX": 1.1,
+    "estCoordinateY": 1.01,
+    "estCoordinateZ": 1.9,
+    "estRoomLabel": "Room_1_1",
+    "latency": 12.10,
+    "powerConsumption": 2.12,
+    "localizationError2d": 0.10049875621120899,
+    "localizationError3d": 0.14177446878757838,
+    "roomAccuracy": 0
+  },
+  {
+    "pointId": 2,
+    "experimentName": "test-experiment",
+    "localizedNodeId": "20914830ce00",
+    "localizedNodeName": "Node2",
+    "estCoordinateX": 2.1,
+    "estCoordinateY": 2.2,
+    "estCoordinateZ": 2.9,
+    "estRoomLabel": "Room_1",
+    "latency": 11.15,
+    "powerConsumption": 1.87,
+    "localizationError2d": 0.22360679774997916,
+    "localizationError3d": 0.24494897427831802,
+    "roomAccuracy": 1
+  },
+  {
+    "pointId": 3,
+    "experimentName": "test-experiment",
+    "localizedNodeId": "6655443322dd",
+    "localizedNodeName": "Node3",
+    "estCoordinateX": 3.3,
+    "estCoordinateY": 4.2,
+    "estCoordinateZ": 1.9,
+    "estRoomLabel": "Room_1",
+    "latency": 15.15,
+    "powerConsumption": 1.99,
+    "localizationError2d": 0.3605551275463989,
+    "localizationError3d": 0.3741657386773941,
+    "roomAccuracy": 1
+  }
+]
