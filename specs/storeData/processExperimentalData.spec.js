@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { concat, includes, keys, omit, pick, sortBy } = require("lodash")
+const { keys, omit } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const Experiment = require("../../src/models/experiment")
@@ -10,7 +10,7 @@ const pointErrors = require("../testData/pointErrors.json")
 const points = require("../testData/points.json")
 const positionData = require("../testData/positionData.json")
 const PositionData = require("../../src/models/positionData")
-const { positionDataNoErrors } = require("../helpers/data")
+const { positionDataNoErrors, checkPositionData } = require("../helpers/data")
 const {
   storePrimaryMetrics,
   updatePositionDataErrors,
@@ -62,29 +62,7 @@ describe("Process experimental data", () => {
           updatePositionDataErrors(pointErrors, "test-experiment")
             .then(() => PositionData.findAll())
             .then(queryResults => {
-              const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
-              const storedPositionData = queryResults
-                .map(queryResult =>
-                  pick(queryResult, keys(positionData[0]).filter(key => !includes(errorKeys, key)))
-                )
-              const storedPositionErrors = sortBy(
-                queryResults
-                .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
-                ["pointName"]
-              )
-              const positionErrors = sortBy(positionData
-                .map(position => pick(position, concat(errorKeys, "pointName"))), ["pointName"])
-
-              expect(sortBy(storedPositionData, ["pointName"]))
-                .to.deep.equal(sortBy(positionDataNoErrors(positionData), ["pointName"]))
-
-              for (const storedPosition of storedPositionErrors) {
-                const index = storedPositionErrors.indexOf(storedPosition)
-                for (const key of errorKeys) {
-                  expect(storedPosition[key])
-                    .to.be.closeTo(positionErrors[index][key], 0.00000000000001)
-                }
-              }
+              checkPositionData(queryResults)
               done()
             }).catch(done)
         })
@@ -104,30 +82,7 @@ describe("Process experimental data", () => {
             processData("test-experiment")
               .then(() => PositionData.findAll())
               .then(queryResults => {
-                const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
-                const storedPositionData = queryResults
-                  .map(queryResult =>
-                    pick(queryResult, keys(positionData[0])
-                      .filter(key => !includes(errorKeys, key)))
-                  )
-                const storedPositionErrors = sortBy(
-                  queryResults
-                  .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
-                  ["pointName"]
-                )
-                const positionErrors = sortBy(positionData
-                  .map(position => pick(position, concat(errorKeys, "pointName"))), ["pointName"])
-
-                expect(sortBy(storedPositionData, ["pointName"]))
-                  .to.deep.equal(sortBy(positionDataNoErrors(positionData), ["PointName"]))
-
-                for (const storedPosition of storedPositionErrors) {
-                  const index = storedPositionErrors.indexOf(storedPosition)
-                  for (const key of errorKeys) {
-                    expect(storedPosition[key])
-                      .to.be.closeTo(positionErrors[index][key], 0.00000000000001)
-                  }
-                }
+                checkPositionData(queryResults)
                 done()
               }).catch(done)
           })
