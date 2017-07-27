@@ -16,12 +16,12 @@ describe("Model ExperimentMetrics", () => {
     dbDrop().then(done).catch(done)
   })
 
-  describe("Model NodePosition", () => {
+  describe("Model NodePosition basic function", () => {
     it("can create node positions", done => {
       Experiment.create({ name: "test-experiment" })
         .then(() => {
           NodePosition.bulkCreate(nodePositions)
-            .then(
+            .then(() =>
               NodePosition.findAll({ include: { model: Experiment } })
                 .then(storedPositions => {
                   const storedNodePositions = storedPositions
