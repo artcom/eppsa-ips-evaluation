@@ -1,6 +1,8 @@
 const getDataForAllTags = require("./getExperimentalData/getQuuppaData")
 const { initializeDb } = require("./initializeDb")
 const { insertMockPositionData } = require("./mocks")
+const nodePositionsMock = require("../data/nodePositionsMock.json")
+const nodePositionsQuuppa = require("../data/nodePositionsQuuppa.json")
 const points = require("../data/points.json")
 const processData = require("./storeData/processExperimentalData")
 const { setUpExperiment, setUpNodePositions, setUpPoints } = require("./setUpExperiment")
@@ -14,7 +16,7 @@ async function setUpDb() {
 async function runMockExperiment(experimentName) {
   await setUpDb()
   await setUpExperiment(experimentName)
-  await setUpNodePositions(experimentName)
+  await setUpNodePositions(nodePositionsMock)
   await insertMockPositionData(experimentName)
   await processData(experimentName)
 }
@@ -22,7 +24,7 @@ async function runMockExperiment(experimentName) {
 async function runQuuppaExperiment(experimentName) {
   await setUpDb()
   await setUpExperiment(experimentName)
-  await setUpNodePositions(experimentName)
+  await setUpNodePositions(nodePositionsQuuppa)
   await getDataForAllTags(experimentName)
   await processData(experimentName)
 }
