@@ -14,7 +14,7 @@ module.exports = async function getDataForAllTags(experimentName) {
     estCoordinateY: tag.smoothedPosition[1],
     estCoordinateZ: tag.smoothedPosition[2],
     estRoomLabel: "Room_1",
-    pointId: nodePositions.find(position => position.localizedNodeId === tag.id).pointId,
+    pointName: nodePositions.find(position => position.localizedNodeId === tag.id).pointName,
     experimentName
   })))
 }

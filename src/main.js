@@ -4,7 +4,7 @@ const { insertMockPositionData } = require("./mocks")
 const nodePositionsMock = require("../data/nodePositionsMock.json")
 const nodePositionsQuuppa = require("../data/nodePositionsQuuppa.json")
 const points = require("../data/points.json")
-const processData = require("./storeData/processExperimentalData")
+const { processData } = require("./storeData/processExperimentalData")
 const { setUpExperiment, setUpNodePositions, setUpPoints } = require("./setUpExperiment")
 
 

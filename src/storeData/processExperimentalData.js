@@ -4,22 +4,15 @@ const PositionData = require("../models/positionData")
 const { primaryMetrics } = require("../computations/primaryMetrics")
 const ExperimentMetrics = require("../models/experimentMetrics")
 
-module.exports = async function processData(experimentName) {
-  const positionData = await PositionData.findAll({
-    where: { experimentName },
-    include: { model: Point }
-  })
-  const processedData = errors(positionData)
-  const experimentPrimaryMetrics = primaryMetrics(processedData, positionData, experimentName)
-  await updatePositionDataErrors(processedData, experimentName)
-  await storePrimaryMetrics(experimentPrimaryMetrics)
-}
 
-async function storePrimaryMetrics(primaryMetrics) {
+const storePrimaryMetrics = async function storePrimaryMetrics(primaryMetrics) {
   await ExperimentMetrics.create(primaryMetrics)
 }
 
-async function updatePositionDataErrors(processedData, experimentName) {
+const updatePositionDataErrors = async function updatePositionDataErrors(
+  processedData,
+  experimentName
+) {
   for (const processedDatum of processedData) {
     PositionData.update(
       processedDatum,
@@ -28,3 +21,19 @@ async function updatePositionDataErrors(processedData, experimentName) {
     )
   }
 }
+
+const processData = async function processData(experimentName) {
+  const positionData = await PositionData.findAll({
+    where: { experimentName },
+    include: { model: Point }
+  })
+  const processedData = errors(positionData)
+  console.log(processedData)
+  const experimentPrimaryMetrics = primaryMetrics(processedData, positionData, experimentName)
+  await updatePositionDataErrors(processedData, experimentName)
+  await storePrimaryMetrics(experimentPrimaryMetrics)
+}
+
+exports.storePrimaryMetrics = storePrimaryMetrics
+exports.updatePositionDataErrors = updatePositionDataErrors
+exports.processData = processData

@@ -4,7 +4,7 @@ const storePositionData = require("../storeData/storePositionData")
 
 exports.insertMockPositionData = async function insertMockPositionData(experimentName) {
   return await storePositionData(data.map(datum => ({
-    pointId: datum.pointId,
+    pointName: datum.pointName,
     localizedNodeId: datum.localizedNodeId,
     experimentName,
     localizedNodeName: datum.localizedNodeName,

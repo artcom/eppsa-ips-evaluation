@@ -1,6 +1,6 @@
 [
   {
-    "pointId": 1,
+    "pointName": "point1",
     "localizedNodeId": "20914830f65a",
     "localizedNodeName": "Node1",
     "localizationError2d": 0.10049875621120899,
@@ -8,7 +8,7 @@
     "roomAccuracy": 0
   },
   {
-    "pointId": 2,
+    "pointName": "point2",
     "localizedNodeId": "20914830ce00",
     "localizedNodeName": "Node2",
     "localizationError2d": 0.22360679774997916,
@@ -16,7 +16,7 @@
     "roomAccuracy": 1
   },
   {
-    "pointId": 3,
+    "pointName": "point3",
     "localizedNodeId": "6655443322dd",
     "localizedNodeName": "Node3",
     "localizationError2d": 0.3605551275463989,

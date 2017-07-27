@@ -1,8 +1,8 @@
 [
-  { "localizedNodeId": "20914830f65a", "pointId": 0, "experimentName": "test_mock" },
-  { "localizedNodeId": "20914830ce00", "pointId": 1, "experimentName": "test_mock" },
-  { "localizedNodeId": "6655443322dd", "pointId": 2, "experimentName": "test_mock" },
-  { "localizedNodeId": "665544332211", "pointId": 3, "experimentName": "test_mock" },
-  { "localizedNodeId": "665544332266", "pointId": 0, "experimentName": "test_mock" },
-  { "localizedNodeId": "e0e5cfb58d13", "pointId": 1, "experimentName": "test_mock" }
+  { "localizedNodeId": "20914830f65a", "pointName": "point0", "experimentName": "test_mock" },
+  { "localizedNodeId": "20914830ce00", "pointName": "point1", "experimentName": "test_mock" },
+  { "localizedNodeId": "6655443322dd", "pointName": "point2", "experimentName": "test_mock" },
+  { "localizedNodeId": "665544332211", "pointName": "point3", "experimentName": "test_mock" },
+  { "localizedNodeId": "665544332266", "pointName": "point0", "experimentName": "test_mock" },
+  { "localizedNodeId": "e0e5cfb58d13", "pointName": "point1", "experimentName": "test_mock" }
 ]

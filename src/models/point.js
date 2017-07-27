@@ -2,7 +2,7 @@ const Sequelize = require("sequelize")
 const db = require("../db")
 
 const Point = db.define("point", {
-  pointId: { type: Sequelize.INTEGER, unique: true },
+  name: { type: Sequelize.STRING, allowNull: false, primaryKey: true },
   trueCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   trueCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
   trueCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },

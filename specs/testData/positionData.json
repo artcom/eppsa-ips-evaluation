@@ -1,6 +1,6 @@
 [
   {
-    "pointId": 1,
+    "pointName": "point1",
     "experimentName": "test-experiment",
     "localizedNodeId": "20914830f65a",
     "localizedNodeName": "Node1",
@@ -15,7 +15,7 @@
     "roomAccuracy": 0
   },
   {
-    "pointId": 2,
+    "pointName": "point2",
     "experimentName": "test-experiment",
     "localizedNodeId": "20914830ce00",
     "localizedNodeName": "Node2",
@@ -30,7 +30,7 @@
     "roomAccuracy": 1
   },
   {
-    "pointId": 3,
+    "pointName": "point3",
     "experimentName": "test-experiment",
     "localizedNodeId": "6655443322dd",
     "localizedNodeName": "Node3",

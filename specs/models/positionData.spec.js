@@ -7,6 +7,7 @@ const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
 const positionData = require("../testData/positionData.json")
+const { positionDataNoErrors } = require("../helpers/data")
 
 
 describe("Model PositionData", () => {
@@ -26,14 +27,10 @@ describe("Model PositionData", () => {
           PositionData.bulkCreate(positionData)
           .then(() => PositionData.findAll())
           .then(queryResults => {
-            const errorKeys = ["localizationError2d", "localizationError3d"]
+            const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
             const storedPositionData = queryResults
               .map(queryResult =>
                 pick(queryResult, keys(positionData[0]).filter(key => !includes(errorKeys, key)))
-              )
-            const positionDataNoErrors = positionData
-              .map(position =>
-                pick(position, keys(positionData[0]).filter(key => !includes(errorKeys, key)))
               )
             const storedPositionErrors = sortBy(queryResults
               .map(queryResult => pick(queryResult, concat(errorKeys, "pointId"))), ["pointId"])
@@ -41,7 +38,7 @@ describe("Model PositionData", () => {
               .map(position => pick(position, concat(errorKeys, "pointId"))), ["pointId"])
 
             expect(sortBy(storedPositionData, ["pointId"]))
-              .to.deep.equal(sortBy(positionDataNoErrors, ["PointId"]))
+              .to.deep.equal(sortBy(positionDataNoErrors(positionData), ["PointId"]))
 
             for (const storedPosition of storedPositionErrors) {
               const index = storedPositionErrors.indexOf(storedPosition)
