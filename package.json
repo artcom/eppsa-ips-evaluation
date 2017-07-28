@@ -18,7 +18,8 @@
     "pg": "^6.4.1",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.4.2",
-    "simple-statistics": "^4.1.0"
+    "simple-statistics": "^4.1.0",
+    "sinon": "^2.4.1"
   },
   "devDependencies": {
     "eslint": "^3.17.1",

@@ -1,0 +1,33 @@
+{
+  "data": {
+    "tags": [
+      {
+        "id": "20914830f65a",
+        "name": "Node1",
+        "smoothedPosition": [
+          1.1,
+          1.01,
+          1.9
+        ]
+      },
+      {
+        "id": "20914830ce00",
+        "name": "Node2",
+        "smoothedPosition": [
+          2.1,
+          2.2,
+          2.9
+        ]
+      },
+      {
+        "id": "6655443322dd",
+        "name": "Node3",
+        "smoothedPosition": [
+          3.3,
+          4.2,
+          1.9
+        ]
+      }
+    ]
+  }
+}

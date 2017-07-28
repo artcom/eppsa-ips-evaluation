@@ -1,18 +1,17 @@
 const NodePosition = require("../models/nodePosition")
-const quuppa = require("../quuppa")
+const { quuppaServer } = require("../quuppa")
 const storePositionData = require("../storeData/storePositionData")
 
 
 const getQuuppaData = async function getQuuppaData() {
-  return await quuppa.get("getHAIPLocation", {
+  return await quuppaServer.get("getHAIPLocation", {
     params: {
       version: 2
     }
   })
 }
 
-const getDataForAllTags = async function getDataForAllTags(experimentName) {
-  const response = await getQuuppaData()
+const getDataForAllTags = async function getDataForAllTags(experimentName, response) {
   const nodePositions = await NodePosition.findAll({ where:
       { localizedNodeId: { $in: response.data.tags.map(tag => tag.id) }, experimentName }
   })
