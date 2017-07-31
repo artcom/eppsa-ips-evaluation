@@ -39,7 +39,7 @@ describe("Server response", () => {
     restler.get("http://localhost:3000/experiments/test-experiment")
       .on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
-        expect(data).to.equal("test-experiment")
+        expect(data).to.deep.equal({ name: "test-experiment" })
         done()
       })
   })
@@ -57,7 +57,6 @@ describe("Server response", () => {
 
   it("should store the experiment in the database on post at /experiments", done => {
     restler.post("http://localhost:3000/experiments", {
-      multipart: true,
       data: { name: "test-experiment" }
     }).on("complete", (data, response) => {
       expect(response.statusCode).to.equal(201)

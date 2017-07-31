@@ -1,5 +1,6 @@
 const express = require("express")
 const { pick } = require("lodash")
+const bodyParser = require("body-parser")
 const multer = require("multer")
 const Experiment = require("./models/experiment")
 const { setUpExperiment } = require("./setUpExperiment")
@@ -7,17 +8,17 @@ const { setUpExperiment } = require("./setUpExperiment")
 
 const server = express()
 const upload = multer()
+server.use(bodyParser.json())
+server.use(bodyParser.urlencoded({ extended: true }))
 
 const getExperiments = async function getExperiments() {
   const experiments = await Experiment.findAll()
-  const processedExperiments = experiments.map(experiment => pick(experiment, ["name"]))
-  console.log(processedExperiments)
-  return processedExperiments
+  return experiments.map(experiment => pick(experiment, ["name"]))
 }
 
 const getExperimentByName = async function getExperimentByName(name) {
   const experiment = await Experiment.findAll({ name })
-  return experiment[0].name
+  return pick(experiment[0], ["name"])
 }
 
 server.get("/", (req, res) => res.send(""))
@@ -38,7 +39,7 @@ server.post("/experiments", upload.array(), (req, res) => {
 server.get("/experiments/:name", (req, res) =>
   getExperimentByName(req.params.name)
     .then(experiments =>
-      res.send(experiments)
+      res.json(experiments)
     )
 )
 
