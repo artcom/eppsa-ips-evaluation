@@ -40,13 +40,38 @@ const checkPositionData = function checkPositionData(queryResults) {
   }
 }
 
-const checkPrimaryMetrics = function checkPrimaryMetrics(experimentMetrics) {
-  expect(experimentMetrics[0].experimentName).to.equal("test-experiment")
-  for (const key of keys(omit(experimentPrimaryMetrics, ["experimentName"]))) {
+const checkPrimaryMetrics = function checkPrimaryMetrics(
+  experimentMetrics,
+  experimentName = "test-experiment",
+  withLatencyAndPowerConsumption = true
+) {
+  expect(experimentMetrics[0].experimentName).to.equal(experimentName)
+  expect(experimentMetrics[0].experiment.name).to.equal(experimentName)
+  const keysToOmit = withLatencyAndPowerConsumption
+    ? ["experimentName"]
+    : [
+      "experimentName",
+      "latencyAverage",
+      "latencyMin",
+      "latencyMax",
+      "latencyVariance",
+      "latencyMedian",
+      "latencyRMS",
+      "latencyPercentile75",
+      "latencyPercentile90",
+      "powerConsumptionAverage",
+      "powerConsumptionMin",
+      "powerConsumptionMax",
+      "powerConsumptionVariance",
+      "powerConsumptionMedian",
+      "powerConsumptionRMS",
+      "powerConsumptionPercentile75",
+      "powerConsumptionPercentile90"
+    ]
+  for (const key of keys(omit(experimentPrimaryMetrics, keysToOmit))) {
     expect(experimentMetrics[0][key])
       .to.be.closeTo(experimentPrimaryMetrics[key], 0.0000000000001)
   }
-  expect(experimentMetrics[0].experiment.name).to.equal("test-experiment")
 }
 
 exports.positionDataNoErrors = positionDataNoErrors

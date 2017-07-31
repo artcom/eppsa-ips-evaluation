@@ -28,7 +28,9 @@ const processData = async function processData(experimentName) {
     include: { model: Point }
   })
   const processedData = errors(positionData)
+  console.log(processedData)
   const experimentPrimaryMetrics = primaryMetrics(processedData, positionData, experimentName)
+  console.log(experimentPrimaryMetrics)
   await updatePositionDataErrors(processedData, experimentName)
   await storePrimaryMetrics(experimentPrimaryMetrics)
 }

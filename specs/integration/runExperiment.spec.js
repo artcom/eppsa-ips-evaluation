@@ -2,7 +2,10 @@ const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const sinon = require("sinon")
 const { pick } = require("lodash")
+const { checkPrimaryMetrics } = require("../helpers/data")
 const { dbDrop } = require("../helpers/db")
+const Experiment = require("../../src/models/experiment")
+const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const { getMockData } = require("../mocks/getExperimentalData")
 const Point = require("../../src/models/point")
 const points = require("../../data/points.json")
@@ -35,7 +38,14 @@ describe("Run a Quuppa experiment", () => {
       quuppaExperiment.run()
         .then(() => {
           sinon.assert.calledOnce(getData)
-          done()
+          ExperimentMetrics.findAll({
+            where: { experimentName: "test_quuppa" },
+            include: { model: Experiment }
+          })
+            .then(experimentMetrics => {
+              checkPrimaryMetrics(experimentMetrics, "test_quuppa", false)
+              done()
+            }).catch(done)
         }).catch(done)
     })
   })

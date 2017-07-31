@@ -1,3 +1,4 @@
+const { inRange } = require("lodash")
 const NodePosition = require("../models/nodePosition")
 const { quuppaServer } = require("../quuppa")
 const storePositionData = require("../storeData/storePositionData")
@@ -11,6 +12,10 @@ const getQuuppaData = async function getQuuppaData() {
   })
 }
 
+const estimateRoom = function estimateRoom(x, y, z) {
+  return inRange(x, 2, 4) && inRange(y, 2, 5) && inRange(z, 1, 3) ? "Room_1" : "Room_2"
+}
+
 const getDataForAllTags = async function getDataForAllTags(experimentName, response) {
   const nodePositions = await NodePosition.findAll({ where:
       { localizedNodeId: { $in: response.data.tags.map(tag => tag.id) }, experimentName }
@@ -21,7 +26,11 @@ const getDataForAllTags = async function getDataForAllTags(experimentName, respo
     estCoordinateX: tag.smoothedPosition[0],
     estCoordinateY: tag.smoothedPosition[1],
     estCoordinateZ: tag.smoothedPosition[2],
-    estRoomLabel: "Room_1",
+    estRoomLabel: estimateRoom(
+      tag.smoothedPosition[0],
+      tag.smoothedPosition[1],
+      tag.smoothedPosition[2]
+    ),
     pointName: nodePositions.find(position => position.localizedNodeId === tag.id).pointName,
     experimentName
   })))
