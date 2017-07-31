@@ -1,9 +1,12 @@
 const express = require("express")
 const { pick } = require("lodash")
+const multer = require("multer")
 const Experiment = require("./models/experiment")
 
 
 const server = express()
+const upload = multer()
+
 const getExperiments = async function getExperiments() {
   const experiments = await Experiment.findAll()
   const processedExperiments = experiments.map(experiment => pick(experiment, ["name"]))
@@ -23,6 +26,12 @@ server.get("/experiments", (req, res) =>
     .then(experiments =>
       res.send(experiments)
     )
+)
+
+server.post("/experiments", upload.array(), (req, res) => {
+  console.error(req.body)
+  res.send(req.body.name)
+}
 )
 
 server.get("/experiments/:name", (req, res) =>

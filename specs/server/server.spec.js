@@ -1,6 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const request = require("request")
+const restler = require("restler")
 const { dbSync, dbDrop } = require("../helpers/db")
 const { setUpExperiment } = require("../../src/setUpExperiment")
 const server = require("../../src/server")
@@ -24,7 +25,7 @@ describe("Server response", () => {
     })
   })
 
-  it("should return all experiments at /experiments", done => {
+  it("should return all experiments on get at /experiments", done => {
     setUpExperiment("test-experiment")
     request.get("http://localhost:3000/experiments", (err, res) => {
       expect(res.statusCode).to.equal(200)
@@ -33,11 +34,22 @@ describe("Server response", () => {
     })
   })
 
-  it("should return experiment name at /experiments/experiment-name", done => {
+  it("should return experiment name on get at /experiments/experiment-name", done => {
     setUpExperiment("test-experiment")
     request.get("http://localhost:3000/experiments/test-experiment", (err, res) => {
       expect(res.statusCode).to.equal(200)
       expect(res.body).to.equal("test-experiment")
+      done()
+    })
+  })
+
+  it("should return experiment name on post at /experiments", done => {
+    restler.post("http://localhost:3000/experiments", {
+      multipart: true,
+      data: { name: "test-experiment" }
+    }).on("complete", (data, response) => {
+      expect(response.statusCode).to.equal(200)
+      expect(data).to.equal("test-experiment")
       done()
     })
   })
