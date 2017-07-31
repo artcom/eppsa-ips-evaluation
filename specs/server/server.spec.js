@@ -1,6 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const restler = require("restler")
+const Experiment = require("../../src/models/experiment")
 const { dbSync, dbDrop } = require("../helpers/db")
 const { setUpExperiment } = require("../../src/setUpExperiment")
 const server = require("../../src/server")
@@ -48,9 +49,22 @@ describe("Server response", () => {
       multipart: true,
       data: { name: "test-experiment" }
     }).on("complete", (data, response) => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).to.equal(201)
       expect(data).to.equal("test-experiment")
       done()
+    })
+  })
+
+  it("should store the experiment in the database on post at /experiments", done => {
+    restler.post("http://localhost:3000/experiments", {
+      multipart: true,
+      data: { name: "test-experiment" }
+    }).on("complete", (data, response) => {
+      expect(response.statusCode).to.equal(201)
+      Experiment.findAll().then(experiments => {
+        expect(experiments[0].name).to.equal("test-experiment")
+        done()
+      }).catch(done)
     })
   })
 })

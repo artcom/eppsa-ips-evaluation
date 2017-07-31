@@ -2,6 +2,7 @@ const express = require("express")
 const { pick } = require("lodash")
 const multer = require("multer")
 const Experiment = require("./models/experiment")
+const { setUpExperiment } = require("./setUpExperiment")
 
 
 const server = express()
@@ -29,10 +30,10 @@ server.get("/experiments", (req, res) =>
 )
 
 server.post("/experiments", upload.array(), (req, res) => {
-  console.error(req.body)
-  res.send(req.body.name)
-}
-)
+  setUpExperiment(req.body.name).then(() => {
+    res.status(201).send(req.body.name)
+  })
+})
 
 server.get("/experiments/:name", (req, res) =>
   getExperimentByName(req.params.name)
