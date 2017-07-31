@@ -44,21 +44,9 @@ describe("Process experimental data", () => {
     })
   })
 
-  describe("updatePositionDataErrors basic function", () => {
+  describe("updatePositionDataErrors", () => {
     it("updates the position data with the position error data", done => {
-      Experiment.create({ name: "test-experiment" })
-        .then(() => Point.bulkCreate(points))
-        .then(() => {
-          PositionData.bulkCreate(positionDataNoErrors(positionData))
-        })
-        .then(() => {
-          updatePositionDataErrors(pointErrors, "test-experiment")
-            .then(() => PositionData.findAll())
-            .then(queryResults => {
-              checkPositionData(queryResults)
-              done()
-            }).catch(done)
-        })
+      checkUpdatePositionDataErrors().then(done).catch(done)
     })
   })
 
@@ -102,3 +90,16 @@ describe("Process experimental data", () => {
     })
   })
 })
+
+async function setUpDatabase() {
+  await Experiment.create({ name: "test-experiment" })
+  await Point.bulkCreate(points)
+  await PositionData.bulkCreate(positionDataNoErrors(positionData))
+}
+
+async function checkUpdatePositionDataErrors() {
+  await setUpDatabase()
+  await updatePositionDataErrors(pointErrors, "test-experiment")
+  const queryResults = await PositionData.findAll()
+  await checkPositionData(queryResults)
+}
