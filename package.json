@@ -19,7 +19,6 @@
     "nodemon": "^1.11.0",
     "pg": "^6.4.1",
     "pg-hstore": "^2.3.2",
-    "request": "^2.81.0",
     "restler": "^3.4.0",
     "sequelize": "^4.4.2",
     "simple-statistics": "^4.1.0",
