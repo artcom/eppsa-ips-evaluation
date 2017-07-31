@@ -13,13 +13,11 @@ const updatePositionDataErrors = async function updatePositionDataErrors(
   processedData,
   experimentName
 ) {
-  for (const processedDatum of processedData) {
-    PositionData.update(
-      processedDatum,
-      { where: { localizedNodeId: processedDatum.localizedNodeId, experimentName } },
-      { fields: ["localizationError2d", "localizationError3d", "roomAccuracy"] },
-    )
-  }
+  await Promise.all(processedData.map(processedDatum => PositionData.update(
+    processedDatum,
+    { where: { localizedNodeId: processedDatum.localizedNodeId, experimentName } },
+    { fields: ["localizationError2d", "localizationError3d", "roomAccuracy"] },
+  )))
 }
 
 const processData = async function processData(experimentName) {
