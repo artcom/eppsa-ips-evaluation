@@ -1,4 +1,4 @@
-const { describe, it, before, after } = require("mocha")
+const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const request = require("request")
 const { dbSync, dbDrop } = require("../helpers/db")
@@ -6,12 +6,12 @@ const { setUpExperiment } = require("../../src/setUpExperiment")
 const server = require("../../src/server")
 
 describe("Server response", () => {
-  before((done) => {
+  beforeEach((done) => {
     dbSync().then(done).catch(done)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
-  after((done) => {
+  afterEach((done) => {
     dbDrop().then(done).catch(done)
     this.server.close()
   })
@@ -29,6 +29,15 @@ describe("Server response", () => {
     request.get("http://localhost:3000/experiments", (err, res) => {
       expect(res.statusCode).to.equal(200)
       expect(JSON.parse(res.body)).to.deep.equal([{ name: "test-experiment" }])
+      done()
+    })
+  })
+
+  it("should return experiment name at /experiments/experiment-name", done => {
+    setUpExperiment("test-experiment")
+    request.get("http://localhost:3000/experiments/test-experiment", (err, res) => {
+      expect(res.statusCode).to.equal(200)
+      expect(res.body).to.equal("test-experiment")
       done()
     })
   })

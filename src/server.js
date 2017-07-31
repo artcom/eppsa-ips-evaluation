@@ -11,10 +11,22 @@ const getExperiments = async function getExperiments() {
   return processedExperiments
 }
 
+const getExperimentByName = async function getExperimentByName(name) {
+  const experiment = await Experiment.findAll({ name })
+  return experiment[0].name
+}
+
 server.get("/", (req, res) => res.send(""))
 
 server.get("/experiments", (req, res) =>
   getExperiments()
+    .then(experiments =>
+      res.send(experiments)
+    )
+)
+
+server.get("/experiments/:name", (req, res) =>
+  getExperimentByName(req.params.name)
     .then(experiments =>
       res.send(experiments)
     )
