@@ -1,4 +1,4 @@
-const { inRange } = require("lodash")
+const estimateRoom = require("../computations/estimateRoom")
 const NodePosition = require("../models/nodePosition")
 const { quuppaServer } = require("../quuppa")
 const storePositionData = require("../storeData/storePositionData")
@@ -10,10 +10,6 @@ const getQuuppaData = async function getQuuppaData() {
       version: 2
     }
   })
-}
-
-const estimateRoom = function estimateRoom(x, y, z) {
-  return inRange(x, 2, 4) && inRange(y, 2, 5) && inRange(z, 1, 3) ? "Room_1" : "Room_1_1"
 }
 
 const getDataForAllTags = async function getDataForAllTags(experimentName, response) {
