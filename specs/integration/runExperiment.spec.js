@@ -2,13 +2,14 @@ const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const sinon = require("sinon")
 const { pick } = require("lodash")
-const { checkPrimaryMetrics } = require("../helpers/data")
+const { checkPositionData, checkPrimaryMetrics } = require("../helpers/data")
 const { dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const { getMockData } = require("../mocks/getExperimentalData")
 const Point = require("../../src/models/point")
 const points = require("../../data/points.json")
+const PositionData = require("../../src/models/positionData")
 const { QuuppaExperiment, setUpDb } = require("../../src/runExperiment/quuppaExperiment")
 
 
@@ -38,14 +39,7 @@ describe("Run a Quuppa experiment", () => {
       quuppaExperiment.run()
         .then(() => {
           sinon.assert.calledOnce(getData)
-          ExperimentMetrics.findAll({
-            where: { experimentName: "test_quuppa" },
-            include: { model: Experiment }
-          })
-            .then(experimentMetrics => {
-              checkPrimaryMetrics(experimentMetrics, "test_quuppa", false)
-              done()
-            }).catch(done)
+          testMetrics().then(done).catch(done)
         }).catch(done)
     })
   })
@@ -61,4 +55,14 @@ async function testDbSetup() {
     "trueCoordinateZ",
     "trueRoomLabel"
   ]))
+}
+
+async function testMetrics() {
+  const experimentMetrics = await ExperimentMetrics.findAll({
+    where: { experimentName: "test_quuppa" },
+    include: { model: Experiment }
+  })
+  await checkPrimaryMetrics(experimentMetrics, "test_quuppa", false)
+  const positionDataQueryResults = await PositionData.findAll()
+  await checkPositionData(positionDataQueryResults, false)
 }

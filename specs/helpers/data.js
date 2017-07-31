@@ -13,7 +13,25 @@ const positionDataNoErrors = function positionDataNoErrors(positionData) {
     )
 }
 
-const checkPositionData = function checkPositionData(queryResults) {
+const positionDataSorted = function positionDataSorted(
+  positionData,
+  nonPositionData
+) {
+  return nonPositionData
+    ? sortBy(positionDataNoErrors(positionData), ["pointName"])
+    : sortBy(
+      positionDataNoErrors(positionData)
+        .map(positionDatum =>
+          omit(positionDatum, ["experimentName", "latency", "powerConsumption"])
+        )
+      , ["pointName"]
+    )
+}
+
+const checkPositionData = function checkPositionData(
+  queryResults,
+  nonPositionData = true
+) {
   const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
   const storedPositionData = queryResults
     .map(queryResult =>
@@ -28,8 +46,10 @@ const checkPositionData = function checkPositionData(queryResults) {
   const positionErrors = sortBy(positionData
     .map(position => pick(position, concat(errorKeys, "pointName"))), ["pointName"])
 
-  expect(sortBy(storedPositionData, ["pointName"]))
-    .to.deep.equal(sortBy(positionDataNoErrors(positionData), ["PointName"]))
+  const expectedPositionData = positionDataSorted(positionData, nonPositionData)
+  const sortedStoredPositionData = positionDataSorted(storedPositionData, nonPositionData)
+  expect(sortedStoredPositionData)
+    .to.deep.equal(expectedPositionData)
 
   for (const storedPosition of storedPositionErrors) {
     const index = storedPositionErrors.indexOf(storedPosition)
@@ -43,11 +63,11 @@ const checkPositionData = function checkPositionData(queryResults) {
 const checkPrimaryMetrics = function checkPrimaryMetrics(
   experimentMetrics,
   experimentName = "test-experiment",
-  withLatencyAndPowerConsumption = true
+  nonPositionData = true
 ) {
   expect(experimentMetrics[0].experimentName).to.equal(experimentName)
   expect(experimentMetrics[0].experiment.name).to.equal(experimentName)
-  const keysToOmit = withLatencyAndPowerConsumption
+  const keysToOmit = nonPositionData
     ? ["experimentName"]
     : [
       "experimentName",
