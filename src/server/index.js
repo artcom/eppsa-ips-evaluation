@@ -1,12 +1,14 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const { serveExperiments } = require("./experiments")
+const { servePoints } = require("./points")
 
 
-const server = express()
+let server = express()
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 
-const experimentServer = serveExperiments(server)
+server = serveExperiments(server)
+server = servePoints(server)
 
-module.exports = experimentServer
+module.exports = server

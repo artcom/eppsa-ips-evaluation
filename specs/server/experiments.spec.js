@@ -6,7 +6,7 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const { setUpExperiment } = require("../../src/setUpExperiment")
 const server = require("../../src/server")
 
-describe("Server response", () => {
+describe("Server for experiments", () => {
   beforeEach((done) => {
     dbSync().then(done).catch(done)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
@@ -44,23 +44,24 @@ describe("Server response", () => {
       })
   })
 
-  it("should return experiment name on post at /experiments", done => {
-    restler.post("http://localhost:3000/experiments", {
-      multipart: true,
-      data: { name: "test-experiment" }
-    }).on("complete", (data, response) => {
-      expect(response.statusCode).to.equal(201)
-      expect(data).to.equal("test-experiment")
-      done()
-    })
-  })
+  it("should return experiment name in body and path in location header on post at /experiments",
+      done => {
+        restler.post("http://localhost:3000/experiments", {
+          data: { name: "test-experiment" }
+        }).on("complete", (data, response) => {
+          expect(response.statusCode).to.equal(201)
+          expect(response.headers.location).to.equal("/experiments/test-experiment")
+          expect(data).to.equal("test-experiment")
+          done()
+        })
+      }
+  )
 
   it("should store the experiment in the database on post at /experiments", done => {
     restler.post("http://localhost:3000/experiments", {
       data: { name: "test-experiment" }
     }).on("complete", (data, response) => {
       expect(response.statusCode).to.equal(201)
-      expect(response.headers.location).to.equal("/experiments/test-experiment")
       Experiment.findAll().then(experiments => {
         expect(experiments[0].name).to.equal("test-experiment")
         done()
