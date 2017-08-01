@@ -60,6 +60,7 @@ describe("Server response", () => {
       data: { name: "test-experiment" }
     }).on("complete", (data, response) => {
       expect(response.statusCode).to.equal(201)
+      expect(response.headers.location).to.equal("/experiments/test-experiment")
       Experiment.findAll().then(experiments => {
         expect(experiments[0].name).to.equal("test-experiment")
         done()
