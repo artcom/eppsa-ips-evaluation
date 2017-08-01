@@ -30,7 +30,8 @@ const positionDataSorted = function positionDataSorted(
 
 const checkPositionData = function checkPositionData(
   queryResults,
-  nonPositionData = true
+  nonPositionData = true,
+  checkErrors = true
 ) {
   const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
   const storedPositionData = queryResults
@@ -51,11 +52,13 @@ const checkPositionData = function checkPositionData(
   expect(sortedStoredPositionData)
     .to.deep.equal(expectedPositionData)
 
-  for (const storedPosition of storedPositionErrors) {
-    const index = storedPositionErrors.indexOf(storedPosition)
-    for (const key of errorKeys) {
-      expect(storedPosition[key])
-        .to.be.closeTo(positionErrors[index][key], 0.00000000000001)
+  if (checkErrors) {
+    for (const storedPosition of storedPositionErrors) {
+      const index = storedPositionErrors.indexOf(storedPosition)
+      for (const key of errorKeys) {
+        expect(storedPosition[key])
+          .to.be.closeTo(positionErrors[index][key], 0.00000000000001)
+      }
     }
   }
 }
