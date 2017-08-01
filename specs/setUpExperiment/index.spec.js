@@ -7,7 +7,7 @@ const nodePositions = require("../testData/nodePositions.json")
 const NodePosition = require("../../src/models/nodePosition")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
-const { setUpPoints, setUpExperiment, setUpNodePositions } = require("../../src/setUpExperiment")
+const { insertPoints, insertExperiment, insertNodePositions } = require("../../src/storeData/index")
 
 
 describe("Set up experiment", () => {
@@ -19,9 +19,9 @@ describe("Set up experiment", () => {
     dbDrop().then(done).catch(done)
   })
 
-  describe("setUpPoints basic function", () => {
+  describe("insertPoints basic function", () => {
     it("can create points", done => {
-      setUpPoints(points)
+      insertPoints(points)
         .then(() => Point.findAll())
         .then(queryResults => {
           const storedPoints = queryResults
@@ -33,9 +33,9 @@ describe("Set up experiment", () => {
     })
   })
 
-  describe("setUpExperiment basic function", () => {
+  describe("insertExperiment basic function", () => {
     it("can create an experiment", done => {
-      setUpExperiment("test-experiment")
+      insertExperiment("test-experiment")
         .then(() => {
           Experiment.findAll().then(experiments => {
             expect(experiments[0].name).to.equal("test-experiment")
@@ -45,11 +45,11 @@ describe("Set up experiment", () => {
     })
   })
 
-  describe("setUpNodePositions basic function", () => {
+  describe("insertNodePositions basic function", () => {
     it("can create node positions", done => {
       Experiment.create({ name: "test-experiment" })
         .then(() => {
-          setUpNodePositions(nodePositions)
+          insertNodePositions(nodePositions)
             .then(() =>
               NodePosition.findAll({ include: { model: Experiment } })
                 .then(storedPositions => {

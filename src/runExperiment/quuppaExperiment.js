@@ -3,12 +3,12 @@ const { initializeDb } = require("../initializeDb")
 const nodePositionsQuuppa = require("../../data/nodePositionsQuuppa.json")
 const points = require("../../data/points.json")
 const { processData } = require("../storeData/processExperimentalData")
-const { setUpExperiment, setUpNodePositions, setUpPoints } = require("../setUpExperiment")
+const { insertExperiment, insertNodePositions, insertPoints } = require("../storeData/index")
 
 
 const setUpDb = async function setUpDb() {
   await initializeDb()
-  await setUpPoints(points)
+  await insertPoints(points)
 }
 
 class QuuppaExperiment {
@@ -27,8 +27,8 @@ class QuuppaExperiment {
 
   async run() {
     await setUpDb()
-    await setUpExperiment(this.experimentName)
-    await setUpNodePositions(nodePositionsQuuppa)
+    await insertExperiment(this.experimentName)
+    await insertNodePositions(nodePositionsQuuppa)
     await this.getDataForAllTags()
     await processData(this.experimentName)
   }

@@ -6,7 +6,7 @@ const Point = require("../../src/models/point")
 const { dbSync, dbDrop } = require("../helpers/db")
 const points = require("../testData/points.json")
 const server = require("../../src/server")
-const { setUpPoints } = require("../../src/setUpExperiment")
+const { insertPoints } = require("../../src/storeData/index")
 
 describe("Server for points", () => {
   beforeEach(async () => {
@@ -20,7 +20,7 @@ describe("Server for points", () => {
   })
 
   it("should return all points on get at /points", done => {
-    setUpPoints(points).then(() => {
+    insertPoints(points).then(() => {
       restler.get("http://localhost:3000/points").on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
         expect(sortBy(data, ["name"])).to.deep.equal(sortBy(points, ["name"]))
@@ -30,7 +30,7 @@ describe("Server for points", () => {
   })
 
   it("should return point data on get at /points/point-name", done => {
-    setUpPoints(points).then(() => {
+    insertPoints(points).then(() => {
       restler.get("http://localhost:3000/points/point1")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)

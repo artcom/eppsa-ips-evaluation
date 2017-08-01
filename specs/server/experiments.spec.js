@@ -3,7 +3,7 @@ const { expect } = require("chai")
 const restler = require("restler")
 const Experiment = require("../../src/models/experiment")
 const { dbSync, dbDrop } = require("../helpers/db")
-const { setUpExperiment } = require("../../src/setUpExperiment")
+const { insertExperiment } = require("../../src/storeData/index")
 const server = require("../../src/server")
 
 describe("Server for experiments", () => {
@@ -26,7 +26,7 @@ describe("Server for experiments", () => {
   })
 
   it("should return all experiments on get at /experiments", done => {
-    setUpExperiment("test-experiment").then(() => {
+    insertExperiment("test-experiment").then(() => {
       restler.get("http://localhost:3000/experiments").on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
         expect(data).to.deep.equal([{ name: "test-experiment" }])
@@ -36,7 +36,7 @@ describe("Server for experiments", () => {
   })
 
   it("should return experiment name on get at /experiments/experiment-name", done => {
-    setUpExperiment("test-experiment").then(() => {
+    insertExperiment("test-experiment").then(() => {
       restler.get("http://localhost:3000/experiments/test-experiment")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)

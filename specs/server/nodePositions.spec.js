@@ -6,12 +6,12 @@ const NodePosition = require("../../src/models/nodePosition")
 const { dbSync, dbDrop } = require("../helpers/db")
 const nodePositions = require("../testData/nodePositions.json")
 const server = require("../../src/server")
-const { setUpNodePositions, setUpExperiment } = require("../../src/setUpExperiment")
+const { insertNodePositions, insertExperiment } = require("../../src/storeData/index")
 
 describe("Server for points", () => {
   beforeEach(async () => {
     await dbSync()
-    await setUpExperiment("test-experiment")
+    await insertExperiment("test-experiment")
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
@@ -21,7 +21,7 @@ describe("Server for points", () => {
   })
 
   it("should return all node positions on get at /node-positions", done => {
-    setUpNodePositions(nodePositions).then(() => {
+    insertNodePositions(nodePositions).then(() => {
       restler.get("http://localhost:3000/experiments/test-experiment/node-positions")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)
@@ -33,7 +33,7 @@ describe("Server for points", () => {
   })
 
   it("should return node position data on get at /node-positions/node-id", done => {
-    setUpNodePositions(nodePositions).then(() => {
+    insertNodePositions(nodePositions).then(() => {
       restler.get(
         "http://localhost:3000/experiments/test-experiment/node-positions/20914830ce00"
       )

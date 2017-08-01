@@ -4,7 +4,7 @@ const { sortBy } = require("lodash")
 const { checkPositionData } = require("../helpers/data")
 const { dbDrop, dbSync } = require("../helpers/db")
 const data = require("../testData/mockQuuppaData.json")
-const { setUpExperiment, setUpPoints, setUpNodePositions } = require("../../src/setUpExperiment")
+const { insertExperiment, insertPoints, insertNodePositions } = require("../../src/storeData/index")
 const { getQuuppaData, getDataForAllTags } = require("../../src/getExperimentalData/getQuuppaData")
 const nodePositions = require("../testData/nodePositionsQuuppa.json")
 const points = require("../testData/points.json")
@@ -35,9 +35,9 @@ describe("Get Quuppa data", () => {
 
   describe("Get data for all tags", () => {
     it("retrieves Quuppa position data and stores it", async () => {
-      await setUpExperiment("test-experiment")
-      await setUpPoints(points)
-      await setUpNodePositions(nodePositions)
+      await insertExperiment("test-experiment")
+      await insertPoints(points)
+      await insertNodePositions(nodePositions)
       await getDataForAllTags("test-experiment", data)
       const positionDataQueryResults = await PositionData.findAll()
       await checkPositionData(positionDataQueryResults, false, false)

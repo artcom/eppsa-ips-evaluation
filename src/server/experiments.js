@@ -1,20 +1,9 @@
-const { pick } = require("lodash")
 const multer = require("multer")
-const Experiment = require("../models/experiment")
-const { setUpExperiment } = require("../setUpExperiment")
+const { getExperiments, getExperimentByName } = require("../getData")
+const { insertExperiment } = require("../storeData/index")
 
 
 const upload = multer()
-
-const getExperiments = async function getExperiments() {
-  const experiments = await Experiment.findAll()
-  return experiments.map(experiment => pick(experiment, ["name"]))
-}
-
-const getExperimentByName = async function getExperimentByName(name) {
-  const experiment = await Experiment.findAll({ name })
-  return pick(experiment[0], ["name"])
-}
 
 const serveExperiments = function serveExperiments(server) {
   server.get("/", (request, response) => response.send(""))
@@ -25,7 +14,7 @@ const serveExperiments = function serveExperiments(server) {
   })
 
   server.post("/experiments", upload.array(), async (request, response) => {
-    await setUpExperiment(request.body.name)
+    await insertExperiment(request.body.name)
     response
       .append("location", `/experiments/${request.body.name}`)
       .status(201)
@@ -40,6 +29,4 @@ const serveExperiments = function serveExperiments(server) {
   return server
 }
 
-exports.getExperiments = getExperiments
-exports.getExperimentByName = getExperimentByName
 exports.serveExperiments = serveExperiments
