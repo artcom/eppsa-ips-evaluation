@@ -1,7 +1,7 @@
 const multer = require("multer")
-const { assign } = require("lodash")
+const { assign, keys } = require("lodash")
 const { getNodePositions, getNodePositionsByNodeId } = require("../getData")
-const { insertNodePosition } = require("../storeData")
+const { insertNodePosition, insertNodePositions } = require("../storeData")
 
 
 const upload = multer()
@@ -33,6 +33,25 @@ const serveNodePositions = function serveNodePositions(server) {
         .append("location", `/experiments/${experimentName}/node-positions/${nodeId}`)
         .status(201)
         .send(nodeId)
+    }
+  )
+
+  server.post(
+    "/experiments/:experimentName/node-positions/bulk",
+    upload.array(),
+    async (request, response) => {
+      const experimentName = request.params.experimentName
+      const nodePositions = keys(request.body).map(key => request.body[key])
+      const nodeIds = nodePositions.map(nodePosition => nodePosition.localizedNodeId)
+      const data = nodePositions.map(nodePosition => assign(nodePosition, { experimentName }))
+      await insertNodePositions(data)
+      response
+        .append(
+          "location",
+          nodeIds.map(id => `/experiments/${experimentName}/node-positions/${id}`).join("; ")
+        )
+        .status(201)
+        .send(nodeIds)
     }
   )
 

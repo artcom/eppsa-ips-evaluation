@@ -64,7 +64,7 @@ describe("Server for points", () => {
     })
   })
 
-  it("should return point name in body and path in location header on multiple point post at " +
+  it("should return point names in body and paths in location header on multiple point post at " +
     "/points/bulk",
     done => {
       restler.post("http://localhost:3000/points/bulk", {
@@ -85,7 +85,7 @@ describe("Server for points", () => {
     }
   )
 
-  it("should store the point in the database on multiple point post at /points/bulk", done => {
+  it("should store the points in the database on multiple point post at /points/bulk", done => {
     restler.post("http://localhost:3000/points/bulk", {
       data: points
     }).on("complete", async (data, response) => {
