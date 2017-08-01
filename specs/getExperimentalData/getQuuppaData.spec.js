@@ -12,12 +12,12 @@ const PositionData = require("../../src/models/positionData")
 
 
 describe("Get Quuppa data", () => {
-  before(done => {
-    dbSync().then(done).catch(done)
+  before(async () => {
+    await dbSync()
   })
 
-  after((done) => {
-    dbDrop().then(done).catch(done)
+  after(async () => {
+    await dbDrop()
   })
 
   describe("Get data from the Quuppa server", () => {

@@ -17,27 +17,25 @@ const getExperimentByName = async function getExperimentByName(name) {
 }
 
 const serveExperiments = function serveExperiments(server) {
-  server.get("/", (req, res) => res.send(""))
+  server.get("/", (request, response) => response.send(""))
 
-  server.get("/experiments", (req, res) =>
-    getExperiments()
-      .then(experiments =>
-        res.send(experiments)
-      )
-  )
-
-  server.post("/experiments", upload.array(), (req, res) => {
-    setUpExperiment(req.body.name).then(() => {
-      res.append("location", `/experiments/${req.body.name}`).status(201).send(req.body.name)
-    })
+  server.get("/experiments", async (request, response) => {
+    const experiments = await getExperiments()
+    response.send(experiments)
   })
 
-  server.get("/experiments/:name", (req, res) =>
-    getExperimentByName(req.params.name)
-      .then(experiments =>
-        res.json(experiments)
-      )
-  )
+  server.post("/experiments", upload.array(), async (request, response) => {
+    await setUpExperiment(request.body.name)
+    response
+      .append("location", `/experiments/${request.body.name}`)
+      .status(201)
+      .send(request.body.name)
+  })
+
+  server.get("/experiments/:name", async (request, response) => {
+    const experiments = await getExperimentByName(request.params.name)
+    response.json(experiments)
+  })
 
   return server
 }
