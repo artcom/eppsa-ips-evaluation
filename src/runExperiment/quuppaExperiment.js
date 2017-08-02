@@ -1,5 +1,4 @@
 const { getQuuppaData, getDataForAllTags } = require("../getExperimentalData/getQuuppaData")
-const { initializeDb } = require("../initializeDb")
 const { processData } = require("../storeData/processExperimentalData")
 
 
@@ -18,7 +17,6 @@ module.exports = class QuuppaExperiment {
   }
 
   async run() {
-    await initializeDb()
     await this.getDataForAllTags()
     await processData(this.experimentName)
   }

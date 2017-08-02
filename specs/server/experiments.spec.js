@@ -6,6 +6,7 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const { insertExperiment } = require("../../src/storeData/index")
 const server = require("../../src/server")
 
+
 describe("Server for experiments", () => {
   beforeEach(async () => {
     await dbSync()
@@ -67,6 +68,18 @@ describe("Server for experiments", () => {
       const experiments = await Experiment.findAll()
       expect(experiments[0].name).to.equal("test-experiment")
       done()
+    })
+  })
+
+  it("should run an experiment on post at /experiment/run", done => {
+    insertExperiment("test-experiment").then(() => {
+      restler.post("http://localhost:3000/experiments/test-experiment/run", {
+        data: { experimentTypes: ["Quuppa"], repeats: 2, interval: 1000 }
+      }).on("complete", async (data, response) => {
+        expect(response.statusCode).to.equal(201)
+        expect(data).to.equal("started Quuppa experiment")
+        done()
+      })
     })
   })
 })

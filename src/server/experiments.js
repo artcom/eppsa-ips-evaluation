@@ -1,6 +1,8 @@
 const multer = require("multer")
+const { includes } = require("lodash")
 const { getExperiments, getExperimentByName } = require("../getData")
 const { insertExperiment } = require("../storeData/index")
+const QuuppaExperiment = require("../runExperiment/quuppaExperiment")
 
 
 const upload = multer()
@@ -26,5 +28,27 @@ module.exports = function serveExperiments(server) {
     response.json(experiments)
   })
 
+  server.post("/experiments/:name/run", async (request, response) => {
+    const { experimentTypes, repeats, interval } = request.body
+    const quuppaExperiment = new QuuppaExperiment(request.params.name)
+    if (includes(experimentTypes, "Quuppa")) {
+      repeat(quuppaExperiment.run, repeats, interval)
+    }
+    response.status(201).send(`started ${experimentTypes.join(", ")} experiment`)
+  })
+
   return server
+}
+
+function repeat(func, repeats = 1, interval = 0) {
+  func()
+  let count = 1
+  const intervalId = setInterval(() => {
+    count++
+    if (count > repeats) {
+      clearInterval(intervalId)
+    } else {
+      func()
+    }
+  }, interval)
 }
