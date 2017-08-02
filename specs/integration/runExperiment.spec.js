@@ -7,64 +7,63 @@ const { dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const { getMockData } = require("../mocks/getExperimentalData")
+const { initializeDb } = require("../../src/initializeDb")
+const { insertPoints, insertExperiment, insertNodePositions } = require("../../src/storeData")
+const nodePositionsQuuppa = require("../testData/nodePositionsQuuppa.json")
 const Point = require("../../src/models/point")
-const points = require("../../data/points.json")
+const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
-const { QuuppaExperiment, setUpDb } = require("../../src/runExperiment/quuppaExperiment")
+const QuuppaExperiment = require("../../src/runExperiment/quuppaExperiment")
 
 
 describe("Run a Quuppa experiment", () => {
-  beforeEach(done => {
-    dbDrop().then(done).catch(done)
+  beforeEach(async () => {
+    await dbDrop()
   })
 
-  afterEach((done) => {
-    dbDrop().then(done).catch(done)
+  afterEach(async () => {
+    await dbDrop()
   })
 
-  describe("Database set up", () => {
-    it("should set up the database", done => {
-      testDbSetup()
-        .then(storedPoints => {
-          expect(storedPoints).to.deep.equal(points)
-          done()
-        }).catch(done)
+  describe("Database initialization", () => {
+    it("should set up the database", async () => {
+      await initializeDb()
+      await insertPoints(points)
+      const insertedPoints = await Point.findAll()
+      const storedPoints = insertedPoints.map(point => pick(point, [
+        "name",
+        "trueCoordinateX",
+        "trueCoordinateY",
+        "trueCoordinateZ",
+        "trueRoomLabel"
+      ]))
+      expect(storedPoints).to.deep.equal(points)
     })
   })
 
   describe("Run", () => {
-    it("should run the entire experiment and save the data", done => {
-      const quuppaExperiment = new QuuppaExperiment("test_quuppa")
+    it("should run the entire experiment and save the data", async () => {
+      const quuppaExperiment = new QuuppaExperiment("test-experiment")
       const getData = sinon.stub(quuppaExperiment, "getQuuppaData").callsFake(getMockData)
-      quuppaExperiment.run()
-        .then(() => {
-          sinon.assert.calledOnce(getData)
-          testMetrics().then(done).catch(done)
-        }).catch(done)
+      await initializeDb()
+      await insertExperiment("test-experiment")
+      await insertPoints(points)
+      await insertNodePositions(nodePositionsQuuppa)
+      await quuppaExperiment.run()
+      sinon.assert.calledOnce(getData)
+      await testMetrics()
     })
   })
 })
 
-async function testDbSetup() {
-  await setUpDb()
-  const points = await Point.findAll()
-  return points.map(point => pick(point, [
-    "name",
-    "trueCoordinateX",
-    "trueCoordinateY",
-    "trueCoordinateZ",
-    "trueRoomLabel"
-  ]))
-}
-
 async function testMetrics() {
   const experimentMetrics = await ExperimentMetrics.findAll({
-    where: { experimentName: "test_quuppa" },
+    where: { experimentName: "test-experiment" },
     include: { model: Experiment }
   })
   await checkPrimaryMetrics({
     experimentMetrics,
-    experimentName: "test_quuppa",
+    experimentName: "test-experiment",
     nonPositionData: false
   })
   const positionDataQueryResults = await PositionData.findAll()
