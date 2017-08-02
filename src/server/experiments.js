@@ -32,7 +32,7 @@ module.exports = function serveExperiments(server) {
     const { experimentTypes, repeats, interval } = request.body
     const quuppaExperiment = new QuuppaExperiment(request.params.name)
     if (includes(experimentTypes, "Quuppa")) {
-      repeat(quuppaExperiment.run, repeats, interval)
+      repeat(() => quuppaExperiment.run(), repeats, interval)
     }
     response.status(201).send(`started ${experimentTypes.join(", ")} experiment`)
   })

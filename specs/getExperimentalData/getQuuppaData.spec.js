@@ -25,11 +25,11 @@ describe("Get Quuppa data", () => {
       const response = await getQuuppaData()
       const ids = sortBy(response.data.tags.map(tag => tag.id), ["id"])
       expect(response.status).to.equal(200)
-      expect(ids).to.deep.equal([
+      expect(ids.sort()).to.deep.equal([
         "20914830f65a",
         "20914830ce00",
         "e0e5cfb58d13"
-      ])
+      ].sort())
     })
   })
 

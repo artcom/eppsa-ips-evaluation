@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "pointName": "point1",
     "localizedNodeId": "20914830f65a",
     "localizedNodeName": "Node1",
@@ -8,6 +9,7 @@
     "roomAccuracy": 0
   },
   {
+    "id": 2,
     "pointName": "point2",
     "localizedNodeId": "20914830ce00",
     "localizedNodeName": "Node2",
@@ -16,6 +18,7 @@
     "roomAccuracy": 1
   },
   {
+    "id": 3,
     "pointName": "point3",
     "localizedNodeId": "6655443322dd",
     "localizedNodeName": "Node3",

@@ -26,6 +26,7 @@ const roomAccuracy = function roomAccuracy(datum) {
 
 const errors = function errors(data) {
   return data.map(datum => ({
+    id: datum.id,
     pointName: datum.pointName,
     localizedNodeId: datum.localizedNodeId,
     localizedNodeName: datum.localizedNodeName,
