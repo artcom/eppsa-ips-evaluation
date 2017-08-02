@@ -6,9 +6,9 @@ const PositionData = require("./models/positionData")
 
 
 exports.initializeDb = async function initializeDb() {
-  await Experiment.sync({ force: true })
-  await Point.sync({ force: true })
-  await NodePosition.sync({ force: true })
-  await PositionData.sync({ force: true })
-  await ExperimentMetrics.sync({ force: true })
+  await Experiment.sync()
+  await Point.sync()
+  await NodePosition.sync()
+  await PositionData.sync()
+  await ExperimentMetrics.sync()
 }
