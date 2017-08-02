@@ -1,4 +1,5 @@
 const Experiment = require("../models/experiment")
+const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
@@ -25,4 +26,8 @@ exports.insertNodePosition = async function insertNodePosition(nodePosition) {
 
 exports.insertPositionData = async function insertPositionData(positionData) {
   await PositionData.bulkCreate(positionData)
+}
+
+exports.insertPrimaryMetrics = async function insertPrimaryMetrics(primaryMetrics) {
+  await ExperimentMetrics.create(primaryMetrics)
 }
