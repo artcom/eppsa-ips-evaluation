@@ -1,5 +1,6 @@
 const { pick } = require("lodash")
 const Experiment = require("../models/experiment")
+const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePositon = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
@@ -75,4 +76,18 @@ exports.getPositionDataByExperiment = async function getPositionDataByExperiment
     },
     where: { experimentName }
   })
+}
+
+exports.getExperimentMetricsByName = async function getExperimentMetricsByName(experimentName) {
+  const metrics = await ExperimentMetrics.findAll({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt",
+        "id"
+      ]
+    },
+    where: { experimentName }
+  })
+  return metrics[0]
 }

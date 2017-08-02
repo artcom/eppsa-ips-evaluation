@@ -66,10 +66,14 @@ const checkPositionData = function checkPositionData(
 const checkPrimaryMetrics = function checkPrimaryMetrics(
   experimentMetrics,
   experimentName = "test-experiment",
-  nonPositionData = true
+  nonPositionData = true,
+  isQuery = true
 ) {
-  expect(experimentMetrics[0].experimentName).to.equal(experimentName)
-  expect(experimentMetrics[0].experiment.name).to.equal(experimentName)
+  const metrics = isQuery ? experimentMetrics[0] : experimentMetrics
+  expect(metrics.experimentName).to.equal(experimentName)
+  if (isQuery) {
+    expect(metrics.experiment.name).to.equal(experimentName)
+  }
   const keysToOmit = nonPositionData
     ? ["experimentName"]
     : [
@@ -92,7 +96,7 @@ const checkPrimaryMetrics = function checkPrimaryMetrics(
       "powerConsumptionPercentile90"
     ]
   for (const key of keys(omit(experimentPrimaryMetrics, keysToOmit))) {
-    expect(experimentMetrics[0][key])
+    expect(metrics[key])
       .to.be.closeTo(experimentPrimaryMetrics[key], 0.0000000000001)
   }
 }
