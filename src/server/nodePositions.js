@@ -6,7 +6,7 @@ const { insertNodePosition, insertNodePositions } = require("../storeData")
 
 const upload = multer()
 
-exports.serveNodePositions = function serveNodePositions(server) {
+module.exports = function serveNodePositions(server) {
   server.get("/experiments/:experimentName/node-positions", async (request, response) => {
     const nodePositions = await getNodePositions(request.params.experimentName)
     response.status(200).send(nodePositions)

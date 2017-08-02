@@ -6,7 +6,7 @@ const { insertPoint, insertPoints } = require("../storeData")
 
 const upload = multer()
 
-const servePoints = function servePoints(server) {
+module.exports = function servePoints(server) {
   server.get("/points", async (request, response) => {
     const points = await getPoints()
     response.status(200).send(points)
@@ -34,5 +34,3 @@ const servePoints = function servePoints(server) {
 
   return server
 }
-
-exports.servePoints = servePoints

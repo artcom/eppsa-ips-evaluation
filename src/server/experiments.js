@@ -5,7 +5,7 @@ const { insertExperiment } = require("../storeData/index")
 
 const upload = multer()
 
-const serveExperiments = function serveExperiments(server) {
+module.exports = function serveExperiments(server) {
   server.get("/", (request, response) => response.send(""))
 
   server.get("/experiments", async (request, response) => {
@@ -28,5 +28,3 @@ const serveExperiments = function serveExperiments(server) {
 
   return server
 }
-
-exports.serveExperiments = serveExperiments
