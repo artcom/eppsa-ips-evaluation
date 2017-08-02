@@ -26,7 +26,7 @@ describe("Model ExperimentMetrics", () => {
                 include: { model: Experiment }
               })
                 .then(experimentMetrics => {
-                  checkPrimaryMetrics(experimentMetrics)
+                  checkPrimaryMetrics({ experimentMetrics })
                   done()
                 }).catch(done)
             }).catch(done)

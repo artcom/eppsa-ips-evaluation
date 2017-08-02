@@ -63,12 +63,12 @@ const checkPositionData = function checkPositionData(
   }
 }
 
-const checkPrimaryMetrics = function checkPrimaryMetrics(
-  experimentMetrics,
-  experimentName = "test-experiment",
-  nonPositionData = true,
-  isQuery = true
-) {
+const checkPrimaryMetrics = function checkPrimaryMetrics({
+ experimentMetrics,
+ experimentName = "test-experiment",
+ nonPositionData = true,
+ isQuery = true
+}) {
   const metrics = isQuery ? experimentMetrics[0] : experimentMetrics
   expect(metrics.experimentName).to.equal(experimentName)
   if (isQuery) {

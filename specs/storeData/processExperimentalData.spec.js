@@ -48,7 +48,7 @@ describe("Process experimental data", () => {
         where: { experimentName: "test-experiment" },
         include: { model: Experiment }
       })
-      checkPrimaryMetrics(experimentMetrics)
+      checkPrimaryMetrics({ experimentMetrics })
     })
   })
 })

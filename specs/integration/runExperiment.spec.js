@@ -62,7 +62,11 @@ async function testMetrics() {
     where: { experimentName: "test_quuppa" },
     include: { model: Experiment }
   })
-  await checkPrimaryMetrics(experimentMetrics, "test_quuppa", false)
+  await checkPrimaryMetrics({
+    experimentMetrics,
+    experimentName: "test_quuppa",
+    nonPositionData: false
+  })
   const positionDataQueryResults = await PositionData.findAll()
   await checkPositionData(positionDataQueryResults, false)
 }

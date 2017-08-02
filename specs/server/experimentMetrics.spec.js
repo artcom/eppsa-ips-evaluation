@@ -29,7 +29,11 @@ describe("Server for points", () => {
           restler.get("http://localhost:3000/experiments/test-experiment/primary-metrics")
             .on("complete", (data, response) => {
               expect(response.statusCode).to.equal(200)
-              checkPrimaryMetrics(data, "test-experiment", true, false)
+              checkPrimaryMetrics({
+                experimentMetrics: data,
+                nonPositionData: true,
+                isQuery: false
+              })
               done()
             })
         }
