@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { keys, pick } = require("lodash")
+const { assign, keys, pick } = require("lodash")
 const { checkPrimaryMetrics } = require("../helpers/data")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
@@ -9,6 +9,7 @@ const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.j
 const {
   insertExperiment,
   insertPrimaryMetrics,
+  upsertPrimaryMetrics,
   upsertNodePosition,
   upsertNodePositions
 } = require("../../src/storeData")
@@ -33,6 +34,46 @@ describe("Process experimental data", () => {
         include: { model: Experiment }
       })
       checkPrimaryMetrics({ experimentMetrics })
+    })
+  })
+
+  describe("upsertPrimaryMetrics", () => {
+    it("inserts a primaryMetrics when experiment name is not present", async () => {
+      await insertExperiment("test-experiment")
+      const initialMetrics = assign({}, experimentPrimaryMetrics)
+      assign(initialMetrics, { error2dAverage: 0.8 })
+      await insertPrimaryMetrics(initialMetrics)
+      await upsertPrimaryMetrics(experimentPrimaryMetrics)
+      const experimentMetrics = await ExperimentMetrics.findAll({
+        where: { experimentName: "test-experiment" },
+        include: { model: Experiment }
+      })
+      expect(experimentMetrics.length).to.equal(1)
+      checkPrimaryMetrics({ experimentMetrics })
+    })
+
+    it("updates a node position when same node ID and experiment name is present", async () => {
+      await insertExperiment("test-experiment")
+      const initialPosition = {
+        localizedNodeId: "1234",
+        pointName: "point0",
+        experimentName: "test-experiment"
+      }
+      const upsertedPosition = {
+        localizedNodeId: "1234",
+        pointName: "point1",
+        experimentName: "test-experiment"
+      }
+      await NodePosition.create(initialPosition)
+      await upsertNodePosition(upsertedPosition)
+      const insertedNodes = await NodePosition.findAll({
+        where: {
+          localizedNodeId: "1234",
+          experimentName: "test-experiment"
+        }
+      })
+      expect(insertedNodes.length).to.equal(1)
+      expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
     })
   })
 

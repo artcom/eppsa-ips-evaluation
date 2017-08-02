@@ -24,6 +24,23 @@ const upsertNodePosition = async function upsertNodePosition(nodePosition) {
   }
 }
 
+const upsertPrimaryMetrics = async function upsertPrimaryMetrics(primaryMetrics) {
+  const present = await ExperimentMetrics.findAll({
+    where: {
+      experimentName: primaryMetrics.experimentName
+    }
+  })
+  if (present.length === 0) {
+    await ExperimentMetrics.create(primaryMetrics)
+  } else {
+    await ExperimentMetrics.update(primaryMetrics, {
+      where: {
+        experimentName: primaryMetrics.experimentName
+      }
+    })
+  }
+}
+
 exports.insertPoints = async function insertPoints(points) {
   await Point.bulkCreate(points)
 }
@@ -57,3 +74,5 @@ exports.insertPositionData = async function insertPositionData(positionData) {
 exports.insertPrimaryMetrics = async function insertPrimaryMetrics(primaryMetrics) {
   await ExperimentMetrics.create(primaryMetrics)
 }
+
+exports.upsertPrimaryMetrics = upsertPrimaryMetrics
