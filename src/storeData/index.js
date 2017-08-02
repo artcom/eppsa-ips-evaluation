@@ -4,6 +4,26 @@ const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 
+
+const upsertNodePosition = async function upsertNodePosition(nodePosition) {
+  const sameNodes = await NodePosition.findAll({
+    where: {
+      localizedNodeId: nodePosition.localizedNodeId,
+      experimentName: nodePosition.experimentName
+    }
+  })
+  if (sameNodes.length === 0) {
+    await NodePosition.create(nodePosition)
+  } else {
+    await NodePosition.update(nodePosition, {
+      where: {
+        localizedNodeId: nodePosition.localizedNodeId,
+        experimentName: nodePosition.experimentName
+      }
+    })
+  }
+}
+
 exports.insertPoints = async function insertPoints(points) {
   await Point.bulkCreate(points)
 }
@@ -23,6 +43,12 @@ exports.insertNodePositions = async function insertNodePositions(nodePositions) 
 exports.insertNodePosition = async function insertNodePosition(nodePosition) {
   await NodePosition.create(nodePosition)
 }
+
+exports.upsertNodePositions = async function upsertNodePositons(nodePositions) {
+  await Promise.all(nodePositions.map(upsertNodePosition))
+}
+
+exports.upsertNodePosition = upsertNodePosition
 
 exports.insertPositionData = async function insertPositionData(positionData) {
   await PositionData.bulkCreate(positionData)

@@ -5,8 +5,13 @@ const { keys, omit, pick, sortBy } = require("lodash")
 const NodePosition = require("../../src/models/nodePosition")
 const { dbSync, dbDrop } = require("../helpers/db")
 const nodePositions = require("../testData/nodePositions.json")
+const nodePositionsQuuppa = require("../testData/nodePositionsQuuppa.json")
 const server = require("../../src/server")
-const { insertNodePositions, insertExperiment } = require("../../src/storeData/index")
+const {
+  insertNodePosition,
+  insertNodePositions,
+  insertExperiment
+} = require("../../src/storeData/index")
 
 describe("Server for points", () => {
   beforeEach(async () => {
@@ -71,6 +76,20 @@ describe("Server for points", () => {
     })
   })
 
+  it("should update the node position in the database on single post at /node-positions", done => {
+    insertNodePosition(nodePositionsQuuppa[1]).then(() => {
+      restler.post("http://localhost:3000/experiments/test-experiment/node-positions", {
+        data: omit(nodePositions[1], ["experimentName"])
+      }).on("complete", async (data, response) => {
+        expect(response.statusCode).to.equal(201)
+        const storedPoints = await NodePosition.findAll()
+        expect(storedPoints.length).to.equal(1)
+        expect(pick(storedPoints[0], keys(nodePositions[1]))).to.deep.equal(nodePositions[1])
+        done()
+      })
+    })
+  })
+
   it("should return node position names in body and paths in location header on multiple post at" +
     " /node-positions/bulk",
     done => {
@@ -108,8 +127,31 @@ describe("Server for points", () => {
         const storedNodePositionsQueryResult = await NodePosition.findAll()
         const storedNodePosition = storedNodePositionsQueryResult
           .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
-        expect(storedNodePosition).to.deep.equal(nodePositions)
+        expect(sortBy(storedNodePosition, ["localizedNodeId"]))
+          .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
         done()
+      })
+    }
+  )
+
+  it("should update the node positions in the database on multiple post at " +
+    "/node-positions/bulk",
+    done => {
+      insertNodePositions(nodePositionsQuuppa).then(() => {
+        restler.post(
+          "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
+          {
+            data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"]))
+          }
+        ).on("complete", async (data, response) => {
+          expect(response.statusCode).to.equal(201)
+          const storedNodePositionsQueryResult = await NodePosition.findAll()
+          const storedNodePosition = storedNodePositionsQueryResult
+            .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
+          expect(sortBy(storedNodePosition, ["localizedNodeId"]))
+            .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
+          done()
+        })
       })
     }
   )
