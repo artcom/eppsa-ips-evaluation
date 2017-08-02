@@ -18,17 +18,12 @@ describe("Model PositionData", () => {
   })
 
   describe("Model PositionData basic function", () => {
-    it("can create position data", done => {
-      Experiment.create({ name: "test-experiment" })
-        .then(() => Point.bulkCreate(points))
-        .then(() => {
-          PositionData.bulkCreate(positionData)
-          .then(() => PositionData.findAll())
-          .then(queryResults => {
-            checkPositionData(queryResults)
-            done()
-          }).catch(done)
-        })
+    it("can create position data", async () => {
+      await Experiment.create({ name: "test-experiment" })
+      await Point.bulkCreate(points)
+      await PositionData.bulkCreate(positionData)
+      const queryResults = await PositionData.findAll()
+      checkPositionData(queryResults)
     })
   })
 })
