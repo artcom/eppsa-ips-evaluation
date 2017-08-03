@@ -7,25 +7,22 @@ const points = require("../testData/points.json")
 
 
 describe("Model Point", () => {
-  before((done) => {
-    dbSync().then(done).catch(done)
+  before(async () => {
+    await dbSync()
   })
 
-  after((done) => {
-    dbDrop().then(done).catch(done)
+  after(async () => {
+    await dbDrop()
   })
 
   describe("Model Point basic function", () => {
-    it("can create points", done => {
-      Point.bulkCreate(points)
-        .then(() => Point.findAll())
-        .then(queryResults => {
-          const storedPoints = queryResults
-            .map(queryResult => pick(queryResult, keys(points[0])))
-          expect(sortBy(storedPoints, ["pointId"]))
-            .to.deep.equal(sortBy(points, ["PointId"]))
-          done()
-        }).catch(done)
+    it("can create points", async () => {
+      await Point.bulkCreate(points)
+      const queryResults = await Point.findAll()
+      const storedPoints = queryResults
+        .map(queryResult => pick(queryResult, keys(points[0])))
+      expect(sortBy(storedPoints, ["pointId"]))
+        .to.deep.equal(sortBy(points, ["PointId"]))
     })
   })
 })
