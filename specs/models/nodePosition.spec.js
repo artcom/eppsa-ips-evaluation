@@ -8,33 +8,25 @@ const NodePosition = require("../../src/models/nodePosition")
 
 
 describe("Model NodePosition", () => {
-  before((done) => {
-    dbSync().then(done).catch(done)
+  before(async () => {
+    await dbSync()
   })
 
-  after((done) => {
-    dbDrop().then(done).catch(done)
+  after(async () => {
+    await dbDrop()
   })
 
   describe("Model NodePosition basic function", () => {
-    it("can create node positions", done => {
-      Experiment.create({ name: "test-experiment" })
-        .then(() => {
-          NodePosition.bulkCreate(nodePositions)
-            .then(() =>
-              NodePosition.findAll({ include: { model: Experiment } })
-                .then(storedPositions => {
-                  const storedNodePositions = storedPositions
-                    .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
-                  for (const position of storedPositions) {
-                    expect(position.experiment.name).to.equal("test-experiment")
-                  }
-                  expect(sortBy(storedNodePositions, ["localizedNodeId"]))
-                    .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
-                  done()
-                }).catch(done)
-            ).catch(done)
-        }).catch(done)
+    it("can create node positions", async () => {
+      await Experiment.create({ name: "test-experiment" })
+      await NodePosition.bulkCreate(nodePositions)
+      const storedPositions = await NodePosition.findAll({ include: { model: Experiment } })
+      const storedNodePositions = storedPositions
+        .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
+      for (const position of storedPositions) {
+        expect(position.experiment.name).to.equal("test-experiment")
+      }
+      expect(sortBy(storedNodePositions, ["localizedNodeId"]))
     })
   })
 })
