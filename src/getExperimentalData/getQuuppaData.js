@@ -22,7 +22,7 @@ const getDataForAllTags = async function getDataForAllTags(experimentName, respo
     estCoordinateX: tag.smoothedPosition[0],
     estCoordinateY: tag.smoothedPosition[1],
     estCoordinateZ: tag.smoothedPosition[2],
-    estRoomLabel: estimateRoom(
+    estZoneLabel: estimateRoom(
       tag.smoothedPosition[0],
       tag.smoothedPosition[1],
       tag.smoothedPosition[2]

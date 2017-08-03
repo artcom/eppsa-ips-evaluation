@@ -35,7 +35,7 @@ describe("Run a Quuppa experiment", () => {
         "trueCoordinateX",
         "trueCoordinateY",
         "trueCoordinateZ",
-        "trueRoomLabel"
+        "trueZoneLabel"
       ]))
       expect(storedPoints).to.deep.equal(points)
     })

@@ -10,7 +10,7 @@ const PositionData = db.define("position_data", {
   estCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },
-  estRoomLabel: { type: Sequelize.STRING, allowNull: false },
+  estZoneLabel: { type: Sequelize.STRING, allowNull: false },
   latency: Sequelize.FLOAT,
   powerConsumption: Sequelize.FLOAT,
   localizationError2d: Sequelize.FLOAT,

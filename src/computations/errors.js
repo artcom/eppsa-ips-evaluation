@@ -21,7 +21,7 @@ const error3d = function error3d(datum) {
 }
 
 const roomAccuracy = function roomAccuracy(datum) {
-  return datum.point.trueRoomLabel === datum.estRoomLabel ? 1 : 0
+  return datum.point.trueZoneLabel === datum.estZoneLabel ? 1 : 0
 }
 
 const errors = function errors(data) {
