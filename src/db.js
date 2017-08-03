@@ -1,18 +1,22 @@
 const Sequelize = require("sequelize")
-const config = require("../.config.json")
+const config = require("./constants")
 
 
-const { database, username, password, host } = config.environment === "test"
-  ? config.testDatabase
-  : config.database
+if (process.env.NODE_ENV === "test") {
+  module.exports = instanciateSequelize(config.testDatabase)
+} else {
+  module.exports = instanciateSequelize(config.database)
+}
 
-module.exports = new Sequelize(database, username, password, {
-  host,
-  dialect: "postgres",
+function instanciateSequelize({ database, username, password, host }) {
+  return new Sequelize(database, username, password, {
+    host,
+    dialect: "postgres",
 
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
-  },
-})
+    pool: {
+      max: 5,
+      min: 0,
+      idle: 10000
+    },
+  })
+}
