@@ -11,59 +11,46 @@ const { insertPoints, insertExperiment, insertNodePositions } = require("../../s
 
 
 describe("Set up experiment", () => {
-  beforeEach((done) => {
-    dbSync().then(done).catch(done)
+  beforeEach(async () => {
+    await dbSync()
   })
 
-  afterEach((done) => {
-    dbDrop().then(done).catch(done)
+  afterEach(async () => {
+    await dbDrop()
   })
 
-  describe("insertPoints basic function", () => {
-    it("can create points", done => {
-      insertPoints(points)
-        .then(() => Point.findAll())
-        .then(queryResults => {
-          const storedPoints = queryResults
-            .map(queryResult => pick(queryResult, keys(points[0])))
-          expect(sortBy(storedPoints, ["pointId"]))
-            .to.deep.equal(sortBy(points, ["PointId"]))
-          done()
-        }).catch(done)
+  describe("insertPoints", () => {
+    it("can create points", async () => {
+      await insertPoints(points)
+      const queryResults = await Point.findAll()
+      const storedPoints = queryResults
+        .map(queryResult => pick(queryResult, keys(points[0])))
+      expect(sortBy(storedPoints, ["pointId"]))
+        .to.deep.equal(sortBy(points, ["PointId"]))
     })
   })
 
-  describe("insertExperiment basic function", () => {
-    it("can create an experiment", done => {
-      insertExperiment("test-experiment")
-        .then(() => {
-          Experiment.findAll().then(experiments => {
-            expect(experiments[0].name).to.equal("test-experiment")
-          })
-          done()
-        }).catch(done)
+  describe("insertExperiment", () => {
+    it("can create an experiment", async () => {
+      await insertExperiment("test-experiment")
+      const experiments = await Experiment.findAll()
+      expect(experiments[0].name).to.equal("test-experiment")
     })
   })
 
-  describe("insertNodePositions basic function", () => {
-    it("can create node positions", done => {
-      Experiment.create({ name: "test-experiment" })
-        .then(() => {
-          insertNodePositions(nodePositions)
-            .then(() =>
-              NodePosition.findAll({ include: { model: Experiment } })
-                .then(storedPositions => {
-                  const storedNodePositions = storedPositions
-                    .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
-                  for (const position of storedPositions) {
-                    expect(position.experiment.name).to.equal("test-experiment")
-                  }
-                  expect(sortBy(storedNodePositions, ["localizedNodeId"]))
-                    .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
-                  done()
-                }).catch(done)
-            ).catch(done)
-        }).catch(done)
+  describe("insertNodePositions", () => {
+    it("can create node positions", async () => {
+      await Experiment.create({ name: "test-experiment" })
+      await Point.bulkCreate(points)
+      await insertNodePositions(nodePositions)
+      const storedPositions = await NodePosition.findAll({ include: { model: Experiment } })
+      const storedNodePositions = storedPositions
+        .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
+      for (const position of storedPositions) {
+        expect(position.experiment.name).to.equal("test-experiment")
+      }
+      expect(sortBy(storedNodePositions, ["localizedNodeId"]))
+        .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
     })
   })
 })

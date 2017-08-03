@@ -14,9 +14,11 @@ const {
   upsertNodePositions
 } = require("../../src/storeData")
 const NodePosition = require("../../src/models/nodePosition")
+const Point = require("../../src/models/point")
+const points = require("../testData/points.json")
 
 
-describe("Process experimental data", () => {
+describe("Store data", () => {
   beforeEach(async () => {
     await dbSync()
   })
@@ -54,6 +56,7 @@ describe("Process experimental data", () => {
 
     it("updates a node position when same node ID and experiment name is present", async () => {
       await insertExperiment("test-experiment")
+      await Point.bulkCreate(points)
       const initialPosition = {
         localizedNodeId: "1234",
         pointName: "point0",
@@ -80,6 +83,7 @@ describe("Process experimental data", () => {
   describe("upsertNodePosition", () => {
     it("inserts a node position when same node ID and experiment name is not present", async () => {
       await insertExperiment("test-experiment")
+      await Point.bulkCreate(points)
       const initialPosition = {
         localizedNodeId: "12",
         pointName: "point0",
@@ -103,6 +107,7 @@ describe("Process experimental data", () => {
 
     it("updates a node position when same node ID and experiment name is present", async () => {
       await insertExperiment("test-experiment")
+      await Point.bulkCreate(points)
       const initialPosition = {
         localizedNodeId: "1234",
         pointName: "point0",
@@ -129,6 +134,7 @@ describe("Process experimental data", () => {
   describe("upsertNodePositions", () => {
     it("should insert node positions when not present", async () => {
       await insertExperiment("test-experiment")
+      await Point.bulkCreate(points)
       const initialPosition = {
         localizedNodeId: "12",
         pointName: "point0",
@@ -162,6 +168,7 @@ describe("Process experimental data", () => {
 
     it("should update present node positions and insert absent node positions", async () => {
       await insertExperiment("test-experiment")
+      await Point.bulkCreate(points)
       const initialPosition = {
         localizedNodeId: "1234",
         pointName: "point0",
