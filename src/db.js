@@ -8,9 +8,10 @@ if (process.env.NODE_ENV === "test") {
   module.exports = instanciateSequelize(config.database)
 }
 
-function instanciateSequelize({ database, username, password, host }) {
-  return new Sequelize(database, username, password, {
+function instanciateSequelize({ database, user, password, host, port }) {
+  return new Sequelize(database, user, password, {
     host,
+    port,
     dialect: "postgres",
 
     pool: {
