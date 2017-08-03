@@ -1,5 +1,6 @@
 const axios = require("axios")
+const config = require("./constants")
 
 exports.quuppaServer = axios.create({
-  baseURL: "http://10.1.34.104:8080/qpe",
+  baseURL: config.quuppaServer,
 })
