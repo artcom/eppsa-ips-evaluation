@@ -11,5 +11,6 @@
     "user": "db_user",
     "port": 5432,
     "host": "host_name"
-  }
+  },
+  "quuppaServer": "quuppa_server_url"
 }
