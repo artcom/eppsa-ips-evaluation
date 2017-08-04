@@ -6,7 +6,9 @@ const { dbDrop, dbSync } = require("../helpers/db")
 const data = require("../testData/mockQuuppaData.json")
 const { insertExperiment, insertPoints, insertNodePositions } = require("../../src/storeData/index")
 const { getQuuppaData, getDataForAllTags } = require("../../src/getExperimentalData/getQuuppaData")
+const Node = require("../../src/models/node")
 const nodePositions = require("../testData/nodePositionsQuuppa.json")
+const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
 
@@ -37,6 +39,7 @@ describe("Get Quuppa data", () => {
     it("retrieves Quuppa position data and stores it", async () => {
       await insertExperiment("test-experiment")
       await insertPoints(points)
+      await Node.bulkCreate(nodes)
       await insertNodePositions(nodePositions)
       await getDataForAllTags("test-experiment", data)
       const positionDataQueryResults = await PositionData.findAll()

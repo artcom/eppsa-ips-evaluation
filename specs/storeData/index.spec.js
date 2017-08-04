@@ -13,7 +13,9 @@ const {
   upsertNodePosition,
   upsertNodePositions
 } = require("../../src/storeData")
+const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
+const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 
@@ -57,13 +59,14 @@ describe("Store data", () => {
     it("updates a node position when same node ID and experiment name is present", async () => {
       await insertExperiment("test-experiment")
       await Point.bulkCreate(points)
+      await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "1234",
+        localizedNodeId: "20914830f65a",
         pointName: "point0",
         experimentName: "test-experiment"
       }
       const upsertedPosition = {
-        localizedNodeId: "1234",
+        localizedNodeId: "20914830f65a",
         pointName: "point1",
         experimentName: "test-experiment"
       }
@@ -71,7 +74,7 @@ describe("Store data", () => {
       await upsertNodePosition(upsertedPosition)
       const insertedNodes = await NodePosition.findAll({
         where: {
-          localizedNodeId: "1234",
+          localizedNodeId: "20914830f65a",
           experimentName: "test-experiment"
         }
       })
@@ -84,13 +87,14 @@ describe("Store data", () => {
     it("inserts a node position when same node ID and experiment name is not present", async () => {
       await insertExperiment("test-experiment")
       await Point.bulkCreate(points)
+      await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "12",
+        localizedNodeId: "20914830ce00",
         pointName: "point0",
         experimentName: "test-experiment"
       }
       const upsertedPosition = {
-        localizedNodeId: "1234",
+        localizedNodeId: "20914830f65a",
         pointName: "point1",
         experimentName: "test-experiment"
       }
@@ -98,35 +102,10 @@ describe("Store data", () => {
       await upsertNodePosition(upsertedPosition)
       const insertedNodes = await NodePosition.findAll({
         where: {
-          localizedNodeId: "1234",
+          localizedNodeId: "20914830f65a",
           experimentName: "test-experiment"
         }
       })
-      expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
-    })
-
-    it("updates a node position when same node ID and experiment name is present", async () => {
-      await insertExperiment("test-experiment")
-      await Point.bulkCreate(points)
-      const initialPosition = {
-        localizedNodeId: "1234",
-        pointName: "point0",
-        experimentName: "test-experiment"
-      }
-      const upsertedPosition = {
-        localizedNodeId: "1234",
-        pointName: "point1",
-        experimentName: "test-experiment"
-      }
-      await NodePosition.create(initialPosition)
-      await upsertNodePosition(upsertedPosition)
-      const insertedNodes = await NodePosition.findAll({
-        where: {
-          localizedNodeId: "1234",
-          experimentName: "test-experiment"
-        }
-      })
-      expect(insertedNodes.length).to.equal(1)
       expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
     })
   })
@@ -135,19 +114,20 @@ describe("Store data", () => {
     it("should insert node positions when not present", async () => {
       await insertExperiment("test-experiment")
       await Point.bulkCreate(points)
+      await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "12",
+        localizedNodeId: "20914830ce00",
         pointName: "point0",
         experimentName: "test-experiment"
       }
       const upsertedPositions = [
         {
-          localizedNodeId: "1234",
+          localizedNodeId: "20914830f65a",
           pointName: "point1",
           experimentName: "test-experiment"
         },
         {
-          localizedNodeId: "5678",
+          localizedNodeId: "6655443322dd",
           pointName: "point2",
           experimentName: "test-experiment"
         }
@@ -169,19 +149,20 @@ describe("Store data", () => {
     it("should update present node positions and insert absent node positions", async () => {
       await insertExperiment("test-experiment")
       await Point.bulkCreate(points)
+      await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "1234",
+        localizedNodeId: "20914830f65a",
         pointName: "point0",
         experimentName: "test-experiment"
       }
       const upsertedPositions = [
         {
-          localizedNodeId: "1234",
+          localizedNodeId: "20914830f65a",
           pointName: "point1",
           experimentName: "test-experiment"
         },
         {
-          localizedNodeId: "5678",
+          localizedNodeId: "20914830ce00",
           pointName: "point2",
           experimentName: "test-experiment"
         }

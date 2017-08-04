@@ -3,8 +3,10 @@ const { expect } = require("chai")
 const { keys, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
+const Node = require("../../src/models/node")
 const nodePositions = require("../testData/nodePositions.json")
 const NodePosition = require("../../src/models/nodePosition")
+const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 
@@ -22,6 +24,7 @@ describe("Model NodePosition", () => {
     it("can create node positions", async () => {
       await Experiment.create({ name: "test-experiment" })
       await Point.bulkCreate(points)
+      await Node.bulkCreate(nodes)
       await NodePosition.bulkCreate(nodePositions)
       const storedPositions = await NodePosition.findAll({ include: { model: Experiment } })
       const storedNodePositions = storedPositions
