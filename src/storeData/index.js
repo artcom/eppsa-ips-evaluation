@@ -1,5 +1,6 @@
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
+const Node = require("../models/node")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
@@ -39,6 +40,14 @@ const upsertPrimaryMetrics = async function upsertPrimaryMetrics(primaryMetrics)
       }
     })
   }
+}
+
+exports.insertNode = async function insertNode(node) {
+  await Node.create(node)
+}
+
+exports.insertNodes = async function insertNodes(nodes) {
+  await Node.bulkCreate(nodes)
 }
 
 exports.insertPoints = async function insertPoints(points) {
