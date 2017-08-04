@@ -12,7 +12,7 @@
     "powerConsumption": 2.12,
     "localizationError2d": 0.10049875621120899,
     "localizationError3d": 0.14177446878757838,
-    "roomAccuracy": 0
+    "zoneAccuracy": 0
   },
   {
     "pointName": "point2",
@@ -27,7 +27,7 @@
     "powerConsumption": 1.87,
     "localizationError2d": 0.22360679774997916,
     "localizationError3d": 0.24494897427831802,
-    "roomAccuracy": 1
+    "zoneAccuracy": 1
   },
   {
     "pointName": "point3",
@@ -42,6 +42,6 @@
     "powerConsumption": 1.99,
     "localizationError2d": 0.3605551275463989,
     "localizationError3d": 0.3741657386773941,
-    "roomAccuracy": 1
+    "zoneAccuracy": 1
   }
 ]

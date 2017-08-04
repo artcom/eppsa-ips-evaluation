@@ -20,7 +20,7 @@ const error3d = function error3d(datum) {
   )
 }
 
-const roomAccuracy = function roomAccuracy(datum) {
+const zoneAccuracy = function zoneAccuracy(datum) {
   return datum.point.trueZoneLabel === datum.estZoneLabel ? 1 : 0
 }
 
@@ -32,11 +32,11 @@ const errors = function errors(data) {
     localizedNodeName: datum.localizedNodeName,
     localizationError2d: error2d(datum),
     localizationError3d: error3d(datum),
-    roomAccuracy: roomAccuracy(datum)
+    zoneAccuracy: zoneAccuracy(datum)
   }))
 }
 
 exports.error2d = error2d
 exports.error3d = error3d
-exports.roomAccuracy = roomAccuracy
+exports.zoneAccuracy = zoneAccuracy
 exports.errors = errors

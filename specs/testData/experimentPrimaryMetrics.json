@@ -16,7 +16,7 @@
   "error3dRMS": 0.2708628189077761,
   "error3dPercentile75": 0.3095573564778561,
   "error3dPercentile90": 0.34832238579757885,
-  "roomAccuracyAverage": 0.6666666666666666,
+  "zoneAccuracyAverage": 0.6666666666666666,
   "latencyAverage": 12.799999999999999,
   "latencyMin": 11.15,
   "latencyMax": 15.15,

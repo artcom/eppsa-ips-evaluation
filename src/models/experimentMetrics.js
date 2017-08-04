@@ -20,7 +20,7 @@ const ExperimentMetrics = db.define("experiment_metrics", {
   error3dRMS: { type: Sequelize.FLOAT, allowNull: false },
   error3dPercentile75: { type: Sequelize.FLOAT, allowNull: false },
   error3dPercentile90: { type: Sequelize.FLOAT, allowNull: false },
-  roomAccuracyAverage: { type: Sequelize.FLOAT, allowNull: false },
+  zoneAccuracyAverage: { type: Sequelize.FLOAT, allowNull: false },
   latencyAverage: { type: Sequelize.FLOAT },
   latencyMin: { type: Sequelize.FLOAT },
   latencyMax: { type: Sequelize.FLOAT },

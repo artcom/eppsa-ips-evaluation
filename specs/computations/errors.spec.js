@@ -3,7 +3,7 @@ const { expect } = require("chai")
 const expectedPointErrors = require("../testData/pointErrors.json")
 const pointMeasurements = require("../testData/pointMeasurements.json")
 const {
-  roomAccuracy,
+  zoneAccuracy,
   error2d,
   error3d,
   errors
@@ -13,8 +13,8 @@ const {
 describe("Error computations", () => {
   describe("Room accuracy computation", () => {
     it("returns the room accuracy for a point", () => {
-      const rightRoom = roomAccuracy(pointMeasurements[1])
-      const wrongRoom = roomAccuracy(pointMeasurements[0])
+      const rightRoom = zoneAccuracy(pointMeasurements[1])
+      const wrongRoom = zoneAccuracy(pointMeasurements[0])
 
       expect(rightRoom).to.equal(1)
       expect(wrongRoom).to.equal(0)

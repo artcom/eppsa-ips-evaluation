@@ -5,7 +5,7 @@ const positionData = require("../testData/positionData.json")
 
 
 const positionDataNoErrors = function positionDataNoErrors(positionData) {
-  const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
+  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
 
   return positionData
     .map(position =>
@@ -33,7 +33,7 @@ const checkPositionData = function checkPositionData(
   nonPositionData = true,
   checkErrors = true
 ) {
-  const errorKeys = ["localizationError2d", "localizationError3d", "roomAccuracy"]
+  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
   const storedPositionData = queryResults
     .map(queryResult =>
       pick(queryResult, keys(positionData[0])

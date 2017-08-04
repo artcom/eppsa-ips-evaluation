@@ -12,7 +12,7 @@ const updatePositionDataErrors = async function updatePositionDataErrors(
     PositionData.update(
       processedDatum,
       { where: { id: processedDatum.id } },
-      { fields: ["localizationError2d", "localizationError3d", "roomAccuracy"] },
+      { fields: ["localizationError2d", "localizationError3d", "zoneAccuracy"] },
     )
   ))
 }
