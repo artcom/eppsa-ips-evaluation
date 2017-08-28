@@ -15,14 +15,12 @@ describe("Model Point", () => {
     await dbDrop()
   })
 
-  describe("Model Point basic function", () => {
-    it("can create points", async () => {
-      await Point.bulkCreate(points)
-      const queryResults = await Point.findAll()
-      const storedPoints = queryResults
-        .map(queryResult => pick(queryResult, keys(points[0])))
-      expect(sortBy(storedPoints, ["pointId"]))
-        .to.deep.equal(sortBy(points, ["PointId"]))
-    })
+  it("can create points", async () => {
+    await Point.bulkCreate(points)
+    const queryResults = await Point.findAll()
+    const storedPoints = queryResults
+      .map(queryResult => pick(queryResult, keys(points[0])))
+    expect(sortBy(storedPoints, ["pointId"]))
+      .to.deep.equal(sortBy(points, ["PointId"]))
   })
 })
