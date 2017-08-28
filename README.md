@@ -192,6 +192,45 @@ New points can be created:
 ]
 ```
 
+#### Create zones with known borders
+
+End point: ```/zones```
+
+Accepts GET and POST requests.
+
+New zones can be created:
+
+- using a POST request to ```/zones``` with:
+
+```json
+{
+    "name": "zone_name",
+    "xMin": "float",
+    "xMax": "float",
+    "yMin": "float",
+    "yMax": "float",
+    "zMin": "float",
+    "zMax": "float"
+}
+```
+
+- or in a batch using a POST request to ```/zones/bulk``` with:
+
+```json
+[
+    {
+        "name": "zone_name",
+        "xMin": "float",
+        "xMax": "float",
+        "yMin": "float",
+        "yMax": "float",
+        "zMin": "float",
+        "zMax": "float"
+    },
+    ...
+]
+```
+
 #### Create nodes to be positioned
 
 End point: ```/nodes```
