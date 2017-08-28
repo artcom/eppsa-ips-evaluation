@@ -21,7 +21,10 @@ describe("estimateZone", () => {
       { zone: "zone3", coordinates: [1, 1, 0] }
     ]
     await Zone.bulkCreate(zones)
-    expect(points.map(point => estimateZone(...point.coordinates)))
+    const estimatedZones = await Promise.all(
+      points.map(point => estimateZone(...point.coordinates))
+    )
+    expect(estimatedZones)
       .to.deep.equal(points.map(point => point.zone))
   })
 })

@@ -1,8 +1,18 @@
 const { inRange } = require("lodash")
+const Zone = require("../models/zone")
 
 
-const estimateRoom = function estimateRoom(x, y, z) {
-  return inRange(x, 2, 4) && inRange(y, 2, 5) && inRange(z, 1, 3) ? "Room_1" : "Room_1_1"
+const estimateZone = async function estimateZone(x, y, z) {
+  const zones = await Zone.findAll()
+  for (const zone of zones) {
+    if (
+      inRange(x, zone.xMin, zone.xMax)
+      && inRange(y, zone.yMin, zone.yMax)
+      && inRange(z, zone.zMin, zone.zMax)
+    ) {
+      return zone.name
+    }
+  }
 }
 
-module.exports = estimateRoom
+module.exports = estimateZone
