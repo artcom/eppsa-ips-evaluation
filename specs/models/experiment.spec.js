@@ -1,5 +1,5 @@
 const { describe, it, before, after } = require("mocha")
-const { expect } = require("chai")
+const { expect, assert } = require("chai")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 
@@ -23,14 +23,17 @@ describe("Model Experiment", () => {
       }).catch(done)
   })
 
-  it("raises an error when the experiment name already exists", () => {
-    Experiment.bulkCreate(
-      [
-        { name: "test-experiment" },
-        { name: "test-experiment" }
-      ]
-    ).catch(error => {
+  it("raises an error when the experiment name already exists", async () => {
+    try {
+      await Experiment.bulkCreate(
+        [
+          { name: "test-experiment" },
+          { name: "test-experiment" }
+        ]
+      )
+      assert.fail("", "Validation error", "No error was thrown")
+    } catch (error) {
       expect(error.message).to.equal("Validation error")
-    })
+    }
   })
 })
