@@ -13,26 +13,24 @@ describe("Model Experiment", () => {
     dbDrop().then(done).catch(done)
   })
 
-  describe("Model Experiment basic function", () => {
-    it("can create an experiment", done => {
-      Experiment.create({ name: "test-experiment" })
-        .then(() => {
-          Experiment.findAll().then(experiments => {
-            expect(experiments[0].name).to.equal("test-experiment")
-          })
-          done()
-        }).catch(done)
-    })
+  it("can create an experiment", done => {
+    Experiment.create({ name: "test-experiment" })
+      .then(() => {
+        Experiment.findAll().then(experiments => {
+          expect(experiments[0].name).to.equal("test-experiment")
+        })
+        done()
+      }).catch(done)
+  })
 
-    it("raises an error when the experiment name already exists", () => {
-      Experiment.bulkCreate(
-        [
-          { name: "test-experiment" },
-          { name: "test-experiment" }
-        ]
-      ).catch(error => {
-        expect(error.message).to.equal("Validation error")
-      })
+  it("raises an error when the experiment name already exists", () => {
+    Experiment.bulkCreate(
+      [
+        { name: "test-experiment" },
+        { name: "test-experiment" }
+      ]
+    ).catch(error => {
+      expect(error.message).to.equal("Validation error")
     })
   })
 })
