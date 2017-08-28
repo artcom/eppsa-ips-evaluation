@@ -11,6 +11,8 @@ const nodePositions = require("../testData/nodePositionsQuuppa.json")
 const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
 
 describe("Get Quuppa data", () => {
@@ -41,6 +43,7 @@ describe("Get Quuppa data", () => {
       await insertPoints(points)
       await Node.bulkCreate(nodes)
       await insertNodePositions(nodePositions)
+      await Zone.bulkCreate(zones)
       await getDataForAllTags("test-experiment", data)
       const positionDataQueryResults = await PositionData.findAll()
       await checkPositionData(positionDataQueryResults, false, false)

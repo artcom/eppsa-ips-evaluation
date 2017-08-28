@@ -6,7 +6,7 @@
     "yMin": 2,
     "yMax": 5,
     "zMin": 1,
-    "zMax": 3
+    "zMax": 4
   },
   {
     "name": "zone2",
@@ -24,6 +24,6 @@
     "yMin": 0,
     "yMax": 2,
     "zMin": 0,
-    "zMax": 1
+    "zMax": 3
   }
 ]

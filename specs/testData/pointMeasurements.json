@@ -7,12 +7,12 @@
     "estCoordinateX": 1.1,
     "estCoordinateY": 1.01,
     "estCoordinateZ": 1.9,
-    "estZoneLabel": "Room_1_1",
+    "estZoneLabel": "zone3",
     "point": {
       "trueCoordinateX": 1,
       "trueCoordinateY": 1,
       "trueCoordinateZ": 2,
-      "trueZoneLabel": "Room_1"
+      "trueZoneLabel": "zone3"
     },
     "latency": 12.10,
     "powerConsumption": 2.12
@@ -25,12 +25,12 @@
     "estCoordinateX": 2.1,
     "estCoordinateY": 2.2,
     "estCoordinateZ": 2.9,
-    "estZoneLabel": "Room_1",
+    "estZoneLabel": "zone1",
     "point": {
       "trueCoordinateX": 2,
       "trueCoordinateY": 2,
       "trueCoordinateZ": 3,
-      "trueZoneLabel": "Room_1"
+      "trueZoneLabel": "zone1"
     },
     "latency": 11.15,
     "powerConsumption": 1.87
@@ -43,12 +43,12 @@
     "estCoordinateX": 3.3,
     "estCoordinateY": 4.2,
     "estCoordinateZ": 1.9,
-    "estZoneLabel": "Room_1",
+    "estZoneLabel": "zone1",
     "point": {
       "trueCoordinateX": 3,
       "trueCoordinateY": 4,
       "trueCoordinateZ": 2,
-      "trueZoneLabel": "Room_1"
+      "trueZoneLabel": "zone1"
     },
     "latency": 15.15,
     "powerConsumption": 1.99

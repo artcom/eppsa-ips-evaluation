@@ -13,11 +13,23 @@ const {
 describe("Error computations", () => {
   describe("Room accuracy computation", () => {
     it("returns the room accuracy for a point", () => {
-      const rightRoom = zoneAccuracy(pointMeasurements[1])
-      const wrongRoom = zoneAccuracy(pointMeasurements[0])
+      const rightPoint = {
+        estZoneLabel: "zone3",
+        point: {
+          trueZoneLabel: "zone3"
+        }
+      }
+      const wrongPoint = {
+        estZoneLabel: "zone1",
+        point: {
+          trueZoneLabel: "zone3"
+        }
+      }
+      const rightZone = zoneAccuracy(rightPoint)
+      const wrongZone = zoneAccuracy(wrongPoint)
 
-      expect(rightRoom).to.equal(1)
-      expect(wrongRoom).to.equal(0)
+      expect(rightZone).to.equal(1)
+      expect(wrongZone).to.equal(0)
     })
   })
 

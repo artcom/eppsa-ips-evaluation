@@ -16,6 +16,8 @@ const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
 const QuuppaExperiment = require("../../src/runExperiment/quuppaExperiment")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
 
 describe("Run a Quuppa experiment", () => {
@@ -51,6 +53,7 @@ describe("Run a Quuppa experiment", () => {
       await insertExperiment("test-experiment")
       await insertPoints(points)
       await Node.bulkCreate(nodes)
+      await Zone.bulkCreate(zones)
       await insertNodePositions(nodePositionsQuuppa)
       await quuppaExperiment.run()
       sinon.assert.calledOnce(getData)
