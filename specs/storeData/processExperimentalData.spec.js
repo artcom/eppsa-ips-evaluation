@@ -2,6 +2,8 @@ const { describe, it, beforeEach, afterEach } = require("mocha")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
+const Node = require("../../src/models/node")
+const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const pointErrors = require("../testData/pointErrors.json")
 const points = require("../testData/points.json")
@@ -31,18 +33,14 @@ describe("Process experimental data", () => {
 
   describe("processData basic function", () => {
     it("updates the position data with the position error data", async () => {
-      await Experiment.create({ name: "test-experiment" })
-      await Point.bulkCreate(points)
-      await PositionData.bulkCreate(positionDataNoErrors(positionData))
+      await setUpDatabase()
       await processData("test-experiment")
       const queryResults = await PositionData.findAll()
       checkPositionData(queryResults)
     })
 
     it("stores experiment metrics", async () => {
-      await Experiment.create({ name: "test-experiment" })
-      await Point.bulkCreate(points)
-      await PositionData.bulkCreate(positionDataNoErrors(positionData))
+      await setUpDatabase()
       await processData("test-experiment")
       const experimentMetrics = await ExperimentMetrics.findAll({
         where: { experimentName: "test-experiment" },
@@ -56,6 +54,7 @@ describe("Process experimental data", () => {
 async function setUpDatabase() {
   await Experiment.create({ name: "test-experiment" })
   await Point.bulkCreate(points)
+  await Node.bulkCreate(nodes)
   await PositionData.bulkCreate(positionDataNoErrors(positionData))
 }
 
