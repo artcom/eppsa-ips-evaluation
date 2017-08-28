@@ -1,4 +1,4 @@
-const estimateRoom = require("../computations/estimateRoom")
+const estimateRoom = require("../computations/estimateZone")
 const NodePosition = require("../models/nodePosition")
 const { quuppaServer } = require("../quuppa")
 const storePositionData = require("../storeData/storePositionData")
