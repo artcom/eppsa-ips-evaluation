@@ -1,6 +1,6 @@
 const multer = require("multer")
 const { keys } = require("lodash")
-const { getPoints, getPointsByName } = require("../getData")
+const { getPoints, getPointByName } = require("../getData")
 const { insertPoint, insertPoints } = require("../storeData")
 
 
@@ -13,7 +13,7 @@ module.exports = function servePoints(server) {
   })
 
   server.get("/points/:name", async (request, response) => {
-    const point = await getPointsByName(request.params.name)
+    const point = await getPointByName(request.params.name)
     response.status(200).send(point)
   })
 

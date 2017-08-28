@@ -34,7 +34,7 @@ describe("Server for zones", () => {
       restler.get("http://localhost:3000/zones/zone1")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)
-          expect(data[0]).to.deep.equal(zones[1])
+          expect(data[0]).to.deep.equal(zones[0])
           done()
         })
     })
@@ -43,7 +43,7 @@ describe("Server for zones", () => {
   it("should return zone name in body and path in location header on single zone post at /zones",
     done => {
       restler.post("http://localhost:3000/zones", {
-        data: zones[1]
+        data: zones[0]
       }).on("complete", (data, response) => {
         expect(response.statusCode).to.equal(201)
         expect(response.headers.location).to.equal("/zones/zone1")
@@ -55,11 +55,11 @@ describe("Server for zones", () => {
 
   it("should store the zone in the database on single zone post at /zones", done => {
     restler.post("http://localhost:3000/zones", {
-      data: zones[1]
+      data: zones[0]
     }).on("complete", async (data, response) => {
       expect(response.statusCode).to.equal(201)
       const storedZones = await Zone.findAll()
-      expect(pick(storedZones[0], keys(zones[1]))).to.deep.equal(zones[1])
+      expect(pick(storedZones[0], keys(zones[0]))).to.deep.equal(zones[0])
       done()
     })
   })

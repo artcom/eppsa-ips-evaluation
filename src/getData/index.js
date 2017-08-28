@@ -5,6 +5,7 @@ const Node = require("../models/node")
 const NodePositon = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
+const Zone = require("../models/zone")
 
 
 exports.getExperiments = async function getExperiments() {
@@ -39,6 +40,31 @@ exports.getNodes = async function getNodes() {
   })
 }
 
+exports.getZones = async function getZones() {
+  return await Zone.findAll({
+    attributes: {
+      exclude: [
+        "id",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  })
+}
+
+exports.getZoneByName = async function getZones(name) {
+  return await Zone.findAll({
+    attributes: {
+      exclude: [
+        "id",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    where: { name }
+  })
+}
+
 exports.getNodesById = async function getNodesById(id) {
   return await Node.findAll({
     attributes: {
@@ -51,7 +77,7 @@ exports.getNodesById = async function getNodesById(id) {
   })
 }
 
-exports.getPointsByName = async function getPointsByName(name) {
+exports.getPointByName = async function getPointByName(name) {
   return await Point.findAll({
     attributes: {
       exclude: [
