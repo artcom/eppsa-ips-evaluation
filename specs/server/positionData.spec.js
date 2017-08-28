@@ -4,16 +4,19 @@ const restler = require("restler")
 const { sortBy } = require("lodash")
 const { checkPositionData } = require("../helpers/data")
 const { dbSync, dbDrop } = require("../helpers/db")
+const Node = require("../../src/models/node")
+const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const positionData = require("../testData/positionData.json")
 const server = require("../../src/server")
 const { insertPositionData, insertExperiment, insertPoints } = require("../../src/storeData/index")
 
-describe("Server for points", () => {
+describe("Server for position data", () => {
   beforeEach(async () => {
     await dbSync()
     await insertExperiment("test-experiment")
     await insertPoints(points)
+    await Node.bulkCreate(nodes)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
