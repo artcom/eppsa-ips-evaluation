@@ -26,9 +26,9 @@ describe("Run a Quuppa experiment", () => {
   beforeEach(async () => {
     await dbDrop()
     this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockData)
-    this.QuuppaExperiment = proxyquire(
+    this.runQuuppaExperiment = proxyquire(
       "../../src/runExperiment/quuppaExperiment",
-      { getExperimentalData: { getQuuppaData: this.getData } }
+      { getQuuppaData: { getQuuppaData: this.getData } }
     )
   })
 
@@ -56,14 +56,13 @@ describe("Run a Quuppa experiment", () => {
 
   describe("Run", () => {
     it("should run the entire experiment and save the data", async () => {
-      const quuppaExperiment = new this.QuuppaExperiment("test-experiment")
       await initializeDb()
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
       await insertPoints(points)
       await Node.bulkCreate(nodes)
       await NodePosition.bulkCreate(nodePositionsQuuppa)
-      await quuppaExperiment.run()
+      await this.runQuuppaExperiment("test-experiment")
       sinon.assert.calledOnce(this.getData)
       await testMetrics()
     })
