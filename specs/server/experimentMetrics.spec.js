@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const restler = require("restler")
+const rest = require("restling")
 const { checkPrimaryMetrics } = require("../helpers/data")
 const { dbSync, dbDrop } = require("../helpers/db")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
@@ -30,15 +30,15 @@ describe("Server for primary metrics", () => {
   it("should return experiment primary metrics on get at " +
     "/experiments/experiment-name/primary-metrics",
     async () => {
-      restler.get("http://localhost:3000/experiments/test-experiment/primary-metrics")
-        .on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(200)
-          checkPrimaryMetrics({
-            experimentMetrics: data,
-            nonPositionData: true,
-            isQuery: false
-          })
-        })
+      const result = await rest.get(
+        "http://localhost:3000/experiments/test-experiment/primary-metrics"
+      )
+      expect(result.response.statusCode).to.equal(200)
+      checkPrimaryMetrics({
+        experimentMetrics: result.data,
+        nonPositionData: true,
+        isQuery: false
+      })
     }
   )
 })

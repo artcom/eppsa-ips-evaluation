@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const restler = require("restler")
+const rest = require("restling")
 const { keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const nodePositions = require("../testData/nodePositions.json")
@@ -34,109 +34,96 @@ describe("Server for node positions", () => {
 
   it("should return all node positions on get at /node-positions", async () => {
     await NodePosition.bulkCreate(nodePositions)
-    restler.get("http://localhost:3000/experiments/test-experiment/node-positions")
-      .on("complete", (data, response) => {
-        expect(response.statusCode).to.equal(200)
-        expect(sortBy(data, ["localizedNodeId"]))
-          .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
-      })
+    const result = await rest.get(
+      "http://localhost:3000/experiments/test-experiment/node-positions"
+    )
+    expect(result.response.statusCode).to.equal(200)
+    expect(sortBy(result.data, ["localizedNodeId"]))
+      .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
   })
 
   it("should return node position data on get at /node-positions/node-id", async () => {
     NodePosition.bulkCreate(nodePositions)
-    restler.get(
+    const result = await rest.get(
       "http://localhost:3000/experiments/test-experiment/node-positions/20914830ce00"
     )
-      .on("complete", (data, response) => {
-        expect(response.statusCode).to.equal(200)
-        expect(data[0]).to.deep.equal(nodePositions[1])
-      })
+    expect(result.response.statusCode).to.equal(200)
+    expect(result.data[0]).to.deep.equal(nodePositions[1])
   })
 
   it("should return node position name in body and path in location header on single post at" +
     " /node-positions",
     async () => {
-      restler.post("http://localhost:3000/experiments/test-experiment/node-positions", {
-        data: omit(nodePositions[1], ["experimentName"])
-      })
-        .on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          expect(response.headers.location)
-            .to.equal("/experiments/test-experiment/node-positions/20914830ce00")
-          expect(data).to.equal("20914830ce00")
-        })
+      const result = await rest.post(
+        "http://localhost:3000/experiments/test-experiment/node-positions",
+        { data: omit(nodePositions[1], ["experimentName"]) }
+      )
+      expect(result.response.statusCode).to.equal(201)
+      expect(result.response.headers.location)
+        .to.equal("/experiments/test-experiment/node-positions/20914830ce00")
+      expect(result.data).to.equal("20914830ce00")
     }
   )
 
   it("should store the node position in the database on single post at /node-positions",
     async () => {
-      restler.post("http://localhost:3000/experiments/test-experiment/node-positions", {
-        data: omit(nodePositions[1], ["experimentName"])
-      })
-        .on("complete", async (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          const storedPoints = await NodePosition.findAll()
-          expect(pick(storedPoints[0], keys(nodePositions[1]))).to.deep.equal(nodePositions[1])
-        })
+      const result = await rest.post(
+        "http://localhost:3000/experiments/test-experiment/node-positions",
+        { data: omit(nodePositions[1], ["experimentName"]) }
+      )
+      expect(result.response.statusCode).to.equal(201)
+      const storedPoints = await NodePosition.findAll()
+      expect(pick(storedPoints[0], keys(nodePositions[1]))).to.deep.equal(nodePositions[1])
     }
   )
 
   it("should update the node position in the database on single post at /node-positions",
     async () => {
       await NodePosition.create(nodePositionsQuuppa[1])
-      restler.post("http://localhost:3000/experiments/test-experiment/node-positions", {
-        data: omit(nodePositions[1], ["experimentName"])
-      })
-        .on("complete", async (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          const storedPoints = await NodePosition.findAll()
-          expect(storedPoints.length).to.equal(1)
-          expect(pick(storedPoints[0], keys(nodePositions[1]))).to.deep.equal(nodePositions[1])
-        })
+      const result = await rest.post(
+        "http://localhost:3000/experiments/test-experiment/node-positions",
+        { data: omit(nodePositions[1], ["experimentName"]) }
+      )
+      expect(result.response.statusCode).to.equal(201)
+      const storedPoints = await NodePosition.findAll()
+      expect(storedPoints.length).to.equal(1)
+      expect(pick(storedPoints[0], keys(nodePositions[1]))).to.deep.equal(nodePositions[1])
     }
   )
 
   it("should return node position names in body and paths in location header on multiple post at" +
     " /node-positions/bulk",
     async () => {
-      restler.post(
+      const result = await rest.post(
         "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
-        {
-          data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"]))
-        }
+        { data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"])) }
       )
-        .on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          expect(response.headers.location)
-            .to.equal(
-            nodePositions
-              .map(nodePosition =>
-                `/experiments/test-experiment/node-positions/${nodePosition.localizedNodeId}`
-              ).join("; ")
-          )
-          expect(data)
-            .to.deep.equal(nodePositions.map(nodePosition => nodePosition.localizedNodeId))
-        })
+      expect(result.response.statusCode).to.equal(201)
+      expect(result.response.headers.location)
+        .to.equal(
+        nodePositions
+          .map(nodePosition =>
+            `/experiments/test-experiment/node-positions/${nodePosition.localizedNodeId}`
+          ).join("; ")
+      )
+      expect(result.data)
+        .to.deep.equal(nodePositions.map(nodePosition => nodePosition.localizedNodeId))
     }
   )
 
   it("should store the node positions in the database on multiple post at " +
     "/node-positions/bulk",
     async () => {
-      restler.post(
+      const result = await rest.post(
         "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
-        {
-          data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"]))
-        }
+        { data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"])) }
       )
-        .on("complete", async (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          const storedNodePositionsQueryResult = await NodePosition.findAll()
-          const storedNodePosition = storedNodePositionsQueryResult
-            .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
-          expect(sortBy(storedNodePosition, ["localizedNodeId"]))
-            .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
-        })
+      expect(result.response.statusCode).to.equal(201)
+      const storedNodePositionsQueryResult = await NodePosition.findAll()
+      const storedNodePosition = storedNodePositionsQueryResult
+        .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
+      expect(sortBy(storedNodePosition, ["localizedNodeId"]))
+        .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
     }
   )
 
@@ -144,20 +131,16 @@ describe("Server for node positions", () => {
     "/node-positions/bulk",
     async () => {
       await NodePosition.bulkCreate(nodePositionsQuuppa)
-      restler.post(
+      const result = await rest.post(
         "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
-        {
-          data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"]))
-        }
+        { data: nodePositions.map(nodePosition => omit(nodePosition, ["experimentName"])) }
       )
-        .on("complete", async (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          const storedNodePositionsQueryResult = await NodePosition.findAll()
-          const storedNodePosition = storedNodePositionsQueryResult
-            .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
-          expect(sortBy(storedNodePosition, ["localizedNodeId"]))
-            .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
-        })
+      expect(result.response.statusCode).to.equal(201)
+      const storedNodePositionsQueryResult = await NodePosition.findAll()
+      const storedNodePosition = storedNodePositionsQueryResult
+        .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
+      expect(sortBy(storedNodePosition, ["localizedNodeId"]))
+        .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
     }
   )
 })
