@@ -8,6 +8,7 @@ const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const {
   insertExperiment,
+  insertPoint,
   insertPoints,
   insertPrimaryMetrics,
   upsertPrimaryMetrics,
@@ -193,7 +194,8 @@ describe("Store data", () => {
         { trueZoneLabel: "zone1" },
         { trueZoneLabel: "zone1" }
       ]
-      const expectedStoredPoints = points.map((point, i) => assign(point, pointZones[i]))
+      const pointsCopy = JSON.parse(JSON.stringify(points))
+      const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
       await Zone.bulkCreate(zones)
       await insertPoints(points)
       const queryResults = await Point.findAll()
@@ -206,9 +208,9 @@ describe("Store data", () => {
 
   describe("insertPoint", async () => {
     it("adds zone to point", async () => {
-      const expectedStoredPoint = assign(points[0], { trueZoneLabel: "zone3" })
+      const expectedStoredPoint = assign(Object.assign({}, points[0]), { trueZoneLabel: "zone3" })
       await Zone.bulkCreate(zones)
-      await insertPoints(points)
+      await insertPoint(points[0])
       const queryResults = await Point.findAll()
       const storedPoint = pick(queryResults[0], keys(expectedStoredPoint))
       expect(storedPoint)
