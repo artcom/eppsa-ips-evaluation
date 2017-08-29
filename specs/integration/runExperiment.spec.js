@@ -1,3 +1,4 @@
+const proxyquire = require("proxyquire")
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const sinon = require("sinon")
@@ -6,6 +7,7 @@ const { checkPositionData, checkPrimaryMetrics } = require("../helpers/data")
 const { dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
+const getQuuppaData = require("../../src/getExperimentalData/getQuuppaData")
 const { getMockData } = require("../mocks/getExperimentalData")
 const { initializeDb } = require("../../src/initializeDb")
 const { insertPoints, insertExperiment } = require("../../src/storeData")
@@ -16,7 +18,6 @@ const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
-const QuuppaExperiment = require("../../src/runExperiment/quuppaExperiment")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -24,10 +25,16 @@ const zones = require("../testData/zones.json")
 describe("Run a Quuppa experiment", () => {
   beforeEach(async () => {
     await dbDrop()
+    this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockData)
+    this.QuuppaExperiment = proxyquire(
+      "../../src/runExperiment/quuppaExperiment",
+      { getExperimentalData: { getQuuppaData: this.getData } }
+    )
   })
 
   afterEach(async () => {
     await dbDrop()
+    getQuuppaData.getQuuppaData.restore()
   })
 
   describe("Database initialization", () => {
@@ -49,8 +56,7 @@ describe("Run a Quuppa experiment", () => {
 
   describe("Run", () => {
     it("should run the entire experiment and save the data", async () => {
-      const quuppaExperiment = new QuuppaExperiment("test-experiment")
-      const getData = sinon.stub(quuppaExperiment, "getQuuppaData").callsFake(getMockData)
+      const quuppaExperiment = new this.QuuppaExperiment("test-experiment")
       await initializeDb()
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
@@ -58,7 +64,7 @@ describe("Run a Quuppa experiment", () => {
       await Node.bulkCreate(nodes)
       await NodePosition.bulkCreate(nodePositionsQuuppa)
       await quuppaExperiment.run()
-      sinon.assert.calledOnce(getData)
+      sinon.assert.calledOnce(this.getData)
       await testMetrics()
     })
   })
