@@ -18,27 +18,19 @@ describe("Model Point", () => {
   })
 
   it("can create points", async () => {
-    await Zone.bulkCreate(zones)
-    await Point.bulkCreate(points)
-    const queryResults = await Point.findAll()
-    expect(queryResults.length)
-      .to.equal(points.length)
-  })
-
-  it("adds zone to points", async () => {
-    const zones = [
+    const pointZones = [
       { trueZoneLabel: "zone3" },
       { trueZoneLabel: "zone3" },
       { trueZoneLabel: "zone1" },
       { trueZoneLabel: "zone1" }
     ]
-    const expectedStoredPoints = points.map((point, i) => assign(point, zones[i]))
+    const pointsWithZone = points.map((point, i) => assign(point, pointZones[i]))
     await Zone.bulkCreate(zones)
-    await Point.bulkCreate(points)
+    await Point.bulkCreate(pointsWithZone)
     const queryResults = await Point.findAll()
     const storedPoints = queryResults
-      .map(queryResult => pick(queryResult, keys(expectedStoredPoints[0])))
+      .map(queryResult => pick(queryResult, keys(pointsWithZone[0])))
     expect(sortBy(storedPoints, ["pointId"]))
-      .to.deep.equal(sortBy(expectedStoredPoints, ["PointId"]))
+      .to.deep.equal(sortBy(pointsWithZone, ["PointId"]))
   })
 })
