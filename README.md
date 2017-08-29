@@ -157,41 +157,6 @@ Accepts GET requests. Returns the primary error metrics for the experiment ```ex
 
 ### Experiment set up
 
-#### Create points with known coordinates
-
-End point: ```/points```
-
-Accepts GET and POST requests.
-
-New points can be created:
-
-- using a POST request to ```/points``` with:
-
-```json
-{
-    "name": "point_name",
-    "trueCoordinateX": "float",
-    "trueCoordinateY": "float",
-    "trueCoordinateZ": "float",
-    "trueZoneLabel": "zone_name"
-}
-```
-
-- or in a batch using a POST request to ```/points/bulk``` with:
-
-```json
-[
-    {
-        "name": "point_name",
-        "trueCoordinateX": "float",
-        "trueCoordinateY": "float",
-        "trueCoordinateZ": "float",
-        "trueZoneLabel": "zone_name"
-    },
-    ...
-]
-```
-
 #### Create zones with known borders
 
 End point: ```/zones```
@@ -230,6 +195,57 @@ New zones can be created:
     ...
 ]
 ```
+
+#### Create points with known coordinates
+
+End point: ```/points```
+
+Accepts GET and POST requests.
+
+New points can be created:
+
+- using a POST request to ```/points``` with:
+
+```json
+{
+    "name": "point_name",
+    "trueCoordinateX": "float",
+    "trueCoordinateY": "float",
+    "trueCoordinateZ": "float"
+}
+```
+
+- or in a batch using a POST request to ```/points/bulk``` with:
+
+```json
+[
+    {
+        "name": "point_name",
+        "trueCoordinateX": "float",
+        "trueCoordinateY": "float",
+        "trueCoordinateZ": "float",
+        "trueZoneLabel": "zone_name"
+    },
+    ...
+]
+```
+
+On a GET request all points will be returned as:
+
+```json
+[
+    {
+        "name": "point_name",
+        "trueCoordinateX": "float",
+        "trueCoordinateY": "float",
+        "trueCoordinateZ": "float",
+        "trueZoneLabel": "zone_name"
+    },
+    ...
+]
+```
+
+The ```trueZoneLabel``` will be computed from the zones.
 
 #### Create nodes to be positioned
 
