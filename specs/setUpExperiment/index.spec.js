@@ -10,6 +10,8 @@ const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const { insertPoints, insertExperiment, insertNodePositions } = require("../../src/storeData/index")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
 
 describe("Set up experiment", () => {
@@ -23,6 +25,7 @@ describe("Set up experiment", () => {
 
   describe("insertPoints", () => {
     it("can create points", async () => {
+      await Zone.bulkCreate(zones)
       await insertPoints(points)
       const queryResults = await Point.findAll()
       const storedPoints = queryResults
@@ -43,7 +46,8 @@ describe("Set up experiment", () => {
   describe("insertNodePositions", () => {
     it("can create node positions", async () => {
       await Experiment.create({ name: "test-experiment" })
-      await Point.bulkCreate(points)
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
       await Node.bulkCreate(nodes)
       await insertNodePositions(nodePositions)
       const storedPositions = await NodePosition.findAll({ include: { model: Experiment } })

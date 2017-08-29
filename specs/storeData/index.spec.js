@@ -62,7 +62,8 @@ describe("Store data", () => {
 
     it("updates a node position when same node ID and experiment name is present", async () => {
       await insertExperiment("test-experiment")
-      await Point.bulkCreate(points)
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
         localizedNodeId: "20914830f65a",
@@ -90,7 +91,8 @@ describe("Store data", () => {
   describe("upsertNodePosition", () => {
     it("inserts a node position when same node ID and experiment name is not present", async () => {
       await insertExperiment("test-experiment")
-      await Point.bulkCreate(points)
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
         localizedNodeId: "20914830ce00",
@@ -117,7 +119,8 @@ describe("Store data", () => {
   describe("upsertNodePositions", () => {
     it("should insert node positions when not present", async () => {
       await insertExperiment("test-experiment")
-      await Point.bulkCreate(points)
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
         localizedNodeId: "20914830ce00",
@@ -152,7 +155,8 @@ describe("Store data", () => {
 
     it("should update present node positions and insert absent node positions", async () => {
       await insertExperiment("test-experiment")
-      await Point.bulkCreate(points)
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
         localizedNodeId: "20914830f65a",

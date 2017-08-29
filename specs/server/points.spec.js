@@ -1,16 +1,19 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const restler = require("restler")
-const { keys, pick, sortBy } = require("lodash")
+const { assign, keys, pick, sortBy } = require("lodash")
 const Point = require("../../src/models/point")
 const { dbSync, dbDrop } = require("../helpers/db")
 const points = require("../testData/points.json")
 const server = require("../../src/server")
 const { insertPoints } = require("../../src/storeData/index")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
 describe("Server for points", () => {
   beforeEach(async () => {
     await dbSync()
+    await Zone.bulkCreate(zones)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
@@ -20,21 +23,30 @@ describe("Server for points", () => {
   })
 
   it("should return all points on get at /points", done => {
+    const pointZones = [
+      { trueZoneLabel: "zone3" },
+      { trueZoneLabel: "zone3" },
+      { trueZoneLabel: "zone1" },
+      { trueZoneLabel: "zone1" }
+    ]
+    const pointsCopy = JSON.parse(JSON.stringify(points))
+    const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
     insertPoints(points).then(() => {
       restler.get("http://localhost:3000/points").on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
-        expect(sortBy(data, ["name"])).to.deep.equal(sortBy(points, ["name"]))
+        expect(sortBy(data, ["name"])).to.deep.equal(sortBy(expectedStoredPoints, ["name"]))
         done()
       })
     })
   })
 
   it("should return point data on get at /points/point-name", done => {
+    const expectedStoredPoint = assign(Object.assign({}, points[1]), { trueZoneLabel: "zone3" })
     insertPoints(points).then(() => {
       restler.get("http://localhost:3000/points/point1")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)
-          expect(data[0]).to.deep.equal(points[1])
+          expect(data[0]).to.deep.equal(expectedStoredPoint)
           done()
         })
     })
@@ -54,12 +66,13 @@ describe("Server for points", () => {
   )
 
   it("should store the point in the database on single point post at /points", done => {
+    const expectedStoredPoint = assign(Object.assign({}, points[1]), { trueZoneLabel: "zone3" })
     restler.post("http://localhost:3000/points", {
       data: points[1]
     }).on("complete", async (data, response) => {
       expect(response.statusCode).to.equal(201)
       const storedPoints = await Point.findAll()
-      expect(pick(storedPoints[0], keys(points[1]))).to.deep.equal(points[1])
+      expect(pick(storedPoints[0], keys(expectedStoredPoint))).to.deep.equal(expectedStoredPoint)
       done()
     })
   })
@@ -86,13 +99,23 @@ describe("Server for points", () => {
   )
 
   it("should store the points in the database on multiple point post at /points/bulk", done => {
+    const pointZones = [
+      { trueZoneLabel: "zone3" },
+      { trueZoneLabel: "zone3" },
+      { trueZoneLabel: "zone1" },
+      { trueZoneLabel: "zone1" }
+    ]
+    const pointsCopy = JSON.parse(JSON.stringify(points))
+    const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
     restler.post("http://localhost:3000/points/bulk", {
       data: points
     }).on("complete", async (data, response) => {
       expect(response.statusCode).to.equal(201)
       const storedPointsQueryResult = await Point.findAll()
-      const storedPoints = storedPointsQueryResult.map(point => pick(point, keys(points[0])))
-      expect(storedPoints).to.deep.equal(points)
+      const storedPoints = storedPointsQueryResult.map(point =>
+        pick(point, keys(expectedStoredPoints[0]))
+      )
+      expect(storedPoints).to.deep.equal(expectedStoredPoints)
       done()
     })
   })

@@ -7,11 +7,15 @@ const points = require("../testData/points.json")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const server = require("../../src/server")
 const { insertPrimaryMetrics, insertExperiment, insertPoints } = require("../../src/storeData")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
-describe("Server for points", () => {
+
+describe("Server for primary metrics", () => {
   beforeEach(async () => {
     await dbSync()
     await insertExperiment("test-experiment")
+    await Zone.bulkCreate(zones)
     await insertPoints(points)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })

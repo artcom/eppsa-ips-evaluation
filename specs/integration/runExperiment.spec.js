@@ -32,6 +32,7 @@ describe("Run a Quuppa experiment", () => {
   describe("Database initialization", () => {
     it("should set up the database", async () => {
       await initializeDb()
+      await Zone.bulkCreate(zones)
       await insertPoints(points)
       const insertedPoints = await Point.findAll()
       const storedPoints = insertedPoints.map(point => pick(point, [
@@ -51,9 +52,9 @@ describe("Run a Quuppa experiment", () => {
       const getData = sinon.stub(quuppaExperiment, "getQuuppaData").callsFake(getMockData)
       await initializeDb()
       await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
       await insertPoints(points)
       await Node.bulkCreate(nodes)
-      await Zone.bulkCreate(zones)
       await insertNodePositions(nodePositionsQuuppa)
       await quuppaExperiment.run()
       sinon.assert.calledOnce(getData)
