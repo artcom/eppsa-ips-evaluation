@@ -31,12 +31,11 @@ describe("Server for position data", () => {
   })
 
   it("should return all position data on get at /experiments/experiment-name/position-data",
-    done => {
+    async () => {
       restler.get("http://localhost:3000/experiments/test-experiment/position-data")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)
           checkPositionData(sortBy(data, ["pointName"]))
-          done()
         })
     }
   )

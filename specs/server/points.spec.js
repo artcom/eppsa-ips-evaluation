@@ -22,7 +22,7 @@ describe("Server for points", () => {
     this.server.close()
   })
 
-  it("should return all points on get at /points", done => {
+  it("should return all points on get at /points", async () => {
     const pointZones = [
       { trueZoneLabel: "zone3" },
       { trueZoneLabel: "zone3" },
@@ -31,74 +31,65 @@ describe("Server for points", () => {
     ]
     const pointsCopy = JSON.parse(JSON.stringify(points))
     const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
-    insertPoints(points).then(() => {
-      restler.get("http://localhost:3000/points").on("complete", (data, response) => {
+    await insertPoints(points)
+    restler.get("http://localhost:3000/points")
+      .on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
         expect(sortBy(data, ["name"])).to.deep.equal(sortBy(expectedStoredPoints, ["name"]))
-        done()
       })
-    })
   })
 
-  it("should return point data on get at /points/point-name", done => {
+  it("should return point data on get at /points/point-name", async () => {
     const expectedStoredPoint = assign(Object.assign({}, points[1]), { trueZoneLabel: "zone3" })
-    insertPoints(points).then(() => {
-      restler.get("http://localhost:3000/points/point1")
-        .on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(200)
-          expect(data[0]).to.deep.equal(expectedStoredPoint)
-          done()
-        })
-    })
+    await insertPoints(points)
+    restler.get("http://localhost:3000/points/point1")
+      .on("complete", (data, response) => {
+        expect(response.statusCode).to.equal(200)
+        expect(data[0]).to.deep.equal(expectedStoredPoint)
+      })
   })
 
   it("should return point name in body and path in location header on single point post at /points",
-    done => {
-      restler.post("http://localhost:3000/points", {
-        data: points[1]
-      }).on("complete", (data, response) => {
-        expect(response.statusCode).to.equal(201)
-        expect(response.headers.location).to.equal("/points/point1")
-        expect(data).to.equal("point1")
-        done()
-      })
+    async () => {
+      restler.post("http://localhost:3000/points", { data: points[1] })
+        .on("complete", (data, response) => {
+          expect(response.statusCode).to.equal(201)
+          expect(response.headers.location).to.equal("/points/point1")
+          expect(data).to.equal("point1")
+        })
     }
   )
 
-  it("should store the point in the database on single point post at /points", done => {
+  it("should store the point in the database on single point post at /points", async () => {
     const expectedStoredPoint = assign(Object.assign({}, points[1]), { trueZoneLabel: "zone3" })
-    restler.post("http://localhost:3000/points", {
-      data: points[1]
-    }).on("complete", async (data, response) => {
-      expect(response.statusCode).to.equal(201)
-      const storedPoints = await Point.findAll()
-      expect(pick(storedPoints[0], keys(expectedStoredPoint))).to.deep.equal(expectedStoredPoint)
-      done()
-    })
+    restler.post("http://localhost:3000/points", { data: points[1] })
+      .on("complete", async (data, response) => {
+        expect(response.statusCode).to.equal(201)
+        const storedPoints = await Point.findAll()
+        expect(pick(storedPoints[0], keys(expectedStoredPoint))).to.deep.equal(expectedStoredPoint)
+      })
   })
 
   it("should return point names in body and paths in location header on multiple point post at " +
     "/points/bulk",
-    done => {
-      restler.post("http://localhost:3000/points/bulk", {
-        data: points
-      }).on("complete", (data, response) => {
-        expect(response.statusCode).to.equal(201)
-        expect(response.headers.location).to.equal(
-          "/points/point0; /points/point1; /points/point2; /points/point3"
-        )
-        expect(data).to.deep.equal([
-          "point0",
-          "point1",
-          "point2",
-          "point3"
-        ])
-        done()
-      })
+    async () => {
+      restler.post("http://localhost:3000/points/bulk", { data: points })
+        .on("complete", (data, response) => {
+          expect(response.statusCode).to.equal(201)
+          expect(response.headers.location).to.equal(
+            "/points/point0; /points/point1; /points/point2; /points/point3"
+          )
+          expect(data).to.deep.equal([
+            "point0",
+            "point1",
+            "point2",
+            "point3"
+          ])
+        })
     }
   )
 
-  it("should store the points in the database on multiple point post at /points/bulk", done => {
+  it("should store the points in the database on multiple point post at /points/bulk", async () => {
     const pointZones = [
       { trueZoneLabel: "zone3" },
       { trueZoneLabel: "zone3" },
@@ -107,16 +98,14 @@ describe("Server for points", () => {
     ]
     const pointsCopy = JSON.parse(JSON.stringify(points))
     const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
-    restler.post("http://localhost:3000/points/bulk", {
-      data: points
-    }).on("complete", async (data, response) => {
-      expect(response.statusCode).to.equal(201)
-      const storedPointsQueryResult = await Point.findAll()
-      const storedPoints = storedPointsQueryResult.map(point =>
-        pick(point, keys(expectedStoredPoints[0]))
-      )
-      expect(storedPoints).to.deep.equal(expectedStoredPoints)
-      done()
-    })
+    restler.post("http://localhost:3000/points/bulk", { data: points })
+      .on("complete", async (data, response) => {
+        expect(response.statusCode).to.equal(201)
+        const storedPointsQueryResult = await Point.findAll()
+        const storedPoints = storedPointsQueryResult.map(point =>
+          pick(point, keys(expectedStoredPoints[0]))
+        )
+        expect(storedPoints).to.deep.equal(expectedStoredPoints)
+      })
   })
 })

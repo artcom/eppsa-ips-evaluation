@@ -29,7 +29,7 @@ describe("Server for primary metrics", () => {
 
   it("should return experiment primary metrics on get at " +
     "/experiments/experiment-name/primary-metrics",
-    done => {
+    async () => {
       restler.get("http://localhost:3000/experiments/test-experiment/primary-metrics")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)
@@ -38,7 +38,6 @@ describe("Server for primary metrics", () => {
             nonPositionData: true,
             isQuery: false
           })
-          done()
         })
     }
   )

@@ -18,68 +18,60 @@ describe("Server for experiments", () => {
     this.server.close()
   })
 
-  it("should return 200 at /", done => {
-    restler.get("http://localhost:3000").on("complete", (data, response) => {
-      expect(response.statusCode).to.equal(200)
-      expect(data).to.equal("")
-      done()
-    })
+  it("should return 200 at /", async () => {
+    restler.get("http://localhost:3000")
+      .on("complete", (data, response) => {
+        expect(response.statusCode).to.equal(200)
+        expect(data).to.equal("")
+      })
   })
 
-  it("should return all experiments on get at /experiments", done => {
-    insertExperiment("test-experiment").then(() => {
-      restler.get("http://localhost:3000/experiments").on("complete", (data, response) => {
+  it("should return all experiments on get at /experiments", async () => {
+    await insertExperiment("test-experiment")
+    restler.get("http://localhost:3000/experiments")
+      .on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
         expect(data).to.deep.equal([{ name: "test-experiment" }])
-        done()
       })
-    })
   })
 
-  it("should return experiment name on get at /experiments/experiment-name", done => {
-    insertExperiment("test-experiment").then(() => {
-      restler.get("http://localhost:3000/experiments/test-experiment")
-        .on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(200)
-          expect(data).to.deep.equal({ name: "test-experiment" })
-          done()
-        })
-    })
+  it("should return experiment name on get at /experiments/experiment-name", async () => {
+    await insertExperiment("test-experiment")
+    restler.get("http://localhost:3000/experiments/test-experiment")
+      .on("complete", (data, response) => {
+        expect(response.statusCode).to.equal(200)
+        expect(data).to.deep.equal({ name: "test-experiment" })
+      })
   })
 
   it("should return experiment name in body and path in location header on post at /experiments",
-      done => {
-        restler.post("http://localhost:3000/experiments", {
-          data: { name: "test-experiment" }
-        }).on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(201)
-          expect(response.headers.location).to.equal("/experiments/test-experiment")
-          expect(data).to.equal("test-experiment")
-          done()
-        })
+      async () => {
+        restler.post("http://localhost:3000/experiments", { data: { name: "test-experiment" } })
+          .on("complete", (data, response) => {
+            expect(response.statusCode).to.equal(201)
+            expect(response.headers.location).to.equal("/experiments/test-experiment")
+            expect(data).to.equal("test-experiment")
+          })
       }
   )
 
-  it("should store the experiment in the database on post at /experiments", done => {
-    restler.post("http://localhost:3000/experiments", {
-      data: { name: "test-experiment" }
-    }).on("complete", async (data, response) => {
-      expect(response.statusCode).to.equal(201)
-      const experiments = await Experiment.findAll()
-      expect(experiments[0].name).to.equal("test-experiment")
-      done()
-    })
+  it("should store the experiment in the database on post at /experiments", async () => {
+    restler.post("http://localhost:3000/experiments", { data: { name: "test-experiment" } })
+      .on("complete", async (data, response) => {
+        expect(response.statusCode).to.equal(201)
+        const experiments = await Experiment.findAll()
+        expect(experiments[0].name).to.equal("test-experiment")
+      })
   })
 
-  it("should run an experiment on post at /experiment/run", done => {
-    insertExperiment("test-experiment").then(() => {
-      restler.post("http://localhost:3000/experiments/test-experiment/run", {
-        data: { experimentTypes: ["Quuppa"], repeats: 2, interval: 1000 }
-      }).on("complete", async (data, response) => {
+  it("should run an experiment on post at /experiment/run", async () => {
+    await insertExperiment("test-experiment")
+    restler.post("http://localhost:3000/experiments/test-experiment/run", {
+      data: { experimentTypes: ["Quuppa"], repeats: 2, interval: 1000 }
+    })
+      .on("complete", async (data, response) => {
         expect(response.statusCode).to.equal(201)
         expect(data).to.equal("started Quuppa experiment")
-        done()
       })
-    })
   })
 })
