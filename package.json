@@ -22,6 +22,7 @@
     "pg-hstore": "^2.3.2",
     "proxyquire": "^1.8.0",
     "restler": "^3.4.0",
+    "restling": "^0.9.1",
     "sequelize": "^4.4.2",
     "simple-statistics": "^4.1.0",
     "sinon": "^2.4.1"
