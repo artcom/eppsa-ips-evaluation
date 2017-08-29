@@ -7,9 +7,10 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
+const PositionData = require("../../src/models/positionData")
 const positionData = require("../testData/positionData.json")
 const server = require("../../src/server")
-const { insertPositionData, insertExperiment, insertPoints } = require("../../src/storeData/index")
+const { insertExperiment, insertPoints } = require("../../src/storeData/index")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -20,6 +21,7 @@ describe("Server for position data", () => {
     await Zone.bulkCreate(zones)
     await insertPoints(points)
     await Node.bulkCreate(nodes)
+    await PositionData.bulkCreate(positionData)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
@@ -30,16 +32,12 @@ describe("Server for position data", () => {
 
   it("should return all position data on get at /experiments/experiment-name/position-data",
     done => {
-      insertPositionData(positionData).then(
-        () => {
-          restler.get("http://localhost:3000/experiments/test-experiment/position-data")
-            .on("complete", (data, response) => {
-              expect(response.statusCode).to.equal(200)
-              checkPositionData(sortBy(data, ["pointName"]))
-              done()
-            })
-        }
-      )
+      restler.get("http://localhost:3000/experiments/test-experiment/position-data")
+        .on("complete", (data, response) => {
+          expect(response.statusCode).to.equal(200)
+          checkPositionData(sortBy(data, ["pointName"]))
+          done()
+        })
     }
   )
 })

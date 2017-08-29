@@ -10,7 +10,6 @@ const {
   insertExperiment,
   insertPoint,
   insertPoints,
-  insertPrimaryMetrics,
   upsertPrimaryMetrics,
   upsertNodePosition,
   upsertNodePositions
@@ -33,15 +32,11 @@ describe("Store data", () => {
     await dbDrop()
   })
 
-  describe("insertPrimaryMetrics", () => {
-    it("stores experiment metrics", async () => {
-      await Experiment.create({ name: "test-experiment" })
-      await insertPrimaryMetrics(experimentPrimaryMetrics)
-      const experimentMetrics = await ExperimentMetrics.findAll({
-        where: { experimentName: "test-experiment" },
-        include: { model: Experiment }
-      })
-      checkPrimaryMetrics({ experimentMetrics })
+  describe("insertExperiment", () => {
+    it("can create an experiment", async () => {
+      await insertExperiment("test-experiment")
+      const experiments = await Experiment.findAll()
+      expect(experiments[0].name).to.equal("test-experiment")
     })
   })
 
@@ -50,7 +45,7 @@ describe("Store data", () => {
       await insertExperiment("test-experiment")
       const initialMetrics = assign({}, experimentPrimaryMetrics)
       assign(initialMetrics, { error2dAverage: 0.8 })
-      await insertPrimaryMetrics(initialMetrics)
+      await ExperimentMetrics.create(initialMetrics)
       await upsertPrimaryMetrics(experimentPrimaryMetrics)
       const experimentMetrics = await ExperimentMetrics.findAll({
         where: { experimentName: "test-experiment" },

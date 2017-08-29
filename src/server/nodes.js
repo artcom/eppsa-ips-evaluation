@@ -1,7 +1,7 @@
 const multer = require("multer")
 const { keys } = require("lodash")
 const { getNodes, getNodesById } = require("../getData")
-const { insertNode, insertNodes } = require("../storeData")
+const Node = require("../models/node")
 
 
 const upload = multer()
@@ -18,13 +18,13 @@ module.exports = function serveNodes(server) {
   })
 
   server.post("/nodes", upload.array(), async (request, response) => {
-    await insertNode(request.body)
+    await Node.create(request.body)
     response.append("location", `/nodes/${request.body.id}`).status(201).send(request.body.id)
   })
 
   server.post("/nodes/bulk", upload.array(), async (request, response) => {
     const nodes = keys(request.body).map(key => request.body[key])
-    await insertNodes(nodes)
+    await Node.bulkCreate(nodes)
 
     response
       .append("location", nodes.map(node => `/nodes/${node.id}`).join("; "))

@@ -2,18 +2,16 @@ const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const restler = require("restler")
 const { keys, omit, pick, sortBy } = require("lodash")
-const NodePosition = require("../../src/models/nodePosition")
 const { dbSync, dbDrop } = require("../helpers/db")
 const nodePositions = require("../testData/nodePositions.json")
 const nodePositionsQuuppa = require("../testData/nodePositionsQuuppa.json")
 const server = require("../../src/server")
 const {
-  insertNodePosition,
-  insertNodePositions,
   insertExperiment,
   insertPoints
 } = require("../../src/storeData/index")
 const Node = require("../../src/models/node")
+const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const Zone = require("../../src/models/zone")
@@ -35,7 +33,7 @@ describe("Server for node positions", () => {
   })
 
   it("should return all node positions on get at /node-positions", done => {
-    insertNodePositions(nodePositions).then(() => {
+    NodePosition.bulkCreate(nodePositions).then(() => {
       restler.get("http://localhost:3000/experiments/test-experiment/node-positions")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)
@@ -47,7 +45,7 @@ describe("Server for node positions", () => {
   })
 
   it("should return node position data on get at /node-positions/node-id", done => {
-    insertNodePositions(nodePositions).then(() => {
+    NodePosition.bulkCreate(nodePositions).then(() => {
       restler.get(
         "http://localhost:3000/experiments/test-experiment/node-positions/20914830ce00"
       )
@@ -86,7 +84,7 @@ describe("Server for node positions", () => {
   })
 
   it("should update the node position in the database on single post at /node-positions", done => {
-    insertNodePosition(nodePositionsQuuppa[1]).then(() => {
+    NodePosition.create(nodePositionsQuuppa[1]).then(() => {
       restler.post("http://localhost:3000/experiments/test-experiment/node-positions", {
         data: omit(nodePositions[1], ["experimentName"])
       }).on("complete", async (data, response) => {
@@ -146,7 +144,7 @@ describe("Server for node positions", () => {
   it("should update the node positions in the database on multiple post at " +
     "/node-positions/bulk",
     done => {
-      insertNodePositions(nodePositionsQuuppa).then(() => {
+      NodePosition.bulkCreate(nodePositionsQuuppa).then(() => {
         restler.post(
           "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
           {

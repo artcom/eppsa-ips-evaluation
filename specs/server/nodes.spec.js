@@ -6,7 +6,7 @@ const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
 const { dbSync, dbDrop } = require("../helpers/db")
 const server = require("../../src/server")
-const { insertNodes } = require("../../src/storeData/index")
+
 
 describe("Server for nodes", () => {
   beforeEach(async () => {
@@ -20,7 +20,7 @@ describe("Server for nodes", () => {
   })
 
   it("should return all nodes on get at /nodes", done => {
-    insertNodes(nodes).then(() => {
+    Node.bulkCreate(nodes).then(() => {
       restler.get("http://localhost:3000/nodes").on("complete", (data, response) => {
         expect(response.statusCode).to.equal(200)
         expect(sortBy(data, ["id"])).to.deep.equal(sortBy(nodes, ["id"]))
@@ -30,7 +30,7 @@ describe("Server for nodes", () => {
   })
 
   it("should return node data on get at /nodes/node-id", done => {
-    insertNodes(nodes).then(() => {
+    Node.bulkCreate(nodes).then(() => {
       restler.get("http://localhost:3000/nodes/20914830ce00")
         .on("complete", (data, response) => {
           expect(response.statusCode).to.equal(200)

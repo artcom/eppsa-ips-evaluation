@@ -7,30 +7,23 @@ const ExperimentMetrics = require("../../src/models/experimentMetrics")
 
 
 describe("Model ExperimentMetrics", () => {
-  before((done) => {
-    dbSync().then(done).catch(done)
+  before(async () => {
+    await dbSync()
   })
 
-  after((done) => {
-    dbDrop().then(done).catch(done)
+  after(async () => {
+    await dbDrop()
   })
 
   describe("Model ExperimentMetrics basic function", () => {
-    it("can create experiment metrics", done => {
-      Experiment.create({ name: "test-experiment" })
-        .then(() => {
-          ExperimentMetrics.create(experimentPrimaryMetrics)
-            .then(() => {
-              ExperimentMetrics.findAll({
-                where: { experimentName: "test-experiment" },
-                include: { model: Experiment }
-              })
-                .then(experimentMetrics => {
-                  checkPrimaryMetrics({ experimentMetrics })
-                  done()
-                }).catch(done)
-            }).catch(done)
-        }).catch(done)
+    it("can create experiment metrics", async () => {
+      await Experiment.create({ name: "test-experiment" })
+      await ExperimentMetrics.create(experimentPrimaryMetrics)
+      const experimentMetrics = await ExperimentMetrics.findAll({
+        where: { experimentName: "test-experiment" },
+        include: { model: Experiment }
+      })
+      checkPrimaryMetrics({ experimentMetrics })
     })
   })
 })
