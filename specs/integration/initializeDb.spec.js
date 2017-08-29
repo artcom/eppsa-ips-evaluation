@@ -2,26 +2,35 @@ const { describe, it, after } = require("mocha")
 const { expect } = require("chai")
 const { dbDrop } = require("../helpers/db")
 const { initializeDb } = require("../../src/initializeDb")
-const Point = require("../../src/models/point")
 const Experiment = require("../../src/models/experiment")
-
+const ExperimentMetrics = require("../../src/models/experimentMetrics")
+const Node = require("../../src/models/node")
+const NodePosition = require("../../src/models/nodePosition")
+const Point = require("../../src/models/point")
+const PositionData = require("../../src/models/positionData")
+const Zone = require("../../src/models/zone")
 
 describe("Initialize database", () => {
-  after((done) => {
-    dbDrop().then(done).catch(done)
+  after(async () => {
+    await dbDrop()
   })
 
-  it("should create all tables in the database", done => {
-    testDbInitialization().then(data => {
-      expect(data).to.deep.equal({ points: [], experiments: [] })
-      done()
-    }).catch(done)
+  it("should create all tables in the database", async () => {
+    await initializeDb()
+    const experiments = await Experiment.findAll()
+    const experimentMetrics = await ExperimentMetrics.findAll()
+    const node = await Node.findAll()
+    const nodePosition = await NodePosition.findAll()
+    const points = await Point.findAll()
+    const positionData = await PositionData.findAll()
+    const zone = await Zone.findAll()
+
+    expect(experiments).to.deep.equal([])
+    expect(experimentMetrics).to.deep.equal([])
+    expect(node).to.deep.equal([])
+    expect(nodePosition).to.deep.equal([])
+    expect(points).to.deep.equal([])
+    expect(positionData).to.deep.equal([])
+    expect(zone).to.deep.equal([])
   })
 })
-
-async function testDbInitialization() {
-  await initializeDb()
-  const points = await Point.findAll()
-  const experiments = await Experiment.findAll()
-  return { points, experiments }
-}

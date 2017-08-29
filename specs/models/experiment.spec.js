@@ -5,22 +5,18 @@ const Experiment = require("../../src/models/experiment")
 
 
 describe("Model Experiment", () => {
-  before((done) => {
-    dbSync().then(done).catch(done)
+  before(async () => {
+    await dbSync()
   })
 
-  after((done) => {
-    dbDrop().then(done).catch(done)
+  after(async () => {
+    await dbDrop()
   })
 
-  it("can create an experiment", done => {
-    Experiment.create({ name: "test-experiment" })
-      .then(() => {
-        Experiment.findAll().then(experiments => {
-          expect(experiments[0].name).to.equal("test-experiment")
-        })
-        done()
-      }).catch(done)
+  it("can create an experiment", async () => {
+    await Experiment.create({ name: "test-experiment" })
+    const experiments = await Experiment.findAll()
+    expect(experiments[0].name).to.equal("test-experiment")
   })
 
   it("raises an error when the experiment name already exists", async () => {

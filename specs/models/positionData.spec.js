@@ -13,12 +13,12 @@ const { checkPositionData } = require("../helpers/data")
 
 
 describe("Model PositionData", () => {
-  beforeEach((done) => {
-    dbSync().then(done).catch(done)
+  beforeEach(async () => {
+    await dbSync()
   })
 
-  afterEach((done) => {
-    dbDrop().then(done).catch(done)
+  afterEach(async () => {
+    await dbDrop()
   })
 
   it("can create position data", async () => {

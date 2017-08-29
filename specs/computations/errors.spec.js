@@ -58,7 +58,7 @@ describe("Error computations", () => {
   })
 
   describe("Errors", () => {
-    it("Returns an object with error calculations", () => {
+    it("returns an object with error calculations", () => {
       const pointErrors = errors(pointMeasurements)
 
       expect(pointErrors).to.deep.equal(expectedPointErrors)
