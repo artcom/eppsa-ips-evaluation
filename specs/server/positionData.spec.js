@@ -59,7 +59,7 @@ function checkPositionData(queryResults) {
       expect(storedPosition[key])
         .to.be.closeTo(
         pointErrors[index][key],
-        1e-15,
+        1e-14,
         key
       )
     }

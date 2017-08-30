@@ -257,7 +257,7 @@ function checkPrimaryMetrics(metrics) {
     expect(metrics[0][key])
       .to.be.closeTo(
       experimentPrimaryMetrics[key],
-      1e-15,
+      1e-14,
       key
     )
   }

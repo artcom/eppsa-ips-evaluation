@@ -8,13 +8,13 @@
   "error2dRMS": 0.2517273657484754,
   "error2dPercentile75": 0.29208096264818906,
   "error2dPercentile90": 0.33316546158711496,
-  "error3dAverage": 0.2536297272477635,
-  "error3dMin": 0.14177446878757838,
-  "error3dMax": 0.3741657386773941,
-  "error3dVariance": 0.009038628122891797,
-  "error3dMedian": 0.24494897427831802,
-  "error3dRMS": 0.2708628189077761,
-  "error3dPercentile75": 0.3095573564778561,
-  "error3dPercentile90": 0.34832238579757885,
-  "zoneAccuracyAverage": 1
+  "error3dAverage": 0.541384008565297,
+  "error3dMax": 1.0050373127401788,
+  "error3dMedian": 0.3741657386773941,
+  "error3dMin": 0.24494897427831802,
+  "error3dPercentile75": 0.6896015257087864,
+  "error3dPercentile90": 0.8788629979276219,
+  "error3dRMS": 0.63511153876045,
+  "error3dVariance": 0.11027002193643715,
+  "zoneAccuracyAverage": 0.6666666666666666
 }

@@ -5,8 +5,8 @@
     "localizedNodeId": "node1",
     "localizedNodeName": "Node1",
     "localizationError2d": 0.10049875621120899,
-    "localizationError3d": 0.14177446878757838,
-    "zoneAccuracy": 1
+    "localizationError3d": 1.0050373127401788,
+    "zoneAccuracy": 0
   },
   {
     "id": 2,

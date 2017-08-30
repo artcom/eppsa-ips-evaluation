@@ -6,8 +6,8 @@
     "localizedNodeName": "Node1",
     "estCoordinateX": 1.1,
     "estCoordinateY": 1.01,
-    "estCoordinateZ": 1.9,
-    "estZoneLabel": "zone3",
+    "estCoordinateZ": 3,
+    "estZoneLabel": "NA",
     "point": {
       "trueCoordinateX": 1,
       "trueCoordinateY": 1,

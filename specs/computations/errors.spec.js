@@ -51,7 +51,7 @@ describe("Error computations", () => {
         Math.sqrt(
           Math.pow(1 - 1.1, 2)
           + Math.pow(1 - 1.01, 2)
-          + Math.pow(2 - 1.9, 2)
+          + Math.pow(2 - 3, 2)
         )
       )
     })

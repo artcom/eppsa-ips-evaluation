@@ -5,11 +5,11 @@
     "localizedNodeId": "node1",
     "estCoordinateX": 0.9,
     "estCoordinateY": 1.01,
-    "estCoordinateZ": 1.9,
-    "estZoneLabel": "zone3",
+    "estCoordinateZ": 3,
+    "estZoneLabel": "NA",
     "localizationError2d": 0.10049875621120899,
-    "localizationError3d": 0.14177446878757838,
-    "zoneAccuracy": 1
+    "localizationError3d": 1.0050373127401788,
+    "zoneAccuracy": 0
   },
   {
     "pointName": "point2",
