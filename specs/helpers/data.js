@@ -57,7 +57,11 @@ const checkPositionData = function checkPositionData(
       const index = storedPositionErrors.indexOf(storedPosition)
       for (const key of errorKeys) {
         expect(storedPosition[key])
-          .to.be.closeTo(positionErrors[index][key], 0.00000000000001)
+          .to.be.closeTo(
+            positionErrors[index][key],
+            0.00000000000001,
+            key
+          )
       }
     }
   }
@@ -97,7 +101,11 @@ const checkPrimaryMetrics = function checkPrimaryMetrics({
     ]
   for (const key of keys(omit(experimentPrimaryMetrics, keysToOmit))) {
     expect(metrics[key])
-      .to.be.closeTo(experimentPrimaryMetrics[key], 0.0000000000001)
+      .to.be.closeTo(
+        experimentPrimaryMetrics[key],
+      0.0000000000001,
+      `${metrics.experimentName} ${key}`
+    )
   }
 }
 

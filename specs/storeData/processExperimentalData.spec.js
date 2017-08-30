@@ -4,21 +4,24 @@ const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
-const Point = require("../../src/models/point")
 const pointErrors = require("../testData/pointErrors.json")
 const points = require("../testData/points.json")
 const positionData = require("../testData/positionData.json")
 const PositionData = require("../../src/models/positionData")
 const { positionDataNoErrors, checkPositionData, checkPrimaryMetrics } = require("../helpers/data")
+const { insertPoints } = require("../../src/storeData")
 const {
   updatePositionDataErrors,
   processData
 } = require("../../src/storeData/processExperimentalData")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
 
 describe("Process experimental data", () => {
   beforeEach(async () => {
     await dbSync()
+    await setUpDatabase()
   })
 
   afterEach(async () => {
@@ -31,16 +34,14 @@ describe("Process experimental data", () => {
     })
   })
 
-  describe("processData basic function", () => {
+  describe("processData", () => {
     it("updates the position data with the position error data", async () => {
-      await setUpDatabase()
       await processData("test-experiment")
       const queryResults = await PositionData.findAll()
       checkPositionData(queryResults)
     })
 
     it("stores experiment metrics", async () => {
-      await setUpDatabase()
       await processData("test-experiment")
       const experimentMetrics = await ExperimentMetrics.findAll({
         where: { experimentName: "test-experiment" },
@@ -53,13 +54,13 @@ describe("Process experimental data", () => {
 
 async function setUpDatabase() {
   await Experiment.create({ name: "test-experiment" })
-  await Point.bulkCreate(points)
+  await Zone.bulkCreate(zones)
+  await insertPoints(points)
   await Node.bulkCreate(nodes)
   await PositionData.bulkCreate(positionDataNoErrors(positionData))
 }
 
 async function checkUpdatePositionDataErrors() {
-  await setUpDatabase()
   await updatePositionDataErrors(pointErrors, "test-experiment")
   const queryResults = await PositionData.findAll()
   await checkPositionData(queryResults)
