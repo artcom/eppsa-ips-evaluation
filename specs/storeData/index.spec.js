@@ -10,6 +10,7 @@ const {
   insertExperiment,
   insertPoint,
   insertPoints,
+  insertPositionData,
   upsertPrimaryMetrics,
   upsertNodePosition,
   upsertNodePositions
@@ -19,6 +20,9 @@ const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
+const PositionData = require("../../src/models/positionData")
+const positions = require("../testData/positions.json")
+const positionsWithZones = require("../testData/positionsWithZones.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -214,6 +218,18 @@ describe("Store data", () => {
       const storedPoint = pick(queryResults[0], keys(expectedStoredPoint))
       expect(storedPoint)
         .to.deep.equal(expectedStoredPoint)
+    })
+  })
+
+  describe("insertPositionData", async () => {
+    it("adds zone to positionData when no zone is specified", async () => {
+      await Zone.bulkCreate(zones)
+      await insertPositionData(positions)
+      const queryResults = await PositionData.findAll()
+      const storedPositionData = queryResults
+        .map(queryResult => pick(queryResult, keys(positionsWithZones[0])))
+      expect(sortBy(storedPositionData, ["localizedNodeId"]))
+        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeId"]))
     })
   })
 })
