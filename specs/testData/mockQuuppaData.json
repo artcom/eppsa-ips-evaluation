@@ -2,7 +2,7 @@
   "data": {
     "tags": [
       {
-        "id": "20914830f65a",
+        "id": "node1",
         "name": "Node1",
         "smoothedPosition": [
           0.9,
@@ -11,7 +11,7 @@
         ]
       },
       {
-        "id": "20914830ce00",
+        "id": "node2",
         "name": "Node2",
         "smoothedPosition": [
           2.1,
@@ -20,7 +20,7 @@
         ]
       },
       {
-        "id": "6655443322dd",
+        "id": "node3",
         "name": "Node3",
         "smoothedPosition": [
           3.3,
