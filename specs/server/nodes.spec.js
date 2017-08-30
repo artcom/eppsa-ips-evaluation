@@ -28,7 +28,7 @@ describe("Server for nodes", () => {
 
   it("should return node data on get at /nodes/node-id", async () => {
     await Node.bulkCreate(nodes)
-    const result = await rest.get("http://localhost:3000/nodes/20914830ce00")
+    const result = await rest.get("http://localhost:3000/nodes/node2")
     expect(result.response.statusCode).to.equal(200)
     expect(result.data[0]).to.deep.equal(nodes[1])
   })
@@ -37,8 +37,8 @@ describe("Server for nodes", () => {
     async () => {
       const result = await rest.post("http://localhost:3000/nodes", { data: nodes[1] })
       expect(result.response.statusCode).to.equal(201)
-      expect(result.response.headers.location).to.equal("/nodes/20914830ce00")
-      expect(result.data).to.equal("20914830ce00")
+      expect(result.response.headers.location).to.equal("/nodes/node2")
+      expect(result.data).to.equal("node2")
     }
   )
 
@@ -55,20 +55,14 @@ describe("Server for nodes", () => {
       const result = await rest.post("http://localhost:3000/nodes/bulk", { data: nodes })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal(
-        "/nodes/20914830f65a; " +
-        "/nodes/20914830ce00; " +
-        "/nodes/6655443322dd; " +
-        "/nodes/665544332211; " +
-        "/nodes/665544332266; " +
-        "/nodes/e0e5cfb58d13"
+        "/nodes/node1; " +
+        "/nodes/node2; " +
+        "/nodes/node3"
       )
       expect(result.data).to.deep.equal([
-        "20914830f65a",
-        "20914830ce00",
-        "6655443322dd",
-        "665544332211",
-        "665544332266",
-        "e0e5cfb58d13"
+        "node1",
+        "node2",
+        "node3"
       ])
     }
   )

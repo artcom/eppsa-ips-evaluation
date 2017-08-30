@@ -12,7 +12,7 @@ const { getData } = require("../mocks/getExperimentalData")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
 const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
-const nodesSimple = require("../testData/nodesSimple.json")
+const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const server = require("../../src/server")
 const Zone = require("../../src/models/zone")
@@ -95,7 +95,7 @@ describe("Run a Quuppa experiment", () => {
     await insertExperiment("test-experiment")
     await Zone.bulkCreate(zones)
     await insertPoints(points)
-    await Node.bulkCreate(nodesSimple)
+    await Node.bulkCreate(nodes)
     await NodePosition.bulkCreate(nodePositionsSimple)
     const result = await rest.post("http://localhost:3000/experiments/test-experiment/run", {
       data: { experimentTypes: ["Quuppa"] }

@@ -7,7 +7,7 @@ const Node = require("../../src/models/node")
 const nodePositions = require("../testData/nodePositions.json")
 const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
 const NodePosition = require("../../src/models/nodePosition")
-const nodesSimple = require("../testData/nodesSimple.json")
+const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const { insertExperiment, insertPoints } = require("../../src/storeData")
@@ -21,7 +21,7 @@ describe("Model NodePosition", () => {
     await insertExperiment("test-experiment")
     await Zone.bulkCreate(zones)
     await insertPoints(points)
-    await Node.bulkCreate(nodesSimple)
+    await Node.bulkCreate(nodes)
     await NodePosition.bulkCreate(nodePositionsSimple)
   })
 
@@ -48,8 +48,8 @@ describe("Model NodePosition", () => {
     const storedPositions = await NodePosition.findAll(
       { include: [{ model: Node, as: "localizedNode" }] }
     )
-    expect(storedPositions.map(position => pick(position.localizedNode, keys(nodesSimple[0]))))
-      .to.deep.equal(nodesSimple)
+    expect(storedPositions.map(position => pick(position.localizedNode, keys(nodes[0]))))
+      .to.deep.equal(nodes)
   })
 
   it("has a one to one relationship with Point", async () => {

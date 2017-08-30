@@ -4,7 +4,7 @@ const { sortBy, pick, keys, slice } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const Node = require("../../src/models/node")
-const nodesSimple = require("../testData/nodesSimple.json")
+const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
@@ -20,7 +20,7 @@ describe("Model PositionData", () => {
     await Experiment.create({ name: "test-experiment" })
     await Zone.bulkCreate(zones)
     await insertPoints(points)
-    await Node.bulkCreate(nodesSimple)
+    await Node.bulkCreate(nodes)
     await PositionData.bulkCreate(positionData)
   })
 
@@ -62,8 +62,8 @@ describe("Model PositionData", () => {
     const storedPositions = await PositionData.findAll(
       { include: [{ model: Node, as: "localizedNode" }] }
     )
-    expect(storedPositions.map(position => pick(position.localizedNode, keys(nodesSimple[0]))))
-      .to.deep.equal(slice(nodesSimple, 0, 3))
+    expect(storedPositions.map(position => pick(position.localizedNode, keys(nodes[0]))))
+      .to.deep.equal(slice(nodes, 0, 3))
   })
 })
 

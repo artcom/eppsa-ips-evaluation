@@ -11,7 +11,7 @@ const {
 } = require("../../src/storeData/index")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
-const nodesSimple = require("../testData/nodesSimple.json")
+const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
@@ -22,7 +22,7 @@ describe("Server for node positions", () => {
     await insertExperiment("test-experiment")
     await Zone.bulkCreate(zones)
     await insertPoints(points)
-    await Node.bulkCreate(nodesSimple)
+    await Node.bulkCreate(nodes)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
