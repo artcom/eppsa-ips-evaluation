@@ -8,12 +8,12 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const { initializeDb } = require("../../src/initializeDb")
 const { insertExperiment, insertPoints } = require("../../src/storeData/index")
 const getQuuppaData = require("../../src/getExperimentalData/getQuuppaData")
-const { getMockData } = require("../mocks/getExperimentalData")
+const { getData } = require("../mocks/getExperimentalData")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
-const nodePositionsQuuppa = require("../testData/nodePositionsQuuppa.json")
-const nodes = require("../testData/nodes.json")
-const points = require("../testData/points.json")
+const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
+const nodesSimple = require("../testData/nodesSimple.json")
+const pointsSimple = require("../testData/pointsSimple.json")
 const server = require("../../src/server")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
@@ -76,7 +76,7 @@ describe("Server for experiments", () => {
 describe("Run a Quuppa experiment", () => {
   beforeEach(async () => {
     await dbDrop()
-    this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockData)
+    this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getData)
     this.runQuuppaExperiment = proxyquire(
       "../../src/runExperiment/quuppaExperiment",
       { getQuuppaData: { getQuuppaData: this.getData } }
@@ -94,9 +94,9 @@ describe("Run a Quuppa experiment", () => {
     await initializeDb()
     await insertExperiment("test-experiment")
     await Zone.bulkCreate(zones)
-    await insertPoints(points)
-    await Node.bulkCreate(nodes)
-    await NodePosition.bulkCreate(nodePositionsQuuppa)
+    await insertPoints(pointsSimple)
+    await Node.bulkCreate(nodesSimple)
+    await NodePosition.bulkCreate(nodePositionsSimple)
     const result = await rest.post("http://localhost:3000/experiments/test-experiment/run", {
       data: { experimentTypes: ["Quuppa"] }
     })
@@ -105,4 +105,3 @@ describe("Run a Quuppa experiment", () => {
     expect(result.data).to.equal("started Quuppa experiment")
   })
 })
-
