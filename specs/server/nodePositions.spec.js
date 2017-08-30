@@ -3,7 +3,7 @@ const { expect } = require("chai")
 const rest = require("restling")
 const { keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
-const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
+const nodePositionsSimple = require("../testData/nodePositions.json")
 const server = require("../../src/server")
 const {
   insertExperiment,

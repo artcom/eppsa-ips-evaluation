@@ -5,7 +5,6 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const Node = require("../../src/models/node")
 const nodePositions = require("../testData/nodePositions.json")
-const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
 const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
@@ -22,7 +21,7 @@ describe("Model NodePosition", () => {
     await Zone.bulkCreate(zones)
     await insertPoints(points)
     await Node.bulkCreate(nodes)
-    await NodePosition.bulkCreate(nodePositionsSimple)
+    await NodePosition.bulkCreate(nodePositions)
   })
 
   afterEach(async () => {
@@ -34,7 +33,7 @@ describe("Model NodePosition", () => {
     const storedNodePositions = storedPositions
       .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
     expect(sortBy(storedNodePositions, ["localizedNodeId"]))
-      .to.deep.equal(sortBy(nodePositionsSimple, ["localizedNodeId"]))
+      .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
   })
 
   it("has a one to one relationship with Experiment", async () => {
@@ -65,7 +64,7 @@ describe("Model NodePosition", () => {
       localizedNodeId: position.localizedNode.id,
       pointName: position.pointName
     })), "localizedNodeId"))
-      .to.deep.equal(sortBy(nodePositionsSimple.map(nodePosition =>
+      .to.deep.equal(sortBy(nodePositions.map(nodePosition =>
         pick(nodePosition, ["pointName", "localizedNodeId"])), "localizedNodeId")
       )
   })
