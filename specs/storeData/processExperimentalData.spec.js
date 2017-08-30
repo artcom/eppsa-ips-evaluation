@@ -4,7 +4,7 @@ const { concat, keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
-const experimentPrimaryMetricsSimple = require("../testData/experimentPrimaryMetricsSimple.json")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
 const pointErrors = require("../testData/pointErrors.json")
@@ -81,10 +81,10 @@ function checkPositionData(queryResults) {
 }
 
 function checkPrimaryMetrics(queryResult) {
-  for (const key of keys(omit(experimentPrimaryMetricsSimple, ["experimentName"]))) {
+  for (const key of keys(omit(experimentPrimaryMetrics, ["experimentName"]))) {
     expect(queryResult[0][key])
       .to.be.closeTo(
-      experimentPrimaryMetricsSimple[key],
+      experimentPrimaryMetrics[key],
       0.0000000000001,
       key
     )

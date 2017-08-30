@@ -6,7 +6,7 @@ const { concat, keys, pick, sortBy } = require("lodash")
 const { dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
-const experimentPrimaryMetricsSimple = require("../testData/experimentPrimaryMetricsSimple.json")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const getQuuppaData = require("../../src/getExperimentalData/getQuuppaData")
 const { getData } = require("../mocks/getExperimentalData")
 const { initializeDb } = require("../../src/initializeDb")
@@ -105,7 +105,7 @@ function checkPrimaryMetrics(metrics) {
   for (const key of errorKeys) {
     expect(metrics[0][key])
       .to.be.closeTo(
-      experimentPrimaryMetricsSimple[key],
+      experimentPrimaryMetrics[key],
       0.0000000000001,
       `${metrics.experimentName} ${key}`
     )

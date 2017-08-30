@@ -3,7 +3,7 @@ const { expect } = require("chai")
 const rest = require("restling")
 const { dbSync, dbDrop } = require("../helpers/db")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
-const experimentPrimaryMetricsSimple = require("../testData/experimentPrimaryMetricsSimple.json")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const points = require("../testData/points.json")
 const server = require("../../src/server")
 const { insertExperiment, insertPoints } = require("../../src/storeData")
@@ -17,7 +17,7 @@ describe("Server for primary metrics", () => {
     await insertExperiment("test-experiment")
     await Zone.bulkCreate(zones)
     await insertPoints(points)
-    await ExperimentMetrics.create(experimentPrimaryMetricsSimple)
+    await ExperimentMetrics.create(experimentPrimaryMetrics)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
@@ -62,7 +62,7 @@ function checkPrimaryMetrics(metrics) {
   for (const key of errorKeys) {
     expect(metrics[key])
       .to.be.closeTo(
-      experimentPrimaryMetricsSimple[key],
+      experimentPrimaryMetrics[key],
       0.0000000000001,
       `${metrics.experimentName} ${key}`
     )

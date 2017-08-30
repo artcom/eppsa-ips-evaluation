@@ -16,21 +16,5 @@
   "error3dRMS": 0.2708628189077761,
   "error3dPercentile75": 0.3095573564778561,
   "error3dPercentile90": 0.34832238579757885,
-  "zoneAccuracyAverage": 1,
-  "latencyAverage": 12.799999999999999,
-  "latencyMin": 11.15,
-  "latencyMax": 15.15,
-  "latencyVariance": 2.911666666666667,
-  "latencyMedian": 12.1,
-  "latencyRMS": 12.91323610357476,
-  "latencyPercentile75": 13.625,
-  "latencyPercentile90": 14.540000000000001,
-  "powerConsumptionAverage": 1.9933333333333334,
-  "powerConsumptionMin": 1.87,
-  "powerConsumptionMax": 2.12,
-  "powerConsumptionVariance": 0.010422222222222223,
-  "powerConsumptionMedian": 1.99,
-  "powerConsumptionRMS": 1.9959458910501557,
-  "powerConsumptionPercentile75": 2.055,
-  "powerConsumptionPercentile90": 2.0940000000000003
+  "zoneAccuracyAverage": 1
 }

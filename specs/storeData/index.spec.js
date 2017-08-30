@@ -4,7 +4,7 @@ const { assign, keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
-const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetricsSimple.json")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const {
   insertExperiment,
   insertPoint,
