@@ -1,7 +1,6 @@
 const { describe, it, before, after } = require("mocha")
 const { expect } = require("chai")
 const { keys, omit } = require("lodash")
-// const { checkPrimaryMetrics } = require("../helpers/data")
 const { dbSync, dbDrop } = require("../helpers/db")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const Experiment = require("../../src/models/experiment")
