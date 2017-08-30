@@ -73,7 +73,7 @@ function checkPositionData(queryResults) {
       expect(storedPosition[key])
         .to.be.closeTo(
         pointErrors[index][key],
-        0.00000000000001,
+        1e-15,
         key
       )
     }
@@ -85,7 +85,7 @@ function checkPrimaryMetrics(queryResult) {
     expect(queryResult[0][key])
       .to.be.closeTo(
       experimentPrimaryMetrics[key],
-      0.0000000000001,
+      1e-15,
       key
     )
   }
