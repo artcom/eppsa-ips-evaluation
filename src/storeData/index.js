@@ -3,6 +3,7 @@ const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
+const PositionData = require("../models/positionData")
 const estimatezone = require("../computations/estimateZone")
 
 
@@ -68,6 +69,24 @@ exports.insertPoints = async function insertPoints(points) {
     )
   )
   await Point.bulkCreate(pointsWithZone)
+}
+
+exports.insertPositionData = async function insertPositionData(positions) {
+  const positionsWithZone = await Promise.all(
+    positions.map(async (position) =>
+      assign(
+        position,
+        {
+          estZoneLabel: await estimatezone(
+            position.estCoordinateX,
+            position.estCoordinateY,
+            position.estCoordinateZ
+          )
+        }
+      )
+    )
+  )
+  await PositionData.bulkCreate(positionsWithZone)
 }
 
 exports.insertPoint = async function insertPoint(point) {

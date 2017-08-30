@@ -18,8 +18,10 @@ const {
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
+const nodesSimple = require("../testData/nodesSimple.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
+const pointsSimple = require("../testData/pointsSimple.json")
 const PositionData = require("../../src/models/positionData")
 const positions = require("../testData/positions.json")
 const positionsWithZones = require("../testData/positionsWithZones.json")
@@ -223,7 +225,10 @@ describe("Store data", () => {
 
   describe("insertPositionData", async () => {
     it("adds zone to positionData when no zone is specified", async () => {
+      await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
+      await insertPoints(pointsSimple)
+      await Node.bulkCreate(nodesSimple)
       await insertPositionData(positions)
       const queryResults = await PositionData.findAll()
       const storedPositionData = queryResults
