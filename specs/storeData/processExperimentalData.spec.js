@@ -1,15 +1,17 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
+const { expect } = require("chai")
+const { concat, keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
+const experimentPrimaryMetricsSimple = require("../testData/experimentPrimaryMetricsSimple.json")
 const Node = require("../../src/models/node")
-const nodes = require("../testData/nodes.json")
-const pointErrors = require("../testData/pointErrors.json")
-const points = require("../testData/points.json")
-const positionData = require("../testData/positionData.json")
+const nodesSimple = require("../testData/nodesSimple.json")
+const pointErrorsSimple = require("../testData/pointErrorsSimple.json")
+const pointsSimple = require("../testData/pointsSimple.json")
+const positions = require("../testData/positions.json")
 const PositionData = require("../../src/models/positionData")
-const { positionDataNoErrors, checkPositionData, checkPrimaryMetrics } = require("../helpers/data")
-const { insertPoints } = require("../../src/storeData")
+const { insertExperiment, insertPoints, insertPositionData } = require("../../src/storeData")
 const {
   updatePositionDataErrors,
   processData
@@ -21,7 +23,11 @@ const zones = require("../testData/zones.json")
 describe("Process experimental data", () => {
   beforeEach(async () => {
     await dbSync()
-    await setUpDatabase()
+    await insertExperiment("test-experiment")
+    await Zone.bulkCreate(zones)
+    await insertPoints(pointsSimple)
+    await Node.bulkCreate(nodesSimple)
+    await insertPositionData(positions)
   })
 
   afterEach(async () => {
@@ -30,7 +36,9 @@ describe("Process experimental data", () => {
 
   describe("updatePositionDataErrors", () => {
     it("updates the position data with the position error data", async () => {
-      await checkUpdatePositionDataErrors()
+      await updatePositionDataErrors(pointErrorsSimple, "test-experiment")
+      const queryResults = await PositionData.findAll()
+      await checkPositionData(queryResults)
     })
   })
 
@@ -47,21 +55,38 @@ describe("Process experimental data", () => {
         where: { experimentName: "test-experiment" },
         include: { model: Experiment }
       })
-      checkPrimaryMetrics({ experimentMetrics })
+      checkPrimaryMetrics(experimentMetrics)
     })
   })
 })
 
-async function setUpDatabase() {
-  await Experiment.create({ name: "test-experiment" })
-  await Zone.bulkCreate(zones)
-  await insertPoints(points)
-  await Node.bulkCreate(nodes)
-  await PositionData.bulkCreate(positionDataNoErrors(positionData))
+function checkPositionData(queryResults) {
+  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
+  const storedPositionErrors = sortBy(
+    queryResults
+      .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
+    ["pointName"]
+  )
+  for (const storedPosition of storedPositionErrors) {
+    const index = storedPositionErrors.indexOf(storedPosition)
+    for (const key of errorKeys) {
+      expect(storedPosition[key])
+        .to.be.closeTo(
+        pointErrorsSimple[index][key],
+        0.00000000000001,
+        key
+      )
+    }
+  }
 }
 
-async function checkUpdatePositionDataErrors() {
-  await updatePositionDataErrors(pointErrors, "test-experiment")
-  const queryResults = await PositionData.findAll()
-  await checkPositionData(queryResults)
+function checkPrimaryMetrics(queryResult) {
+  for (const key of keys(omit(experimentPrimaryMetricsSimple, ["experimentName"]))) {
+    expect(queryResult[0][key])
+      .to.be.closeTo(
+      experimentPrimaryMetricsSimple[key],
+      0.0000000000001,
+      key
+    )
+  }
 }

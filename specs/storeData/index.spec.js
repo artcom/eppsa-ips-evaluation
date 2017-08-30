@@ -17,10 +17,8 @@ const {
 } = require("../../src/storeData")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
-const nodes = require("../testData/nodes.json")
 const nodesSimple = require("../testData/nodesSimple.json")
 const Point = require("../../src/models/point")
-const points = require("../testData/points.json")
 const pointsSimple = require("../testData/pointsSimple.json")
 const PositionData = require("../../src/models/positionData")
 const positions = require("../testData/positions.json")
@@ -64,23 +62,23 @@ describe("Store data", () => {
     it("updates a node position when same node ID and experiment name is present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(points)
-      await Node.bulkCreate(nodes)
+      await insertPoints(pointsSimple)
+      await Node.bulkCreate(nodesSimple)
       const initialPosition = {
-        localizedNodeId: "20914830f65a",
-        pointName: "point0",
+        localizedNodeId: "node1",
+        pointName: "point1",
         experimentName: "test-experiment"
       }
       const upsertedPosition = {
-        localizedNodeId: "20914830f65a",
-        pointName: "point1",
+        localizedNodeId: "node1",
+        pointName: "point2",
         experimentName: "test-experiment"
       }
       await NodePosition.create(initialPosition)
       await upsertNodePosition(upsertedPosition)
       const insertedNodes = await NodePosition.findAll({
         where: {
-          localizedNodeId: "20914830f65a",
+          localizedNodeId: "node1",
           experimentName: "test-experiment"
         }
       })
@@ -93,23 +91,23 @@ describe("Store data", () => {
     it("inserts a node position when same node ID and experiment name is not present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(points)
-      await Node.bulkCreate(nodes)
+      await insertPoints(pointsSimple)
+      await Node.bulkCreate(nodesSimple)
       const initialPosition = {
-        localizedNodeId: "20914830ce00",
-        pointName: "point0",
+        localizedNodeId: "node1",
+        pointName: "point1",
         experimentName: "test-experiment"
       }
       const upsertedPosition = {
-        localizedNodeId: "20914830f65a",
-        pointName: "point1",
+        localizedNodeId: "node2",
+        pointName: "point2",
         experimentName: "test-experiment"
       }
       await NodePosition.create(initialPosition)
       await upsertNodePosition(upsertedPosition)
       const insertedNodes = await NodePosition.findAll({
         where: {
-          localizedNodeId: "20914830f65a",
+          localizedNodeId: "node2",
           experimentName: "test-experiment"
         }
       })
@@ -117,26 +115,26 @@ describe("Store data", () => {
     })
   })
 
-  describe("upsertNodePositions", () => {
+  describe("upsertNodePosition", () => {
     it("should insert node positions when not present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(points)
-      await Node.bulkCreate(nodes)
+      await insertPoints(pointsSimple)
+      await Node.bulkCreate(nodesSimple)
       const initialPosition = {
-        localizedNodeId: "20914830ce00",
-        pointName: "point0",
+        localizedNodeId: "node1",
+        pointName: "point1",
         experimentName: "test-experiment"
       }
       const upsertedPositions = [
         {
-          localizedNodeId: "20914830f65a",
+          localizedNodeId: "node2",
           pointName: "point1",
           experimentName: "test-experiment"
         },
         {
-          localizedNodeId: "6655443322dd",
-          pointName: "point2",
+          localizedNodeId: "node3",
+          pointName: "point3",
           experimentName: "test-experiment"
         }
       ]
@@ -152,42 +150,42 @@ describe("Store data", () => {
         expect(insertedNodes.length).to.equal(1)
         expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
       }
-    })
 
-    it("should update present node positions and insert absent node positions", async () => {
-      await insertExperiment("test-experiment")
-      await Zone.bulkCreate(zones)
-      await insertPoints(points)
-      await Node.bulkCreate(nodes)
-      const initialPosition = {
-        localizedNodeId: "20914830f65a",
-        pointName: "point0",
-        experimentName: "test-experiment"
-      }
-      const upsertedPositions = [
-        {
-          localizedNodeId: "20914830f65a",
-          pointName: "point1",
-          experimentName: "test-experiment"
-        },
-        {
-          localizedNodeId: "20914830ce00",
-          pointName: "point2",
+      it("should update present node positions and insert absent node positions", async () => {
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(zones)
+        await insertPoints(pointsSimple)
+        await Node.bulkCreate(nodesSimple)
+        const initialPosition = {
+          localizedNodeId: "node1",
+          pointName: "point0",
           experimentName: "test-experiment"
         }
-      ]
-      await NodePosition.create(initialPosition)
-      await upsertNodePositions(upsertedPositions)
-      for (const upsertedPosition of upsertedPositions) {
-        const insertedNodes = await NodePosition.findAll({
-          where: {
-            localizedNodeId: upsertedPosition.localizedNodeId,
-            experimentName: upsertedPosition.experimentName
+        const upsertedPositions = [
+          {
+            localizedNodeId: "node1",
+            pointName: "point1",
+            experimentName: "test-experiment"
+          },
+          {
+            localizedNodeId: "node2",
+            pointName: "point2",
+            experimentName: "test-experiment"
           }
-        })
-        expect(insertedNodes.length).to.equal(1)
-        expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
-      }
+        ]
+        await NodePosition.create(initialPosition)
+        await upsertNodePositions(upsertedPositions)
+        for (const upsertedPosition of upsertedPositions) {
+          const insertedNodes = await NodePosition.findAll({
+            where: {
+              localizedNodeId: upsertedPosition.localizedNodeId,
+              experimentName: upsertedPosition.experimentName
+            }
+          })
+          expect(insertedNodes.length).to.equal(1)
+          expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
+        }
+      })
     })
   })
 
@@ -195,14 +193,13 @@ describe("Store data", () => {
     it("adds zone to points", async () => {
       const pointZones = [
         { trueZoneLabel: "zone3" },
-        { trueZoneLabel: "zone3" },
         { trueZoneLabel: "zone1" },
         { trueZoneLabel: "zone1" }
       ]
-      const pointsCopy = JSON.parse(JSON.stringify(points))
+      const pointsCopy = JSON.parse(JSON.stringify(pointsSimple))
       const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
       await Zone.bulkCreate(zones)
-      await insertPoints(points)
+      await insertPoints(pointsSimple)
       const queryResults = await Point.findAll()
       const storedPoints = queryResults
         .map(queryResult => pick(queryResult, keys(expectedStoredPoints[0])))
@@ -213,9 +210,12 @@ describe("Store data", () => {
 
   describe("insertPoint", async () => {
     it("adds zone to point", async () => {
-      const expectedStoredPoint = assign(Object.assign({}, points[0]), { trueZoneLabel: "zone3" })
+      const expectedStoredPoint = assign(
+        Object.assign({}, pointsSimple[0]),
+        { trueZoneLabel: "zone3" }
+      )
       await Zone.bulkCreate(zones)
-      await insertPoint(points[0])
+      await insertPoint(pointsSimple[0])
       const queryResults = await Point.findAll()
       const storedPoint = pick(queryResults[0], keys(expectedStoredPoint))
       expect(storedPoint)

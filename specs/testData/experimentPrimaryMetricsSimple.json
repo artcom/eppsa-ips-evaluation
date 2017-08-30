@@ -1,0 +1,20 @@
+{
+  "experimentName": "test-experiment",
+  "error2dAverage": 0.22822022716919568,
+  "error2dMin": 0.10049875621120899,
+  "error2dMax": 0.3605551275463989,
+  "error2dVariance": 0.01128219457750741,
+  "error2dMedian": 0.22360679774997916,
+  "error2dRMS": 0.2517273657484754,
+  "error2dPercentile75": 0.29208096264818906,
+  "error2dPercentile90": 0.33316546158711496,
+  "error3dAverage": 0.2536297272477635,
+  "error3dMin": 0.14177446878757838,
+  "error3dMax": 0.3741657386773941,
+  "error3dVariance": 0.009038628122891797,
+  "error3dMedian": 0.24494897427831802,
+  "error3dRMS": 0.2708628189077761,
+  "error3dPercentile75": 0.3095573564778561,
+  "error3dPercentile90": 0.34832238579757885,
+  "zoneAccuracyAverage": 1
+}
