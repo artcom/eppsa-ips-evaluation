@@ -1,27 +1,28 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const rest = require("restling")
-const { sortBy } = require("lodash")
-const { checkPositionData } = require("../helpers/data")
+const { concat, sortBy, omit, pick } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Node = require("../../src/models/node")
-const nodes = require("../testData/nodes.json")
-const points = require("../testData/points.json")
-const PositionData = require("../../src/models/positionData")
-const positionData = require("../testData/positionData.json")
+const nodesSimple = require("../testData/nodesSimple.json")
+const pointsSimple = require("../testData/pointsSimple.json")
+const pointErrorsSimple = require("../testData/pointErrorsSimple.json")
+const positionsWithErrors = require("../testData/positionsWithErrors.json")
+const positionsWithZones = require("../testData/positionsWithZones.json")
 const server = require("../../src/server")
-const { insertExperiment, insertPoints } = require("../../src/storeData/index")
+const { insertExperiment, insertPoints, insertPositionData } = require("../../src/storeData/index")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
+
 
 describe("Server for position data", () => {
   beforeEach(async () => {
     await dbSync()
     await insertExperiment("test-experiment")
     await Zone.bulkCreate(zones)
-    await insertPoints(points)
-    await Node.bulkCreate(nodes)
-    await PositionData.bulkCreate(positionData)
+    await insertPoints(pointsSimple)
+    await Node.bulkCreate(nodesSimple)
+    await insertPositionData(positionsWithErrors)
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
 
@@ -36,7 +37,31 @@ describe("Server for position data", () => {
         "http://localhost:3000/experiments/test-experiment/position-data"
       )
       expect(result.response.statusCode).to.equal(200)
-      checkPositionData(sortBy(result.data, ["pointName"]))
+      checkPositionData(result.data)
     }
   )
 })
+
+function checkPositionData(queryResults) {
+  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
+  const storedPositionErrors = sortBy(
+    queryResults
+      .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
+    ["pointName"]
+  )
+  expect(
+    sortBy(queryResults, ["pointName"])
+      .map(position => omit(position, concat(["latency", "powerConsumption"], errorKeys)))
+  ).to.deep.equal(positionsWithZones)
+  for (const storedPosition of storedPositionErrors) {
+    const index = storedPositionErrors.indexOf(storedPosition)
+    for (const key of errorKeys) {
+      expect(storedPosition[key])
+        .to.be.closeTo(
+        pointErrorsSimple[index][key],
+        0.00000000000001,
+        key
+      )
+    }
+  }
+}
