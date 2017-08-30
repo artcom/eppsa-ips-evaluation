@@ -1,0 +1,5 @@
+[
+  { "localizedNodeId": "node1", "pointName": "point1", "experimentName": "test-experiment" },
+  { "localizedNodeId": "node2", "pointName": "point2", "experimentName": "test-experiment" },
+  { "localizedNodeId": "node3", "pointName": "point3", "experimentName": "test-experiment" }
+]
