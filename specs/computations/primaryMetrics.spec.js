@@ -1,6 +1,7 @@
 const { describe, it } = require("mocha")
 const { expect } = require("chai")
-const expectedPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
+const { keys, pick } = require("lodash")
+const expectedPrimaryMetrics = require("../testData/experimentPrimaryMetricsSimple.json")
 const pointMeasurements = require("../testData/pointMeasurements.json")
 const pointErrors = require("../testData/pointErrors.json")
 const { percentile, primaryMetrics } = require("../../src/computations/primaryMetrics")
@@ -23,8 +24,8 @@ describe("Primary metrics computations", () => {
         pointMeasurements,
         "test-experiment"
       )
-
-      expect(experimentPrimaryMetrics).to.deep.equal(expectedPrimaryMetrics)
+      expect(pick(experimentPrimaryMetrics, keys(expectedPrimaryMetrics)))
+        .to.deep.equal(expectedPrimaryMetrics)
     })
   })
 })

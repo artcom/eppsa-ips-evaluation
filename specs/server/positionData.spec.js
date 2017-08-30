@@ -6,7 +6,7 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const Node = require("../../src/models/node")
 const nodesSimple = require("../testData/nodesSimple.json")
 const points = require("../testData/points.json")
-const pointErrorsSimple = require("../testData/pointErrorsSimple.json")
+const pointErrors = require("../testData/pointErrors.json")
 const positionsWithErrors = require("../testData/positionsWithErrors.json")
 const positionsWithZones = require("../testData/positionsWithZones.json")
 const server = require("../../src/server")
@@ -58,7 +58,7 @@ function checkPositionData(queryResults) {
     for (const key of errorKeys) {
       expect(storedPosition[key])
         .to.be.closeTo(
-        pointErrorsSimple[index][key],
+        pointErrors[index][key],
         0.00000000000001,
         key
       )

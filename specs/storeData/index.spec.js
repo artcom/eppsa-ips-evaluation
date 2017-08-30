@@ -1,11 +1,10 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { assign, keys, pick, sortBy } = require("lodash")
-const { checkPrimaryMetrics } = require("../helpers/data")
+const { assign, keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
-const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetricsSimple.json")
 const {
   insertExperiment,
   insertPoint,
@@ -56,7 +55,7 @@ describe("Store data", () => {
         include: { model: Experiment }
       })
       expect(experimentMetrics.length).to.equal(1)
-      checkPrimaryMetrics({ experimentMetrics })
+      checkPrimaryMetrics(experimentMetrics)
     })
 
     it("updates a node position when same node ID and experiment name is present", async () => {
@@ -251,3 +250,15 @@ describe("Store data", () => {
     })
   })
 })
+
+function checkPrimaryMetrics(metrics) {
+  expect(metrics[0].experimentName).to.equal("test-experiment")
+  for (const key of keys(omit(experimentPrimaryMetrics, ["experimentName"]))) {
+    expect(metrics[0][key])
+      .to.be.closeTo(
+      experimentPrimaryMetrics[key],
+      0.0000000000001,
+      key
+    )
+  }
+}

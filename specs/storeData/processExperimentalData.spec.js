@@ -7,7 +7,7 @@ const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const experimentPrimaryMetricsSimple = require("../testData/experimentPrimaryMetricsSimple.json")
 const Node = require("../../src/models/node")
 const nodesSimple = require("../testData/nodesSimple.json")
-const pointErrorsSimple = require("../testData/pointErrorsSimple.json")
+const pointErrors = require("../testData/pointErrors.json")
 const points = require("../testData/points.json")
 const positions = require("../testData/positions.json")
 const PositionData = require("../../src/models/positionData")
@@ -36,7 +36,7 @@ describe("Process experimental data", () => {
 
   describe("updatePositionDataErrors", () => {
     it("updates the position data with the position error data", async () => {
-      await updatePositionDataErrors(pointErrorsSimple, "test-experiment")
+      await updatePositionDataErrors(pointErrors, "test-experiment")
       const queryResults = await PositionData.findAll()
       await checkPositionData(queryResults)
     })
@@ -72,7 +72,7 @@ function checkPositionData(queryResults) {
     for (const key of errorKeys) {
       expect(storedPosition[key])
         .to.be.closeTo(
-        pointErrorsSimple[index][key],
+        pointErrors[index][key],
         0.00000000000001,
         key
       )

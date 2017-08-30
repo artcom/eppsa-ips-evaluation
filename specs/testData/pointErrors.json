@@ -2,7 +2,7 @@
   {
     "id": 1,
     "pointName": "point1",
-    "localizedNodeId": "20914830f65a",
+    "localizedNodeId": "node1",
     "localizedNodeName": "Node1",
     "localizationError2d": 0.10049875621120899,
     "localizationError3d": 0.14177446878757838,
@@ -11,7 +11,7 @@
   {
     "id": 2,
     "pointName": "point2",
-    "localizedNodeId": "20914830ce00",
+    "localizedNodeId": "node2",
     "localizedNodeName": "Node2",
     "localizationError2d": 0.22360679774997916,
     "localizationError3d": 0.24494897427831802,
@@ -20,7 +20,7 @@
   {
     "id": 3,
     "pointName": "point3",
-    "localizedNodeId": "6655443322dd",
+    "localizedNodeId": "node3",
     "localizedNodeName": "Node3",
     "localizationError2d": 0.3605551275463989,
     "localizationError3d": 0.3741657386773941,

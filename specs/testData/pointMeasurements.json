@@ -2,7 +2,7 @@
   {
     "id": 1,
     "pointName": "point1",
-    "localizedNodeId": "20914830f65a",
+    "localizedNodeId": "node1",
     "localizedNodeName": "Node1",
     "estCoordinateX": 1.1,
     "estCoordinateY": 1.01,
@@ -20,7 +20,7 @@
   {
     "id": 2,
     "pointName": "point2",
-    "localizedNodeId": "20914830ce00",
+    "localizedNodeId": "node2",
     "localizedNodeName": "Node2",
     "estCoordinateX": 2.1,
     "estCoordinateY": 2.2,
@@ -38,7 +38,7 @@
   {
     "id": 3,
     "pointName": "point3",
-    "localizedNodeId": "6655443322dd",
+    "localizedNodeId": "node3",
     "localizedNodeName": "Node3",
     "estCoordinateX": 3.3,
     "estCoordinateY": 4.2,
