@@ -236,5 +236,18 @@ describe("Store data", () => {
       expect(sortBy(storedPositionData, ["localizedNodeId"]))
         .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeId"]))
     })
+
+    it("stores positionData as is when zone is specified", async () => {
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(pointsSimple)
+      await Node.bulkCreate(nodesSimple)
+      await insertPositionData(positionsWithZones)
+      const queryResults = await PositionData.findAll()
+      const storedPositionData = queryResults
+        .map(queryResult => pick(queryResult, keys(positionsWithZones[0])))
+      expect(sortBy(storedPositionData, ["localizedNodeId"]))
+        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeId"]))
+    })
   })
 })

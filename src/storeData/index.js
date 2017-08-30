@@ -77,7 +77,7 @@ exports.insertPositionData = async function insertPositionData(positions) {
       assign(
         position,
         {
-          estZoneLabel: await estimatezone(
+          estZoneLabel: position.estZoneLabel || await estimatezone(
             position.estCoordinateX,
             position.estCoordinateY,
             position.estCoordinateZ
