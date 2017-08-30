@@ -3,7 +3,7 @@ const { expect } = require("chai")
 const { assign, keys, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Point = require("../../src/models/point")
-const pointsSimple = require("../testData/pointsSimple.json")
+const points = require("../testData/points.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -23,7 +23,7 @@ describe("Model Point", () => {
       { trueZoneLabel: "zone1" },
       { trueZoneLabel: "zone1" }
     ]
-    const pointsWithZone = pointsSimple.map((point, i) => assign(point, pointZones[i]))
+    const pointsWithZone = points.map((point, i) => assign(point, pointZones[i]))
     await Zone.bulkCreate(zones)
     await Point.bulkCreate(pointsWithZone)
     const queryResults = await Point.findAll()

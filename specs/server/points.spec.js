@@ -4,7 +4,7 @@ const rest = require("restling")
 const { assign, keys, pick, sortBy } = require("lodash")
 const Point = require("../../src/models/point")
 const { dbSync, dbDrop } = require("../helpers/db")
-const pointsSimple = require("../testData/pointsSimple.json")
+const points = require("../testData/points.json")
 const server = require("../../src/server")
 const { insertPoints } = require("../../src/storeData/index")
 const Zone = require("../../src/models/zone")
@@ -28,9 +28,9 @@ describe("Server for points", () => {
       { trueZoneLabel: "zone1" },
       { trueZoneLabel: "zone1" }
     ]
-    const pointsCopy = JSON.parse(JSON.stringify(pointsSimple))
+    const pointsCopy = JSON.parse(JSON.stringify(points))
     const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
-    await insertPoints(pointsSimple)
+    await insertPoints(points)
     const result = await rest.get("http://localhost:3000/points")
     expect(result.response.statusCode).to.equal(200)
     expect(sortBy(result.data, ["name"])).to.deep.equal(sortBy(expectedStoredPoints, ["name"]))
@@ -38,10 +38,10 @@ describe("Server for points", () => {
 
   it("should return point data on get at /points/point-name", async () => {
     const expectedStoredPoint = assign(
-      Object.assign({}, pointsSimple[0]),
+      Object.assign({}, points[0]),
       { trueZoneLabel: "zone3" }
     )
-    await insertPoints(pointsSimple)
+    await insertPoints(points)
     const result = await rest.get("http://localhost:3000/points/point1")
     expect(result.response.statusCode).to.equal(200)
     expect(result.data[0]).to.deep.equal(expectedStoredPoint)
@@ -49,7 +49,7 @@ describe("Server for points", () => {
 
   it("should return point name in body and path in location header on single point post at /points",
     async () => {
-      const result = await rest.post("http://localhost:3000/points", { data: pointsSimple[0] })
+      const result = await rest.post("http://localhost:3000/points", { data: points[0] })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal("/points/point1")
       expect(result.data).to.equal("point1")
@@ -58,10 +58,10 @@ describe("Server for points", () => {
 
   it("should store the point in the database on single point post at /points", async () => {
     const expectedStoredPoint = assign(
-      Object.assign({}, pointsSimple[0]),
+      Object.assign({}, points[0]),
       { trueZoneLabel: "zone3" }
     )
-    const result = await rest.post("http://localhost:3000/points", { data: pointsSimple[0] })
+    const result = await rest.post("http://localhost:3000/points", { data: points[0] })
     expect(result.response.statusCode).to.equal(201)
     const storedPoints = await Point.findAll()
     expect(pick(storedPoints[0], keys(expectedStoredPoint))).to.deep.equal(expectedStoredPoint)
@@ -70,7 +70,7 @@ describe("Server for points", () => {
   it("should return point names in body and paths in location header on multiple point post at " +
     "/points/bulk",
     async () => {
-      const result = await rest.post("http://localhost:3000/points/bulk", { data: pointsSimple })
+      const result = await rest.post("http://localhost:3000/points/bulk", { data: points })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal(
         "/points/point1; /points/point2; /points/point3"
@@ -89,9 +89,9 @@ describe("Server for points", () => {
       { trueZoneLabel: "zone1" },
       { trueZoneLabel: "zone1" }
     ]
-    const pointsCopy = JSON.parse(JSON.stringify(pointsSimple))
+    const pointsCopy = JSON.parse(JSON.stringify(points))
     const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
-    const result = await rest.post("http://localhost:3000/points/bulk", { data: pointsSimple })
+    const result = await rest.post("http://localhost:3000/points/bulk", { data: points })
     expect(result.response.statusCode).to.equal(201)
     const storedPointsQueryResult = await Point.findAll()
     const storedPoints = storedPointsQueryResult.map(point =>

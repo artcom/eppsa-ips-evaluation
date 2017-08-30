@@ -19,7 +19,7 @@ const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
 const nodesSimple = require("../testData/nodesSimple.json")
 const Point = require("../../src/models/point")
-const pointsSimple = require("../testData/pointsSimple.json")
+const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
 const positions = require("../testData/positions.json")
 const positionsWithZones = require("../testData/positionsWithZones.json")
@@ -62,7 +62,7 @@ describe("Store data", () => {
     it("updates a node position when same node ID and experiment name is present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       await Node.bulkCreate(nodesSimple)
       const initialPosition = {
         localizedNodeId: "node1",
@@ -91,7 +91,7 @@ describe("Store data", () => {
     it("inserts a node position when same node ID and experiment name is not present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       await Node.bulkCreate(nodesSimple)
       const initialPosition = {
         localizedNodeId: "node1",
@@ -119,7 +119,7 @@ describe("Store data", () => {
     it("should insert node positions when not present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       await Node.bulkCreate(nodesSimple)
       const initialPosition = {
         localizedNodeId: "node1",
@@ -154,7 +154,7 @@ describe("Store data", () => {
       it("should update present node positions and insert absent node positions", async () => {
         await insertExperiment("test-experiment")
         await Zone.bulkCreate(zones)
-        await insertPoints(pointsSimple)
+        await insertPoints(points)
         await Node.bulkCreate(nodesSimple)
         const initialPosition = {
           localizedNodeId: "node1",
@@ -196,10 +196,10 @@ describe("Store data", () => {
         { trueZoneLabel: "zone1" },
         { trueZoneLabel: "zone1" }
       ]
-      const pointsCopy = JSON.parse(JSON.stringify(pointsSimple))
+      const pointsCopy = JSON.parse(JSON.stringify(points))
       const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       const queryResults = await Point.findAll()
       const storedPoints = queryResults
         .map(queryResult => pick(queryResult, keys(expectedStoredPoints[0])))
@@ -211,11 +211,11 @@ describe("Store data", () => {
   describe("insertPoint", async () => {
     it("adds zone to point", async () => {
       const expectedStoredPoint = assign(
-        Object.assign({}, pointsSimple[0]),
+        Object.assign({}, points[0]),
         { trueZoneLabel: "zone3" }
       )
       await Zone.bulkCreate(zones)
-      await insertPoint(pointsSimple[0])
+      await insertPoint(points[0])
       const queryResults = await Point.findAll()
       const storedPoint = pick(queryResults[0], keys(expectedStoredPoint))
       expect(storedPoint)
@@ -227,7 +227,7 @@ describe("Store data", () => {
     it("adds zone to positionData when no zone is specified", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       await Node.bulkCreate(nodesSimple)
       await insertPositionData(positions)
       const queryResults = await PositionData.findAll()
@@ -240,7 +240,7 @@ describe("Store data", () => {
     it("stores positionData as is when zone is specified", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       await Node.bulkCreate(nodesSimple)
       await insertPositionData(positionsWithZones)
       const queryResults = await PositionData.findAll()

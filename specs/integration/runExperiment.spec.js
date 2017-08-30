@@ -16,7 +16,7 @@ const NodePosition = require("../../src/models/nodePosition")
 const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
 const nodesSimple = require("../testData/nodesSimple.json")
 const Point = require("../../src/models/point")
-const pointsSimple = require("../testData/pointsSimple.json")
+const points = require("../testData/points.json")
 const pointErrorsSimple = require("../testData/pointErrorsSimple.json")
 const PositionData = require("../../src/models/positionData")
 const positionsWithZones = require("../testData/positionsWithZones.json")
@@ -43,7 +43,7 @@ describe("Run a Quuppa experiment", () => {
     it("should set up the database", async () => {
       await initializeDb()
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       const insertedPoints = await Point.findAll()
       const storedPoints = insertedPoints.map(point => pick(point, [
         "name",
@@ -52,7 +52,7 @@ describe("Run a Quuppa experiment", () => {
         "trueCoordinateZ",
         "trueZoneLabel"
       ]))
-      expect(storedPoints).to.deep.equal(pointsSimple)
+      expect(storedPoints).to.deep.equal(points)
     })
   })
 
@@ -61,7 +61,7 @@ describe("Run a Quuppa experiment", () => {
       await initializeDb()
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
-      await insertPoints(pointsSimple)
+      await insertPoints(points)
       await Node.bulkCreate(nodesSimple)
       await NodePosition.bulkCreate(nodePositionsSimple)
       await this.runQuuppaExperiment("test-experiment")
