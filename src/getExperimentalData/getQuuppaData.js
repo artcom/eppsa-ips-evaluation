@@ -1,7 +1,6 @@
-const estimateZone = require("../computations/estimateZone")
 const NodePosition = require("../models/nodePosition")
 const { quuppaServer } = require("../quuppa")
-const PositionData = require("../../src/models/positionData")
+const { insertPositionData } = require("../../src/storeData")
 
 
 const getQuuppaData = async function getQuuppaData() {
@@ -22,15 +21,10 @@ const getDataForAllTags = async function getDataForAllTags(experimentName, respo
     estCoordinateX: tag.smoothedPosition[0],
     estCoordinateY: tag.smoothedPosition[1],
     estCoordinateZ: tag.smoothedPosition[2],
-    estZoneLabel: await estimateZone(
-      tag.smoothedPosition[0],
-      tag.smoothedPosition[1],
-      tag.smoothedPosition[2]
-    ),
     pointName: nodePositions.find(position => position.localizedNodeId === tag.id).pointName,
     experimentName
   })))
-  await PositionData.bulkCreate(data)
+  await insertPositionData(data)
 }
 
 exports.getQuuppaData = getQuuppaData
