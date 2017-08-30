@@ -5,15 +5,24 @@ const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const Node = require("../../src/models/node")
 const nodePositions = require("../testData/nodePositions.json")
+const nodePositionsSimple = require("../testData/nodePositionsSimple.json")
 const NodePosition = require("../../src/models/nodePosition")
-const nodes = require("../testData/nodes.json")
+const nodesSimple = require("../testData/nodesSimple.json")
 const Point = require("../../src/models/point")
-const points = require("../testData/points.json")
+const pointsSimple = require("../testData/pointsSimple.json")
+const { insertExperiment, insertPoints } = require("../../src/storeData")
+const Zone = require("../../src/models/zone")
+const zones = require("../testData/zones.json")
 
 
 describe("Model NodePosition", () => {
   beforeEach(async () => {
     await dbSync()
+    await insertExperiment("test-experiment")
+    await Zone.bulkCreate(zones)
+    await insertPoints(pointsSimple)
+    await Node.bulkCreate(nodesSimple)
+    await NodePosition.bulkCreate(nodePositionsSimple)
   })
 
   afterEach(async () => {
@@ -21,16 +30,14 @@ describe("Model NodePosition", () => {
   })
 
   it("can create node positions", async () => {
-    await createNodePosition()
     const storedPositions = await NodePosition.findAll({ include: [{ model: Experiment }] })
     const storedNodePositions = storedPositions
       .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
     expect(sortBy(storedNodePositions, ["localizedNodeId"]))
-      .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
+      .to.deep.equal(sortBy(nodePositionsSimple, ["localizedNodeId"]))
   })
 
   it("has a one to one relationship with Experiment", async () => {
-    await createNodePosition()
     const storedPositions = await NodePosition.findAll({ include: [{ model: Experiment }] })
     for (const position of storedPositions) {
       expect(position.experiment.name).to.equal("test-experiment")
@@ -38,16 +45,14 @@ describe("Model NodePosition", () => {
   })
 
   it("has a one to one relationship with Node", async () => {
-    await createNodePosition()
     const storedPositions = await NodePosition.findAll(
       { include: [{ model: Node, as: "localizedNode" }] }
     )
-    expect(storedPositions.map(position => pick(position.localizedNode, keys(nodes[0]))))
-      .to.deep.equal(nodes)
+    expect(storedPositions.map(position => pick(position.localizedNode, keys(nodesSimple[0]))))
+      .to.deep.equal(nodesSimple)
   })
 
   it("has a one to one relationship with Point", async () => {
-    await createNodePosition()
     const storedPositions = await NodePosition.findAll(
       {
         include: [
@@ -60,15 +65,8 @@ describe("Model NodePosition", () => {
       localizedNodeId: position.localizedNode.id,
       pointName: position.pointName
     })), "localizedNodeId"))
-      .to.deep.equal(sortBy(nodePositions.map(nodePosition =>
+      .to.deep.equal(sortBy(nodePositionsSimple.map(nodePosition =>
         pick(nodePosition, ["pointName", "localizedNodeId"])), "localizedNodeId")
       )
   })
 })
-
-async function createNodePosition() {
-  await Experiment.create({ name: "test-experiment" })
-  await Point.bulkCreate(points)
-  await Node.bulkCreate(nodes)
-  await NodePosition.bulkCreate(nodePositions)
-}
