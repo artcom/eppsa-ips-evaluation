@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const restler = require("restler")
+const rest = require("restling")
 const { sortBy } = require("lodash")
 const { checkPositionData } = require("../helpers/data")
 const { dbSync, dbDrop } = require("../helpers/db")
@@ -32,11 +32,11 @@ describe("Server for position data", () => {
 
   it("should return all position data on get at /experiments/experiment-name/position-data",
     async () => {
-      restler.get("http://localhost:3000/experiments/test-experiment/position-data")
-        .on("complete", (data, response) => {
-          expect(response.statusCode).to.equal(200)
-          checkPositionData(sortBy(data, ["pointName"]))
-        })
+      const result = await rest.get(
+        "http://localhost:3000/experiments/test-experiment/position-data"
+      )
+      expect(result.response.statusCode).to.equal(200)
+      checkPositionData(sortBy(result.data, ["pointName"]))
     }
   )
 })
