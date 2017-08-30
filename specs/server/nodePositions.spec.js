@@ -43,7 +43,7 @@ describe("Server for node positions", () => {
   })
 
   it("should return node position data on get at /node-positions/node-id", async () => {
-    NodePosition.bulkCreate(nodePositions)
+    await NodePosition.bulkCreate(nodePositions)
     const result = await rest.get(
       "http://localhost:3000/experiments/test-experiment/node-positions/20914830ce00"
     )
