@@ -17,7 +17,7 @@ const zones = require("../testData/zones")
 describe("Model PositionData", () => {
   beforeEach(async () => {
     await dbSync()
-    await Experiment.create({ name: "experiment1" })
+    await Experiment.create({ name: "test-experiment" })
     await Zone.bulkCreate(zones)
     await insertPoints(points)
     await Node.bulkCreate(nodes)
@@ -36,7 +36,7 @@ describe("Model PositionData", () => {
   it("has a one to one relationship with Experiment", async () => {
     const storedPositions = await PositionData.findAll({ include: [{ model: Experiment }] })
     for (const position of storedPositions) {
-      expect(position.experiment.name).to.equal("experiment1")
+      expect(position.experiment.name).to.equal("test-experiment")
     }
   })
 
