@@ -18,18 +18,18 @@ module.exports = function serveNodes(server) {
   })
 
   server.post("/nodes", upload.array(), async (request, response) => {
-    await Node.create(request.body)
-    response.append("location", `/nodes/${request.body.id}`).status(201).send(request.body.id)
-  })
+    if (request.body["0"]) {
+      const nodes = keys(request.body).map(key => request.body[key])
+      await Node.bulkCreate(nodes)
 
-  server.post("/nodes/bulk", upload.array(), async (request, response) => {
-    const nodes = keys(request.body).map(key => request.body[key])
-    await Node.bulkCreate(nodes)
-
-    response
-      .append("location", nodes.map(node => `/nodes/${node.id}`).join("; "))
-      .status(201)
-      .send(nodes.map(node => node.id))
+      response
+        .append("location", nodes.map(node => `/nodes/${node.id}`).join("; "))
+        .status(201)
+        .send(nodes.map(node => node.id))
+    } else {
+      await Node.create(request.body)
+      response.append("location", `/nodes/${request.body.id}`).status(201).send(request.body.id)
+    }
   })
 
   return server

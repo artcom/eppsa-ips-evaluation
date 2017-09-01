@@ -50,9 +50,9 @@ describe("Server for nodes", () => {
   })
 
   it("should return node names in body and paths in location header on multiple node post at " +
-    "/nodes/bulk",
+    "/nodes",
     async () => {
-      const result = await rest.post("http://localhost:3000/nodes/bulk", { data: nodes })
+      const result = await rest.post("http://localhost:3000/nodes", { data: nodes })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal(
         "/nodes/node1; " +
@@ -67,8 +67,8 @@ describe("Server for nodes", () => {
     }
   )
 
-  it("should store the nodes in the database on multiple node post at /nodes/bulk", async () => {
-    const result = await rest.post("http://localhost:3000/nodes/bulk", { data: nodes })
+  it("should store the nodes in the database on multiple node post at /nodes", async () => {
+    const result = await rest.post("http://localhost:3000/nodes", { data: nodes })
     expect(result.response.statusCode).to.equal(201)
     const storedNodesQueryResult = await Node.findAll()
     const storedNodes = storedNodesQueryResult.map(node => pick(node, keys(nodes[0])))

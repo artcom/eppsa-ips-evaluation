@@ -264,7 +264,7 @@ New nodes can be created:
 }
 ```
 
-- or in a batch using a POST request to ```/nodes/bulk``` with:
+- or in a batch using a POST request to ```/nodes``` with:
 
 ```json
 [
