@@ -1,9 +1,11 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { keys, pick } = require("lodash")
+const { concat, keys, sortBy, pick } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const experiment = require("../testData/experiment.json")
-const { insertExperiment, insertPoints } = require("../../src/storeData")
+const ExperimentMetrics = require("../../src/models/experimentMetrics")
+const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
+const { insertExperiment, insertPoints, insertPositionData } = require("../../src/storeData")
 const {
   getExperiments,
   getExperimentByName,
@@ -13,6 +15,8 @@ const {
   getNodesByName,
   getNodePositions,
   getNodePositionByNodeId,
+  getPositionDataByExperiment,
+  getExperimentMetricsByName,
   getZones,
   getZoneByName
 } = require("../../src/getData")
@@ -22,6 +26,9 @@ const NodePosition = require("../../src/models/nodePosition")
 const nodePositions = require("../testData/nodePositions.json")
 const points = require("../testData/points.json")
 const pointsWithZones = require("../testData/pointsWithZones.json")
+const pointErrors = require("../testData/pointErrors.json")
+const positionsWithErrors = require("../testData/positionsWithErrors.json")
+const positionsWithZones = require("../testData/positionsWithZones.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -130,4 +137,82 @@ describe("getData", () => {
       expect(pick(storedNodePosition, keys(nodePositions[0]))).to.deep.equal(nodePositions[1])
     })
   })
+
+  describe("getPositionDataByExperiment", () => {
+    it("should return all position data for a given experiment", async () => {
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await insertPositionData(positionsWithErrors)
+      const storedPositionData = await getPositionDataByExperiment("test-experiment")
+      checkPositionData(storedPositionData)
+    })
+  })
+
+  describe("getExperimentMetricsByName", () => {
+    it("should return the experiment metrics of the requested experiment", async () => {
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      await ExperimentMetrics.create(experimentPrimaryMetrics)
+      const storedMetrics = await getExperimentMetricsByName("test-experiment")
+      checkPrimaryMetrics(storedMetrics)
+    })
+  })
 })
+
+function checkPositionData(queryResults) {
+  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
+  const storedPositionErrors = sortBy(
+    queryResults
+      .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
+    ["pointName"]
+  )
+  expect(
+    sortBy(queryResults, ["pointName"])
+      .map(position => pick(position, keys(positionsWithZones[0])))
+  ).to.deep.equal(positionsWithZones)
+  for (const storedPosition of storedPositionErrors) {
+    const index = storedPositionErrors.indexOf(storedPosition)
+    for (const key of errorKeys) {
+      expect(storedPosition[key])
+        .to.be.closeTo(
+        pointErrors[index][key],
+        1e-14,
+        key
+      )
+    }
+  }
+}
+
+function checkPrimaryMetrics(metrics) {
+  const errorKeys = [
+    "error2dAverage",
+    "error2dMin",
+    "error2dMax",
+    "error2dVariance",
+    "error2dMedian",
+    "error2dRMS",
+    "error2dPercentile75",
+    "error2dPercentile90",
+    "error3dAverage",
+    "error3dMin",
+    "error3dMax",
+    "error3dVariance",
+    "error3dMedian",
+    "error3dRMS",
+    "error3dPercentile75",
+    "error3dPercentile90",
+    "zoneAccuracyAverage"
+  ]
+  expect(metrics.experimentName).to.equal("test-experiment")
+  for (const key of errorKeys) {
+    expect(metrics[key])
+      .to.be.closeTo(
+      experimentPrimaryMetrics[key],
+      1e-14,
+      `${metrics.experimentName} ${key}`
+    )
+  }
+}

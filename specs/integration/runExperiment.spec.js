@@ -78,7 +78,7 @@ async function testMetrics() {
   })
   checkPrimaryMetrics(experimentMetrics)
   const positionDataQueryResults = await PositionData.findAll()
-  await checkPositionData(positionDataQueryResults, false)
+  await checkPositionData(positionDataQueryResults)
 }
 
 function checkPrimaryMetrics(metrics) {
