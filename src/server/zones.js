@@ -18,8 +18,18 @@ module.exports = function serveZones(server) {
   })
 
   server.post("/zones", upload.array(), async (request, response) => {
-    await insertZone(request.body)
-    response.append("location", `/zones/${request.body.name}`).status(201).send(request.body.name)
+    if (request.body["0"]) {
+      const zones = keys(request.body).map(key => request.body[key])
+      await insertZones(zones)
+
+      response
+        .append("location", zones.map(zone => `/zones/${zone.name}`).join("; "))
+        .status(201)
+        .send(zones.map(zone => zone.name))
+    } else {
+      await insertZone(request.body)
+      response.append("location", `/zones/${request.body.name}`).status(201).send(request.body.name)
+    }
   })
 
   server.post("/zones/bulk", upload.array(), async (request, response) => {

@@ -179,7 +179,7 @@ New zones can be created:
 }
 ```
 
-- or in a batch using a POST request to ```/zones/bulk``` with:
+- or in a batch using a POST request to ```/zones``` with:
 
 ```json
 [

@@ -50,9 +50,9 @@ describe("Server for zones", () => {
   })
 
   it("should return zone names in body and paths in location header on multiple zone post at " +
-    "/zones/bulk",
+    "/zones",
     async () => {
-      const result = await rest.post("http://localhost:3000/zones/bulk", { data: zones })
+      const result = await rest.post("http://localhost:3000/zones", { data: zones })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal(
         "/zones/zone1; /zones/zone2; /zones/zone3"
@@ -65,8 +65,8 @@ describe("Server for zones", () => {
     }
   )
 
-  it("should store the zones in the database on multiple zone post at /zones/bulk", async () => {
-    const result = await rest.post("http://localhost:3000/zones/bulk", { data: zones })
+  it("should store the zones in the database on multiple zone post at /zones", async () => {
+    const result = await rest.post("http://localhost:3000/zones", { data: zones })
     expect(result.response.statusCode).to.equal(201)
     const storedZonesQueryResult = await Zone.findAll()
     const storedZones = storedZonesQueryResult.map(zone => pick(zone, keys(zones[0])))
