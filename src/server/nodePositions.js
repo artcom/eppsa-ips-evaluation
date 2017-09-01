@@ -25,33 +25,28 @@ module.exports = function serveNodePositions(server) {
     upload.array(),
     async (request, response) => {
       const experimentName = request.params.experimentName
-      const nodeId = request.body.localizedNodeId
-      await upsertNodePosition(
-        assign(request.body, { experimentName })
-      )
-      response
-        .append("location", `/experiments/${experimentName}/node-positions/${nodeId}`)
-        .status(201)
-        .send(nodeId)
-    }
-  )
-
-  server.post(
-    "/experiments/:experimentName/node-positions/bulk",
-    upload.array(),
-    async (request, response) => {
-      const experimentName = request.params.experimentName
-      const nodePositions = keys(request.body).map(key => request.body[key])
-      const nodeIds = nodePositions.map(nodePosition => nodePosition.localizedNodeId)
-      const data = nodePositions.map(nodePosition => assign(nodePosition, { experimentName }))
-      await upsertNodePositions(data)
-      response
-        .append(
-          "location",
-          nodeIds.map(id => `/experiments/${experimentName}/node-positions/${id}`).join("; ")
+      if (request.body["0"]) {
+        const nodePositions = keys(request.body).map(key => request.body[key])
+        const nodeIds = nodePositions.map(nodePosition => nodePosition.localizedNodeId)
+        const data = nodePositions.map(nodePosition => assign(nodePosition, { experimentName }))
+        await upsertNodePositions(data)
+        response
+          .append(
+            "location",
+            nodeIds.map(id => `/experiments/${experimentName}/node-positions/${id}`).join("; ")
+          )
+          .status(201)
+          .send(nodeIds)
+      } else {
+        const nodeId = request.body.localizedNodeId
+        await upsertNodePosition(
+          assign(request.body, { experimentName })
         )
-        .status(201)
-        .send(nodeIds)
+        response
+          .append("location", `/experiments/${experimentName}/node-positions/${nodeId}`)
+          .status(201)
+          .send(nodeId)
+      }
     }
   )
 

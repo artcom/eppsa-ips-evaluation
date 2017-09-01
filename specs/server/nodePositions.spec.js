@@ -97,10 +97,10 @@ describe("Server for node positions", () => {
   )
 
   it("should return node position names in body and paths in location header on multiple post at" +
-    " /node-positions/bulk",
+    " /node-positions",
     async () => {
       const result = await rest.post(
-        "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
+        "http://localhost:3000/experiments/test-experiment/node-positions",
         { data: nodePositionsSimple.map(nodePosition => omit(nodePosition, ["experimentName"])) }
       )
       expect(result.response.statusCode).to.equal(201)
@@ -117,10 +117,10 @@ describe("Server for node positions", () => {
   )
 
   it("should store the node positions in the database on multiple post at " +
-    "/node-positions/bulk",
+    "/node-positions",
     async () => {
       const result = await rest.post(
-        "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
+        "http://localhost:3000/experiments/test-experiment/node-positions",
         { data: nodePositionsSimple.map(nodePosition => omit(nodePosition, ["experimentName"])) }
       )
       expect(result.response.statusCode).to.equal(201)
@@ -133,7 +133,7 @@ describe("Server for node positions", () => {
   )
 
   it("should update the node positions in the database on multiple post at " +
-    "/node-positions/bulk",
+    "/node-positions",
     async () => {
       const updatedNodePositions = [
         {
@@ -154,7 +154,7 @@ describe("Server for node positions", () => {
       ]
       await NodePosition.bulkCreate(nodePositionsSimple)
       const result = await rest.post(
-        "http://localhost:3000/experiments/test-experiment/node-positions/bulk",
+        "http://localhost:3000/experiments/test-experiment/node-positions",
         { data: updatedNodePositions.map(nodePosition => omit(nodePosition, ["experimentName"])) }
       )
       expect(result.response.statusCode).to.equal(201)

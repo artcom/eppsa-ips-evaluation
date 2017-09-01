@@ -309,7 +309,7 @@ Node positions can be defined or modified:
 }
 ```
 
-- or in a batch using a POST request to ```/experiments/experiment-name/node-positions/bulk``` with:
+- or in a batch using a POST request to ```/experiments/experiment-name/node-positions``` with:
 
 ```json
 [
