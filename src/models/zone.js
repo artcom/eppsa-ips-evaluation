@@ -2,7 +2,7 @@ const Sequelize = require("sequelize")
 const db = require("../db")
 
 const Zone = db.define("zone", {
-  name: { type: Sequelize.STRING, allowNull: false, unique: true },
+  name: { type: Sequelize.STRING, allowNull: false, primaryKey: true },
   xMin: { type: Sequelize.FLOAT, allowNull: false },
   xMax: { type: Sequelize.FLOAT, allowNull: false },
   yMin: { type: Sequelize.FLOAT, allowNull: false },

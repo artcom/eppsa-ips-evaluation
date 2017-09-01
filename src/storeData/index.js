@@ -1,10 +1,11 @@
-const { assign } = require("lodash")
+const { assign, pick } = require("lodash")
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const estimatezone = require("../computations/estimateZone")
+const Zone = require("../models/zone")
 
 
 exports.insertExperiment = async function insertExperiment(experimentName) {
@@ -98,3 +99,38 @@ exports.insertPoint = async function insertPoint(point) {
   const pointWithZone = await assign(point, { trueZoneLabel: pointZone })
   await Point.create(pointWithZone)
 }
+
+const updatePointZones = async function updatePointZones() {
+  const points = await Point.findAll()
+  const pointsWithZone = await Promise.all(
+    points.map(async (point) =>
+      assign(
+        point,
+        {
+          trueZoneLabel: await estimatezone(
+            point.trueCoordinateX,
+            point.trueCoordinateY,
+            point.trueCoordinateZ
+          )
+        }
+      )
+    )
+  )
+  await Promise.all(
+    pointsWithZone.map(async (point) => {
+      await Point.update(pick(point, ["name", "trueZoneLabel"]), { where: { name: point.name } })
+    })
+  )
+}
+
+exports.insertZones = async function insertZones(zones) {
+  await Zone.bulkCreate(zones)
+  await updatePointZones()
+}
+
+exports.insertZone = async function insertZone(zone) {
+  await Zone.create(zone)
+  await updatePointZones()
+}
+
+exports.updatePointZones = updatePointZones
