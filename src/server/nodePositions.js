@@ -1,6 +1,6 @@
 const multer = require("multer")
 const { assign, keys } = require("lodash")
-const { getNodePositions, getNodePositionsByNodeId } = require("../getData")
+const { getNodePositions, getNodePositionByNodeId } = require("../getData")
 const { upsertNodePosition, upsertNodePositions } = require("../storeData")
 
 
@@ -13,7 +13,7 @@ module.exports = function serveNodePositions(server) {
   })
 
   server.get("/experiments/:experimentName/node-positions/:nodeId", async (request, response) => {
-    const nodePositions = await getNodePositionsByNodeId(
+    const nodePositions = await getNodePositionByNodeId(
       request.params.nodeId,
       request.params.experimentName
     )

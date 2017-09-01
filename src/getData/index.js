@@ -105,8 +105,8 @@ exports.getNodePositions = async function getNodePositions(experimentName) {
   })
 }
 
-exports.getNodePositionsByNodeId = async function getNodePositions(nodeId, experimentName) {
-  return await NodePositon.findAll({
+exports.getNodePositionByNodeId = async function getNodePositionByNodeId(nodeId, experimentName) {
+  const queryResult = await NodePositon.findAll({
     attributes: {
       exclude: [
         "createdAt",
@@ -116,6 +116,7 @@ exports.getNodePositionsByNodeId = async function getNodePositions(nodeId, exper
     },
     where: { localizedNodeId: nodeId, experimentName }
   })
+  return queryResult[0]
 }
 
 exports.getPositionDataByExperiment = async function getPositionDataByExperiment(experimentName) {

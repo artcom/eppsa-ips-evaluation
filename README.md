@@ -391,4 +391,25 @@ Node positions can be defined or modified:
     ...
 ]
 ```
- 
+
+Node positions can be retrieved:
+
+- using a GET request to ```/experiments/experiment-name/node-positions/node-id``` and will return:
+
+
+```json
+{
+  "localizedNodeId": "node_id", "pointName": "point_name", "experimentName": "experiment_name"
+}
+```
+
+- or in a batch using a GET request to ```/experiments/experiment-name/node-positions``` and will return:
+
+```json
+[
+    {
+      "localizedNodeId": "node_id", "pointName": "point_name", "experimentName": "experiment_name"
+    },
+    ...
+]
+```
