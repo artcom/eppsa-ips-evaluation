@@ -30,7 +30,7 @@ describe("Server for zones", () => {
     await Zone.bulkCreate(zones)
     const result = await rest.get("http://localhost:3000/zones/zone1")
     expect(result.response.statusCode).to.equal(200)
-    expect(result.data[0]).to.deep.equal(zones[0])
+    expect(result.data).to.deep.equal(zones[0])
   })
 
   it("should return zone name in body and path in location header on single zone post at /zones",
