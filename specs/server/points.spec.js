@@ -44,7 +44,7 @@ describe("Server for points", () => {
     await insertPoints(points)
     const result = await rest.get("http://localhost:3000/points/point1")
     expect(result.response.statusCode).to.equal(200)
-    expect(result.data[0]).to.deep.equal(expectedStoredPoint)
+    expect(result.data).to.deep.equal(expectedStoredPoint)
   })
 
   it("should return point name in body and path in location header on single point post at /points",

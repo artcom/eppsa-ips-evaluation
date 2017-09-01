@@ -8,6 +8,7 @@ const {
   getExperiments,
   getExperimentByName,
   getPoints,
+  getPointByName,
   getNodes,
   getNodesByName,
   getZones,
@@ -39,7 +40,7 @@ describe("getData", () => {
   })
 
   describe("getExperimentByName", () => {
-    it("should return the correct experiment by name", async () => {
+    it("should return the expected experiment by name", async () => {
       await insertExperiment("test-experiment")
       const storedExperiment = await getExperimentByName("test-experiment")
       expect(storedExperiment).to.deep.equal(experiment)
@@ -53,6 +54,15 @@ describe("getData", () => {
       const storedPoints = await getPoints()
       expect(storedPoints.map(storedPoint => pick(storedPoint, keys(pointsWithZones[0]))))
         .to.deep.equal(pointsWithZones)
+    })
+  })
+
+  describe("getPointByName", () => {
+    it("should return the expected point by name", async () => {
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      const storedPoint = await getPointByName("point2")
+      expect(pick(storedPoint, keys(points[0]))).to.deep.equal(points[1])
     })
   })
 

@@ -29,6 +29,19 @@ exports.getPoints = async function getPoints() {
   })
 }
 
+exports.getPointByName = async function getPointByName(name) {
+  const queryResult = await Point.findAll({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    where: { name }
+  })
+  return queryResult[0]
+}
+
 exports.getNodes = async function getNodes() {
   return await Node.findAll({
     attributes: {
@@ -38,6 +51,19 @@ exports.getNodes = async function getNodes() {
       ]
     }
   })
+}
+
+exports.getNodesByName = async function getNodesByName(name) {
+  const queryResult = await Node.findAll({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    where: { name }
+  })
+  return queryResult[0]
 }
 
 exports.getZones = async function getZones() {
@@ -64,31 +90,6 @@ exports.getZoneByName = async function getZones(name) {
     where: { name }
   })
   return queryResult[0]
-}
-
-exports.getNodesByName = async function getNodesByName(name) {
-  const queryResult = await Node.findAll({
-    attributes: {
-      exclude: [
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    where: { name }
-  })
-  return queryResult[0]
-}
-
-exports.getPointByName = async function getPointByName(name) {
-  return await Point.findAll({
-    attributes: {
-      exclude: [
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    where: { name }
-  })
 }
 
 exports.getNodePositions = async function getNodePositions(experimentName) {

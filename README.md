@@ -198,7 +198,7 @@ New zones can be created:
 
 Zones can be retrieved:
 
-- using a GET request to ```/zones/zone-name``` and will yield:
+- using a GET request to ```/zones/zone-name``` and will return:
 
 ```json
 {
@@ -212,7 +212,7 @@ Zones can be retrieved:
 }
 ```
 
-- or in batch using a GET request to ```/zones``` and will yield:
+- or in batch using a GET request to ```/zones``` and will return:
 
 ```json
 [
@@ -262,7 +262,20 @@ New points can be created:
 ]
 ```
 
-On a GET request all points will be returned as:
+Points can be retrieved:
+
+- using a GET request to ```/points/point-name``` and will return:
+
+```json
+{
+    "name": "point_name",
+    "trueCoordinateX": "float",
+    "trueCoordinateY": "float",
+    "trueCoordinateZ": "float"
+}
+```
+
+- or in a batch using a GET request to ```/points``` and will return:
 
 ```json
 [
@@ -312,7 +325,7 @@ New nodes can be created:
 
 Nodes can be retrieved:
 
-- using a GET request to ```/nodes/node-name``` and will yield:
+- using a GET request to ```/nodes/node-name``` and will return:
 
 ```json
 {
@@ -322,7 +335,7 @@ Nodes can be retrieved:
 }
 ```
 
-- or in a batch using a GET request to ```/nodes``` with:
+- or in a batch using a GET request to ```/nodes``` and will return:
 
 ```json
 [
