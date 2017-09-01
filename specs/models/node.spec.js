@@ -30,6 +30,20 @@ describe("Model Node", () => {
         await Node.bulkCreate(
           [
             nodes[0],
+            merge({ id: "node1" }, omit(nodes[1], "id"))
+          ]
+        )
+        assert.fail("", "Validation error", "No error was thrown")
+      } catch (error) {
+        expect(error.message).to.equal("Validation error")
+      }
+    })
+
+    it("raises an error when the node name already exists", async () => {
+      try {
+        await Node.bulkCreate(
+          [
+            nodes[0],
             merge({ name: "Node1" }, omit(nodes[1], "name"))
           ]
         )
