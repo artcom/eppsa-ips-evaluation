@@ -1,6 +1,6 @@
 const multer = require("multer")
 const { keys } = require("lodash")
-const { getNodes, getNodesById } = require("../getData")
+const { getNodes, getNodesByName } = require("../getData")
 const Node = require("../models/node")
 
 
@@ -12,8 +12,8 @@ module.exports = function serveNodes(server) {
     response.status(200).send(nodes)
   })
 
-  server.get("/nodes/:id", async (request, response) => {
-    const node = await getNodesById(request.params.id)
+  server.get("/nodes/:name", async (request, response) => {
+    const node = await getNodesByName(request.params.name)
     response.status(200).send(node)
   })
 
@@ -23,12 +23,12 @@ module.exports = function serveNodes(server) {
       await Node.bulkCreate(nodes)
 
       response
-        .append("location", nodes.map(node => `/nodes/${node.id}`).join("; "))
+        .append("location", nodes.map(node => `/nodes/${node.name}`).join("; "))
         .status(201)
-        .send(nodes.map(node => node.id))
+        .send(nodes.map(node => node.name))
     } else {
       await Node.create(request.body)
-      response.append("location", `/nodes/${request.body.id}`).status(201).send(request.body.id)
+      response.append("location", `/nodes/${request.body.name}`).status(201).send(request.body.name)
     }
   })
 

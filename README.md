@@ -196,6 +196,39 @@ New zones can be created:
 ]
 ```
 
+Zones can be retrieved:
+
+- using a GET request to ```/zones/zone-name``` and will yield:
+
+```json
+{
+    "name": "zone_name",
+    "xMin": "float",
+    "xMax": "float",
+    "yMin": "float",
+    "yMax": "float",
+    "zMin": "float",
+    "zMax": "float"
+}
+```
+
+- or in batch using a GET request to ```/zones``` and will yield:
+
+```json
+[
+    {
+        "name": "zone_name",
+        "xMin": "float",
+        "xMax": "float",
+        "yMin": "float",
+        "yMax": "float",
+        "zMin": "float",
+        "zMax": "float"
+    },
+    ...
+]
+```
+
 #### Create points with known coordinates
 
 End point: ```/points```
@@ -276,6 +309,32 @@ New nodes can be created:
     ...
 ]
 ```
+
+Nodes can be retrieved:
+
+- using a GET request to ```/nodes/node-name``` and will yield:
+
+```json
+{
+    "id": "node_id",
+    "name": "node_name",
+    "type": "node_type"
+}
+```
+
+- or in a batch using a GET request to ```/nodes``` with:
+
+```json
+[
+    {
+        "id": "node_id",
+        "name": "node_name",
+        "type": "node_type"
+    },
+    ...
+]
+```
+
 
 #### Create experiment
 

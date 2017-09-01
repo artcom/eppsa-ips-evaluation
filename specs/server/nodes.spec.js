@@ -30,15 +30,15 @@ describe("Server for nodes", () => {
     await Node.bulkCreate(nodes)
     const result = await rest.get("http://localhost:3000/nodes/Node2")
     expect(result.response.statusCode).to.equal(200)
-    expect(result.data[0]).to.deep.equal(nodes[1])
+    expect(result.data).to.deep.equal(nodes[1])
   })
 
-  it("should return node id in body and path in location header on single node post at /nodes",
+  it("should return node name in body and path in location header on single node post at /nodes",
     async () => {
       const result = await rest.post("http://localhost:3000/nodes", { data: nodes[1] })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal("/nodes/Node2")
-      expect(result.data).to.equal("node2")
+      expect(result.data).to.equal("Node2")
     }
   )
 

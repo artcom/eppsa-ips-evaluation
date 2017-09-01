@@ -9,6 +9,7 @@ const {
   getExperimentByName,
   getPoints,
   getNodes,
+  getNodesByName,
   getZones,
   getZoneByName
 } = require("../../src/getData")
@@ -78,6 +79,14 @@ describe("getData", () => {
       await Zone.bulkCreate(zones)
       const storedZone = await getZoneByName("zone2")
       expect(pick(storedZone, keys(zones[0]))).to.deep.equal(zones[1])
+    })
+  })
+
+  describe("getNodesByName", () => {
+    it("should return the expected node by name", async () => {
+      await Node.bulkCreate(nodes)
+      const storedNode = await getNodesByName("Node2")
+      expect(pick(storedNode, keys(nodes[0]))).to.deep.equal(nodes[1])
     })
   })
 })

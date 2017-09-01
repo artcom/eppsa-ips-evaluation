@@ -66,16 +66,17 @@ exports.getZoneByName = async function getZones(name) {
   return queryResult[0]
 }
 
-exports.getNodesById = async function getNodesById(id) {
-  return await Node.findAll({
+exports.getNodesByName = async function getNodesByName(name) {
+  const queryResult = await Node.findAll({
     attributes: {
       exclude: [
         "createdAt",
         "updatedAt"
       ]
     },
-    where: { id }
+    where: { name }
   })
+  return queryResult[0]
 }
 
 exports.getPointByName = async function getPointByName(name) {
