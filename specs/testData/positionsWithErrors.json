@@ -6,7 +6,7 @@
     "estCoordinateX": 0.9,
     "estCoordinateY": 1.01,
     "estCoordinateZ": 3,
-    "estZoneLabel": "NA",
+    "estZoneLabel": null,
     "localizationError2d": 0.10049875621120899,
     "localizationError3d": 1.0050373127401788,
     "zoneAccuracy": 0

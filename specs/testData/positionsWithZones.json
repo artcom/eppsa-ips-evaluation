@@ -6,7 +6,7 @@
     "estCoordinateX": 0.9,
     "estCoordinateY": 1.01,
     "estCoordinateZ": 3,
-    "estZoneLabel": "NA"
+    "estZoneLabel": null
   },
   {
     "pointName": "point2",

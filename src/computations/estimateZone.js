@@ -13,7 +13,7 @@ const estimateZone = async function estimateZone(x, y, z) {
       return zone.name
     }
   }
-  return "NA"
+  return null
 }
 
 module.exports = estimateZone

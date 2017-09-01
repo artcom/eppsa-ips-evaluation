@@ -24,11 +24,11 @@ describe("estimateZone", () => {
     await checkZones(points)
   })
 
-  it("should return 'NA' when point is outside of all defined zones", async () => {
+  it("should return null when point is outside of all defined zones", async () => {
     const points = [
-      { zone: "NA", coordinates: [9, 3, 3] },
-      { zone: "NA", coordinates: [5, 3, 4] },
-      { zone: "NA", coordinates: [1, 1, -1] }
+      { zone: null, coordinates: [9, 3, 3] },
+      { zone: null, coordinates: [5, 3, 4] },
+      { zone: null, coordinates: [1, 1, -1] }
     ]
     await checkZones(points)
   })

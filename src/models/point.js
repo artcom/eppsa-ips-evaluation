@@ -6,7 +6,7 @@ const Point = db.define("point", {
   trueCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   trueCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
   trueCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },
-  trueZoneLabel: { type: Sequelize.STRING, allowNull: false },
+  trueZoneLabel: { type: Sequelize.STRING },
 })
 
 module.exports = Point
