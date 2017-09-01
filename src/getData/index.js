@@ -53,7 +53,7 @@ exports.getZones = async function getZones() {
 }
 
 exports.getZoneByName = async function getZones(name) {
-  return await Zone.findAll({
+  const queryResult = await Zone.findAll({
     attributes: {
       exclude: [
         "id",
@@ -63,6 +63,7 @@ exports.getZoneByName = async function getZones(name) {
     },
     where: { name }
   })
+  return queryResult[0]
 }
 
 exports.getNodesById = async function getNodesById(id) {
