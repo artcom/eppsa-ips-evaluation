@@ -32,15 +32,5 @@ module.exports = function serveZones(server) {
     }
   })
 
-  server.post("/zones/bulk", upload.array(), async (request, response) => {
-    const zones = keys(request.body).map(key => request.body[key])
-    await insertZones(zones)
-
-    response
-      .append("location", zones.map(zone => `/zones/${zone.name}`).join("; "))
-      .status(201)
-      .send(zones.map(zone => zone.name))
-  })
-
   return server
 }

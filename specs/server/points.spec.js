@@ -68,9 +68,9 @@ describe("Server for points", () => {
   })
 
   it("should return point names in body and paths in location header on multiple point post at " +
-    "/points/bulk",
+    "/points",
     async () => {
-      const result = await rest.post("http://localhost:3000/points/bulk", { data: points })
+      const result = await rest.post("http://localhost:3000/points", { data: points })
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location).to.equal(
         "/points/point1; /points/point2; /points/point3"
@@ -83,7 +83,7 @@ describe("Server for points", () => {
     }
   )
 
-  it("should store the points in the database on multiple point post at /points/bulk", async () => {
+  it("should store the points in the database on multiple point post at /points", async () => {
     const pointZones = [
       { trueZoneLabel: "zone3" },
       { trueZoneLabel: "zone1" },
@@ -91,7 +91,7 @@ describe("Server for points", () => {
     ]
     const pointsCopy = JSON.parse(JSON.stringify(points))
     const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
-    const result = await rest.post("http://localhost:3000/points/bulk", { data: points })
+    const result = await rest.post("http://localhost:3000/points", { data: points })
     expect(result.response.statusCode).to.equal(201)
     const storedPointsQueryResult = await Point.findAll()
     const storedPoints = storedPointsQueryResult.map(point =>

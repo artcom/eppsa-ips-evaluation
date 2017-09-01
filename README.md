@@ -215,7 +215,7 @@ New points can be created:
 }
 ```
 
-- or in a batch using a POST request to ```/points/bulk``` with:
+- or in a batch using a POST request to ```/points``` with:
 
 ```json
 [
@@ -223,8 +223,7 @@ New points can be created:
         "name": "point_name",
         "trueCoordinateX": "float",
         "trueCoordinateY": "float",
-        "trueCoordinateZ": "float",
-        "trueZoneLabel": "zone_name"
+        "trueCoordinateZ": "float"
     },
     ...
 ]
