@@ -14,7 +14,7 @@ const {
   getNodes,
   getNodesByName,
   getNodePositions,
-  getNodePositionByNodeId,
+  getNodePositionByNodeName,
   getPositionDataByExperiment,
   getExperimentMetricsByName,
   getZones,
@@ -126,14 +126,14 @@ describe("getData", () => {
     })
   })
 
-  describe("getNodePositionsByNodeId", () => {
-    it("should return the node position for the expected node by ID", async () => {
+  describe("getNodePositionsByNodeName", () => {
+    it("should return the node position for the expected node by name", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
       await insertPoints(points)
       await Node.bulkCreate(nodes)
       await NodePosition.bulkCreate(nodePositions)
-      const storedNodePosition = await getNodePositionByNodeId("node2", "test-experiment")
+      const storedNodePosition = await getNodePositionByNodeName("Node2", "test-experiment")
       expect(pick(storedNodePosition, keys(nodePositions[0]))).to.deep.equal(nodePositions[1])
     })
   })

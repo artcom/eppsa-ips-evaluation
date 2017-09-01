@@ -68,12 +68,12 @@ describe("Store data", () => {
       await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "node1",
+        localizedNodeName: "Node1",
         pointName: "point1",
         experimentName: "test-experiment"
       }
       const upsertedPosition = {
-        localizedNodeId: "node1",
+        localizedNodeName: "Node1",
         pointName: "point2",
         experimentName: "test-experiment"
       }
@@ -81,7 +81,7 @@ describe("Store data", () => {
       await upsertNodePosition(upsertedPosition)
       const insertedNodes = await NodePosition.findAll({
         where: {
-          localizedNodeId: "node1",
+          localizedNodeName: "Node1",
           experimentName: "test-experiment"
         }
       })
@@ -97,12 +97,12 @@ describe("Store data", () => {
       await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "node1",
+        localizedNodeName: "Node1",
         pointName: "point1",
         experimentName: "test-experiment"
       }
       const upsertedPosition = {
-        localizedNodeId: "node2",
+        localizedNodeName: "Node2",
         pointName: "point2",
         experimentName: "test-experiment"
       }
@@ -110,7 +110,7 @@ describe("Store data", () => {
       await upsertNodePosition(upsertedPosition)
       const insertedNodes = await NodePosition.findAll({
         where: {
-          localizedNodeId: "node2",
+          localizedNodeName: "Node2",
           experimentName: "test-experiment"
         }
       })
@@ -118,25 +118,25 @@ describe("Store data", () => {
     })
   })
 
-  describe("upsertNodePosition", () => {
+  describe("upsertNodePositions", () => {
     it("should insert node positions when not present", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)
       await insertPoints(points)
       await Node.bulkCreate(nodes)
       const initialPosition = {
-        localizedNodeId: "node1",
+        localizedNodeName: "Node1",
         pointName: "point1",
         experimentName: "test-experiment"
       }
       const upsertedPositions = [
         {
-          localizedNodeId: "node2",
+          localizedNodeName: "Node2",
           pointName: "point1",
           experimentName: "test-experiment"
         },
         {
-          localizedNodeId: "node3",
+          localizedNodeName: "Node3",
           pointName: "point3",
           experimentName: "test-experiment"
         }
@@ -146,7 +146,7 @@ describe("Store data", () => {
       for (const upsertedPosition of upsertedPositions) {
         const insertedNodes = await NodePosition.findAll({
           where: {
-            localizedNodeId: upsertedPosition.localizedNodeId,
+            localizedNodeName: upsertedPosition.localizedNodeName,
             experimentName: upsertedPosition.experimentName
           }
         })
@@ -272,8 +272,8 @@ describe("Store data", () => {
       const queryResults = await PositionData.findAll()
       const storedPositionData = queryResults
         .map(queryResult => pick(queryResult, keys(positionsWithZones[0])))
-      expect(sortBy(storedPositionData, ["localizedNodeId"]))
-        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeId"]))
+      expect(sortBy(storedPositionData, ["localizedNodeName"]))
+        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeName"]))
     })
 
     it("stores positionData as is when zone is specified", async () => {
@@ -285,8 +285,8 @@ describe("Store data", () => {
       const queryResults = await PositionData.findAll()
       const storedPositionData = queryResults
         .map(queryResult => pick(queryResult, keys(positionsWithZones[0])))
-      expect(sortBy(storedPositionData, ["localizedNodeId"]))
-        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeId"]))
+      expect(sortBy(storedPositionData, ["localizedNodeName"]))
+        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeName"]))
     })
   })
 })

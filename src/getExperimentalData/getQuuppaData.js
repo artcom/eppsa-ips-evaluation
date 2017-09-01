@@ -13,7 +13,7 @@ const getQuuppaData = async function getQuuppaData() {
 
 const getDataForAllTags = async function getDataForAllTags(experimentName, response) {
   const nodePositions = await NodePosition.findAll({ where:
-      { localizedNodeId: { $in: response.data.tags.map(tag => tag.id) }, experimentName }
+      { localizedNodeName: { $in: response.data.tags.map(tag => tag.name) }, experimentName }
   })
   const data = await Promise.all(response.data.tags.map(async (tag) => ({
     localizedNodeId: tag.id,
@@ -21,7 +21,7 @@ const getDataForAllTags = async function getDataForAllTags(experimentName, respo
     estCoordinateX: tag.smoothedPosition[0],
     estCoordinateY: tag.smoothedPosition[1],
     estCoordinateZ: tag.smoothedPosition[2],
-    pointName: nodePositions.find(position => position.localizedNodeId === tag.id).pointName,
+    pointName: nodePositions.find(position => position.localizedNodeName === tag.name).pointName,
     experimentName
   })))
   await insertPositionData(data)

@@ -15,7 +15,7 @@ exports.insertExperiment = async function insertExperiment(experimentName) {
 const upsertNodePosition = async function upsertNodePosition(nodePosition) {
   const sameNodes = await NodePosition.findAll({
     where: {
-      localizedNodeId: nodePosition.localizedNodeId,
+      localizedNodeName: nodePosition.localizedNodeName,
       experimentName: nodePosition.experimentName
     }
   })
@@ -24,7 +24,7 @@ const upsertNodePosition = async function upsertNodePosition(nodePosition) {
   } else {
     await NodePosition.update(nodePosition, {
       where: {
-        localizedNodeId: nodePosition.localizedNodeId,
+        localizedNodeName: nodePosition.localizedNodeName,
         experimentName: nodePosition.experimentName
       }
     })

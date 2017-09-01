@@ -32,8 +32,8 @@ describe("Model NodePosition", () => {
     const storedPositions = await NodePosition.findAll({ include: [{ model: Experiment }] })
     const storedNodePositions = storedPositions
       .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
-    expect(sortBy(storedNodePositions, ["localizedNodeId"]))
-      .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
+    expect(sortBy(storedNodePositions, ["localizedNodeName"]))
+      .to.deep.equal(sortBy(nodePositions, ["localizedNodeName"]))
   })
 
   it("has a one to one relationship with Experiment", async () => {
@@ -61,11 +61,11 @@ describe("Model NodePosition", () => {
       }
     )
     expect(sortBy(storedPositions.map(position => ({
-      localizedNodeId: position.localizedNode.id,
+      localizedNodeName: position.localizedNode.name,
       pointName: position.pointName
-    })), "localizedNodeId"))
+    })), "localizedNodeName"))
       .to.deep.equal(sortBy(nodePositions.map(nodePosition =>
-        pick(nodePosition, ["pointName", "localizedNodeId"])), "localizedNodeId")
+        pick(nodePosition, ["pointName", "localizedNodeName"])), "localizedNodeName")
       )
   })
 })

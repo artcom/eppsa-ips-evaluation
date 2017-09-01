@@ -2,7 +2,7 @@
   {
     "pointName": "point1",
     "experimentName": "test-experiment",
-    "localizedNodeId": "node1",
+    "localizedNodeName": "Node1",
     "estCoordinateX": 0.9,
     "estCoordinateY": 1.01,
     "estCoordinateZ": 3,
@@ -11,7 +11,7 @@
   {
     "pointName": "point2",
     "experimentName": "test-experiment",
-    "localizedNodeId": "node2",
+    "localizedNodeName": "Node2",
     "estCoordinateX": 2.1,
     "estCoordinateY": 2.2,
     "estCoordinateZ": 2.9,
@@ -20,7 +20,7 @@
   {
     "pointName": "point3",
     "experimentName": "test-experiment",
-    "localizedNodeId": "node3",
+    "localizedNodeName": "Node3",
     "estCoordinateX": 3.3,
     "estCoordinateY": 4.2,
     "estCoordinateZ": 1.9,

@@ -50,11 +50,11 @@ describe("Model PositionData", () => {
       }
     )
     expect(sortBy(storedPositions.map(position => ({
-      localizedNodeId: position.localizedNode.id,
+      localizedNodeName: position.localizedNode.name,
       pointName: position.pointName
-    })), "localizedNodeId"))
+    })), "localizedNodeName"))
       .to.deep.equal(sortBy(positionData.map(positionDatum =>
-      pick(positionDatum, ["pointName", "localizedNodeId"])), "localizedNodeId")
+      pick(positionDatum, ["pointName", "localizedNodeName"])), "localizedNodeName")
     )
   })
 

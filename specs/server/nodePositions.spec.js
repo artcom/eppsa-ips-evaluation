@@ -41,10 +41,10 @@ describe("Server for node positions", () => {
       .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
   })
 
-  it("should return node position data on get at /node-positions/node-id", async () => {
+  it("should return node position data on get at /node-positions/node-name", async () => {
     await NodePosition.bulkCreate(nodePositions)
     const result = await rest.get(
-      "http://localhost:3000/experiments/test-experiment/node-positions/node2"
+      "http://localhost:3000/experiments/test-experiment/node-positions/Node2"
     )
     expect(result.response.statusCode).to.equal(200)
     expect(result.data).to.deep.equal(nodePositions[1])
@@ -59,8 +59,8 @@ describe("Server for node positions", () => {
       )
       expect(result.response.statusCode).to.equal(201)
       expect(result.response.headers.location)
-        .to.equal("/experiments/test-experiment/node-positions/node2")
-      expect(result.data).to.equal("node2")
+        .to.equal("/experiments/test-experiment/node-positions/Node2")
+      expect(result.data).to.equal("Node2")
     }
   )
 
@@ -81,7 +81,7 @@ describe("Server for node positions", () => {
     async () => {
       await NodePosition.create(nodePositions[1])
       const updatedNodePosition = {
-        localizedNodeId: "node2",
+        localizedNodeName: "Node2",
         pointName: "point1",
         experimentName: "test-experiment"
       }
@@ -108,11 +108,11 @@ describe("Server for node positions", () => {
         .to.equal(
         nodePositions
           .map(nodePosition =>
-            `/experiments/test-experiment/node-positions/${nodePosition.localizedNodeId}`
+            `/experiments/test-experiment/node-positions/${nodePosition.localizedNodeName}`
           ).join("; ")
       )
       expect(result.data)
-        .to.deep.equal(nodePositions.map(nodePosition => nodePosition.localizedNodeId))
+        .to.deep.equal(nodePositions.map(nodePosition => nodePosition.localizedNodeName))
     }
   )
 
@@ -127,8 +127,8 @@ describe("Server for node positions", () => {
       const storedNodePositionsQueryResult = await NodePosition.findAll()
       const storedNodePosition = storedNodePositionsQueryResult
         .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
-      expect(sortBy(storedNodePosition, ["localizedNodeId"]))
-        .to.deep.equal(sortBy(nodePositions, ["localizedNodeId"]))
+      expect(sortBy(storedNodePosition, ["localizedNodeName"]))
+        .to.deep.equal(sortBy(nodePositions, ["localizedNodeName"]))
     }
   )
 
@@ -137,17 +137,17 @@ describe("Server for node positions", () => {
     async () => {
       const updatedNodePositions = [
         {
-          localizedNodeId: "node1",
+          localizedNodeName: "Node1",
           pointName: "point2",
           experimentName: "test-experiment"
         },
         {
-          localizedNodeId: "node2",
+          localizedNodeName: "Node2",
           pointName: "point3",
           experimentName: "test-experiment"
         },
         {
-          localizedNodeId: "node3",
+          localizedNodeName: "Node3",
           pointName: "point1",
           experimentName: "test-experiment"
         }
@@ -161,8 +161,8 @@ describe("Server for node positions", () => {
       const storedNodePositionsQueryResult = await NodePosition.findAll()
       const storedNodePosition = storedNodePositionsQueryResult
         .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
-      expect(sortBy(storedNodePosition, ["localizedNodeId"]))
-        .to.deep.equal(sortBy(updatedNodePositions, ["localizedNodeId"]))
+      expect(sortBy(storedNodePosition, ["localizedNodeName"]))
+        .to.deep.equal(sortBy(updatedNodePositions, ["localizedNodeName"]))
     }
   )
 })

@@ -377,7 +377,7 @@ Node positions can be defined or modified:
 
 ```json
 {
-  "localizedNodeId": "node_id", "pointName": "point_name"
+  "localizedNodeName": "node_name", "pointName": "point_name"
 }
 ```
 
@@ -386,7 +386,7 @@ Node positions can be defined or modified:
 ```json
 [
     {
-      "localizedNodeId": "node_id", "pointName": "point_name"
+      "localizedNodeName": "node_name", "pointName": "point_name"
     },
     ...
 ]
@@ -394,12 +394,12 @@ Node positions can be defined or modified:
 
 Node positions can be retrieved:
 
-- using a GET request to ```/experiments/experiment-name/node-positions/node-id``` and will return:
+- using a GET request to ```/experiments/experiment-name/node-positions/node-name``` and will return:
 
 
 ```json
 {
-  "localizedNodeId": "node_id", "pointName": "point_name", "experimentName": "experiment_name"
+  "localizedNodeName": "node_name", "pointName": "point_name", "experimentName": "experiment_name"
 }
 ```
 
@@ -408,7 +408,7 @@ Node positions can be retrieved:
 ```json
 [
     {
-      "localizedNodeId": "node_id", "pointName": "point_name", "experimentName": "experiment_name"
+      "localizedNodeName": "node_name", "pointName": "point_name", "experimentName": "experiment_name"
     },
     ...
 ]
