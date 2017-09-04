@@ -9,6 +9,9 @@
     "test-with-coverage": "NODE_ENV=test nyc --reporter=html --reporter=text grunt test",
     "test-watch": "NODE_ENV=test grunt watch"
   },
+  "engines": {
+    "node": "^8.4.0"
+  },
   "dependencies": {
     "axios": "^0.16.2",
     "body-parser": "^1.17.2",
