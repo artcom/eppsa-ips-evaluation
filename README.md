@@ -353,7 +353,7 @@ Nodes can be retrieved:
 
 End point: ```/experiments```
 
-Accepts GET and POST requests.
+Accepts GET, POST and DELETE requests.
 
 New experiment can be created:
 
@@ -364,6 +364,29 @@ New experiment can be created:
     "name": "experiment_name"
 }
 ```
+
+Experiments can be retrieved:
+
+- using a GET request to ```/experiments/experiment-name``` and will return:
+
+```json
+{
+    "name": "experiment_name"
+}
+```
+
+- or in a batch using a GET request to ```/experiments``` and will return:
+
+```json
+[
+    {
+        "name": "experiment_name"
+    },
+    ...
+]
+```
+
+Experiments and all associated data (experiment metrics, position data, node positions) can be deleted using a DELETE request at ```/experiments/experiment-name```
 
 #### Define node positions
 

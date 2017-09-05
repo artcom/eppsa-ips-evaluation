@@ -1,5 +1,6 @@
 const multer = require("multer")
 const { includes } = require("lodash")
+const Experiment = require("../models/experiment")
 const { getExperiments, getExperimentByName } = require("../getData")
 const { insertExperiment } = require("../storeData/index")
 const quuppaExperiment = require("../runExperiment/quuppaExperiment")
@@ -35,6 +36,11 @@ module.exports = function serveExperiments(server) {
       repeat(quuppaExperiment, request.params.name, repeats, interval)
     }
     response.status(201).send(`started ${experimentTypes.join(", ")} experiment`)
+  })
+
+  server.delete("/experiments/:name", async (request, response) => {
+    await Experiment.destroy({ where: { name: request.params.name } })
+    response.send(request.params.name)
   })
 
   return server

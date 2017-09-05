@@ -2,7 +2,7 @@ const { pick } = require("lodash")
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
 const Node = require("../models/node")
-const NodePositon = require("../models/nodePosition")
+const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const Zone = require("../models/zone")
@@ -14,7 +14,7 @@ exports.getExperiments = async function getExperiments() {
 }
 
 exports.getExperimentByName = async function getExperimentByName(name) {
-  const experiment = await Experiment.findAll({ name })
+  const experiment = await Experiment.findAll({ where: { name } })
   return pick(experiment[0], ["name"])
 }
 
@@ -93,7 +93,7 @@ exports.getZoneByName = async function getZones(name) {
 }
 
 exports.getNodePositions = async function getNodePositions(experimentName) {
-  return await NodePositon.findAll({
+  return await NodePosition.findAll({
     attributes: {
       exclude: [
         "createdAt",
@@ -109,7 +109,7 @@ exports.getNodePositionByNodeName = async function getNodePositionByNodeId(
   nodeName,
   experimentName
 ) {
-  const queryResult = await NodePositon.findAll({
+  const queryResult = await NodePosition.findAll({
     attributes: {
       exclude: [
         "createdAt",
