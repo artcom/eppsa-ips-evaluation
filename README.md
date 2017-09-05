@@ -1,4 +1,4 @@
-# Indoor Positioning Systems Evaluation Software
+# Indoor Positioning Systems Evaluation Backend
 
 Tools for the evaluation of the quality / accuracy of indoor positioning systems
 

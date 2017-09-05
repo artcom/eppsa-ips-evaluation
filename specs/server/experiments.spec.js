@@ -45,6 +45,19 @@ describe("Server for experiments", () => {
     expect(result.data).to.equal("")
   })
 
+  it("should add the Access-Control-Allow-Origin header on a get request with an Origin header",
+    async () => {
+      const result = await rest.get(
+        "http://localhost:3000",
+        { headers: { Origin: "http://example.com" } }
+      )
+      expect(result.response.headers["access-control-allow-origin"]).to.equal("*")
+      expect(result.response.headers["access-control-allow-methods"]).to.equal("GET,POST,DELETE")
+      expect(result.response.headers["access-control-allow-headers"])
+        .to.equal("X-Requested-With,Content-Type")
+    }
+  )
+
   it("should return all experiments on get at /experiments", async () => {
     await insertExperiment("test-experiment")
     const result = await rest.get("http://localhost:3000/experiments")

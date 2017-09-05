@@ -13,6 +13,22 @@ let server = express()
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 
+server.all("*", (req, res, next) => {
+  if (!req.get("Origin")) {
+    return next()
+  }
+
+  res.set("Access-Control-Allow-Origin", "*")
+  res.set("Access-Control-Allow-Methods", "GET,POST,DELETE")
+  res.set("Access-Control-Allow-Headers", "X-Requested-With,Content-Type")
+
+  if (req.method === "OPTIONS") {
+    return res.send(200)
+  }
+
+  next()
+})
+
 server = serveExperiments(server)
 server = servePoints(server)
 server = serveNodes(server)
