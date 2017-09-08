@@ -194,7 +194,7 @@ describe("Run a Quuppa experiment", () => {
   beforeEach(async () => {
     await dbDrop()
     this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getData)
-    this.runQuuppaExperiment = proxyquire(
+    proxyquire(
       "../../src/runExperiment/quuppaExperiment",
       { getQuuppaData: { getQuuppaData: this.getData } }
     )
