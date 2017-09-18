@@ -53,7 +53,7 @@ exports.getNodes = async function getNodes() {
   })
 }
 
-exports.getNodesByName = async function getNodesByName(name) {
+exports.getNodeByName = async function getNodeByName(name) {
   const queryResult = await Node.findAll({
     attributes: {
       exclude: [
@@ -145,6 +145,19 @@ exports.getPositionDataByPoint = async function getPositionDataByPoint(pointName
       ]
     },
     where: { pointName }
+  })
+}
+
+exports.getPositionDataByNode = async function getPositionDataByNode(nodeName) {
+  return await PositionData.findAll({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt",
+        "id"
+      ]
+    },
+    where: { localizedNodeName: nodeName }
   })
 }
 

@@ -1,6 +1,6 @@
 const multer = require("multer")
 const { keys } = require("lodash")
-const { getNodes, getNodesByName } = require("../getData")
+const { getNodes, getNodeByName, getPositionDataByNode } = require("../getData")
 const Node = require("../models/node")
 
 
@@ -13,7 +13,7 @@ module.exports = function serveNodes(server) {
   })
 
   server.get("/nodes/:name", async (request, response) => {
-    const node = await getNodesByName(request.params.name)
+    const node = await getNodeByName(request.params.name)
     response.status(200).send(node)
   })
 
@@ -29,6 +29,17 @@ module.exports = function serveNodes(server) {
     } else {
       await Node.create(request.body)
       response.append("location", `/nodes/${request.body.name}`).status(201).send(request.body.name)
+    }
+  })
+
+  server.delete("/nodes/:name", async (request, response) => {
+    const positionData = await getPositionDataByNode(request.params.name)
+    if (positionData.length === 0) {
+      await Node.destroy({ where: { name: request.params.name } })
+      response.send(request.params.name)
+    } else {
+      response
+        .send(`Node "${request.params.name}" has associated experimental data and was not deleted`)
     }
   })
 

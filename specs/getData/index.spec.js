@@ -12,10 +12,11 @@ const {
   getPoints,
   getPointByName,
   getNodes,
-  getNodesByName,
+  getNodeByName,
   getNodePositions,
   getNodePositionByNodeName,
   getPositionDataByExperiment,
+  getPositionDataByNode,
   getPositionDataByPoint,
   getExperimentMetricsByName,
   getZones,
@@ -87,10 +88,10 @@ describe("getData", () => {
     })
   })
 
-  describe("getNodesByName", () => {
+  describe("getNodeByName", () => {
     it("should return the expected node by name", async () => {
       await Node.bulkCreate(nodes)
-      const storedNode = await getNodesByName("Node2")
+      const storedNode = await getNodeByName("Node2")
       expect(pick(storedNode, keys(nodes[0]))).to.deep.equal(nodes[1])
     })
   })
@@ -161,6 +162,19 @@ describe("getData", () => {
       const storedPositionData = await getPositionDataByPoint("point1")
       expect(storedPositionData).to.have.length(1)
       expect(storedPositionData[0].pointName).to.equal("point1")
+    })
+  })
+
+  describe("getPositionDataByNode", () => {
+    it("should return all position data for a given node", async () => {
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await insertPositionData(positionsWithErrors)
+      const storedPositionData = await getPositionDataByNode("Node1")
+      expect(storedPositionData).to.have.length(1)
+      expect(storedPositionData[0].localizedNodeName).to.equal("Node1")
     })
   })
 

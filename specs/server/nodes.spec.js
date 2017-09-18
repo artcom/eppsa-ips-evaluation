@@ -1,11 +1,15 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const rest = require("restling")
-const { keys, pick, sortBy } = require("lodash")
+const { assign, keys, pick, set, sortBy } = require("lodash")
+const { getNodeByName } = require("../../src/getData")
 const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
+const points = require("../testData/points.json")
+const positionsWithErrors = require("../testData/positionsWithErrors.json")
 const { dbSync, dbDrop } = require("../helpers/db")
 const server = require("../../src/server")
+const { insertExperiment, insertPoints, insertPositionData } = require("../../src/storeData/index")
 
 
 describe("Server for nodes", () => {
@@ -73,5 +77,48 @@ describe("Server for nodes", () => {
     const storedNodesQueryResult = await Node.findAll()
     const storedNodes = storedNodesQueryResult.map(node => pick(node, keys(nodes[0])))
     expect(storedNodes).to.deep.equal(nodes)
+  })
+
+  it("should return the deleted node name on DELETE at /nodes/node-name",
+    async () => {
+      await Node.bulkCreate(nodes)
+
+      const result = await rest.del("http://localhost:3000/nodes/Node1")
+
+      expect(result.data).to.equal("Node1")
+      expect(result.response.statusCode).to.equal(200)
+    }
+  )
+
+  it(
+    "should delete a node on DELETE at /nodes/node-name",
+    async () => {
+      await Node.bulkCreate(nodes)
+
+      await rest.del("http://localhost:3000/nodes/Node1")
+
+      const node1 = await getNodeByName("Node1")
+
+      expect(node1).to.equal(undefined)
+    }
+  )
+
+  it("should not delete a node when it has experimental data associated with it", async () => {
+    await insertPoints(points)
+    await Node.bulkCreate(nodes)
+    await insertExperiment("test-experiment")
+    await insertPositionData(
+      positionsWithErrors.map(position =>
+        set(assign({}, position), "experimentName", "test-experiment")
+      )
+    )
+
+    const result = await rest.del("http://localhost:3000/nodes/Node1")
+
+    const node1 = await getNodeByName("Node1")
+    expect(result.data)
+      .to.equal("Node \"Node1\" has associated experimental data and was not deleted")
+
+    expect(JSON.stringify(node1)).to.equal(JSON.stringify(nodes[0]))
   })
 })
