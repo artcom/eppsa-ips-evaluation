@@ -134,10 +134,10 @@ describe("Server for experiments", () => {
 
       const positionData = await getPositionDataByExperiment("test-experiment")
 
-      expect(experiment).to.be.empty
-      expect(metrics).to.be.undefined
-      expect(storedNodePositions).to.be.empty
-      expect(positionData).to.be.empty
+      expect(JSON.stringify(experiment)).to.equal(JSON.stringify({}))
+      expect(metrics).to.equal(undefined)
+      expect(storedNodePositions).to.have.length(0)
+      expect(positionData).to.have.length(0)
     }
   )
 
@@ -177,14 +177,14 @@ describe("Server for experiments", () => {
     const positionData1 = await getPositionDataByExperiment("test-experiment1")
     const positionData2 = await getPositionDataByExperiment("test-experiment2")
 
-    expect(experiment1).to.be.empty
+    expect(JSON.stringify(experiment1)).to.equal(JSON.stringify({}))
     expect(experiment2).to.deep.equal({ name: "test-experiment2" })
-    expect(metrics1).to.be.undefined
+    expect(metrics1).to.equal(undefined)
     expect(metrics2.experimentName).to.equal("test-experiment2")
-    expect(nodePositions1).to.be.empty
+    expect(nodePositions1).to.have.length(0)
     expect(nodePositions2.map(position => position.experimentName))
       .to.deep.equal(new Array(3).fill("test-experiment2"))
-    expect(positionData1).to.be.empty
+    expect(positionData1).to.have.length(0)
     expect(positionData2.map(position => position.experimentName))
       .to.deep.equal(new Array(3).fill("test-experiment2"))
   })
