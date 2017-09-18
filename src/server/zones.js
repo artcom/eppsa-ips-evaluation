@@ -1,7 +1,8 @@
 const multer = require("multer")
 const { keys } = require("lodash")
 const { getZones, getZoneByName } = require("../getData")
-const { insertZone, insertZones } = require("../storeData")
+const storeData = require("../storeData")
+const Zone = require("../models/zone")
 
 
 const upload = multer()
@@ -20,16 +21,22 @@ module.exports = function serveZones(server) {
   server.post("/zones", upload.array(), async (request, response) => {
     if (request.body["0"]) {
       const zones = keys(request.body).map(key => request.body[key])
-      await insertZones(zones)
+      await storeData.insertZones(zones)
 
       response
         .append("location", zones.map(zone => `/zones/${zone.name}`).join("; "))
         .status(201)
         .send(zones.map(zone => zone.name))
     } else {
-      await insertZone(request.body)
+      await storeData.insertZone(request.body)
       response.append("location", `/zones/${request.body.name}`).status(201).send(request.body.name)
     }
+  })
+
+  server.delete("/zones/:name", async (request, response) => {
+    await Zone.destroy({ where: { name: request.params.name } })
+    await storeData.updatePointZones()
+    response.send(request.params.name)
   })
 
   return server

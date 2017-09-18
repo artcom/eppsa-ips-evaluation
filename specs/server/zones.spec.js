@@ -1,11 +1,15 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
+const proxyquire = require("proxyquire")
+const sinon = require("sinon")
 const { expect } = require("chai")
 const rest = require("restling")
 const { keys, pick, sortBy } = require("lodash")
+const { getZoneByName } = require("../../src/getData")
 const Zone = require("../../src/models/zone")
 const { dbSync, dbDrop } = require("../helpers/db")
 const zones = require("../testData/zones.json")
 const server = require("../../src/server")
+const storeData = require("../../src/storeData")
 
 
 describe("Server for zones", () => {
@@ -19,57 +23,128 @@ describe("Server for zones", () => {
     this.server.close()
   })
 
-  it("should return all zones on get at /zones", async () => {
-    await Zone.bulkCreate(zones)
-    const result = await rest.get("http://localhost:3000/zones")
-    expect(result.response.statusCode).to.equal(200)
-    expect(sortBy(result.data, ["name"])).to.deep.equal(sortBy(zones, ["name"]))
+  describe("on GET", () => {
+    it("should return all zones at /zones", async () => {
+      await Zone.bulkCreate(zones)
+      const result = await rest.get("http://localhost:3000/zones")
+      expect(result.response.statusCode).to.equal(200)
+      expect(sortBy(result.data, ["name"])).to.deep.equal(sortBy(zones, ["name"]))
+    })
+
+    it("should return zone data at /zones/zone-name", async () => {
+      await Zone.bulkCreate(zones)
+      const result = await rest.get("http://localhost:3000/zones/zone1")
+      expect(result.response.statusCode).to.equal(200)
+      expect(result.data).to.deep.equal(zones[0])
+    })
   })
 
-  it("should return zone data on get at /zones/zone-name", async () => {
-    await Zone.bulkCreate(zones)
-    const result = await rest.get("http://localhost:3000/zones/zone1")
-    expect(result.response.statusCode).to.equal(200)
-    expect(result.data).to.deep.equal(zones[0])
-  })
+  describe("on POST", () => {
+    it("should return zone name in body and path in location header on single zone POST at /zones",
+      async () => {
+        const result = await rest.post("http://localhost:3000/zones", { data: zones[0] })
+        expect(result.response.statusCode).to.equal(201)
+        expect(result.response.headers.location).to.equal("/zones/zone1")
+        expect(result.data).to.equal("zone1")
+      }
+    )
 
-  it("should return zone name in body and path in location header on single zone post at /zones",
-    async () => {
+    it("should call updatePointZones on single zone POST at /zones", async () => {
+      const updatePointZonesFake = sinon.spy()
+      const insertZoneStub = sinon.stub(storeData, "insertZone")
+        .callsFake(zone => insertZoneFake(zone, updatePointZonesFake))
+      proxyquire("../../src/server/zones", { insertZone: insertZoneStub })
       const result = await rest.post("http://localhost:3000/zones", { data: zones[0] })
       expect(result.response.statusCode).to.equal(201)
-      expect(result.response.headers.location).to.equal("/zones/zone1")
-      expect(result.data).to.equal("zone1")
-    }
-  )
+      sinon.assert.calledOnce(insertZoneStub)
+      sinon.assert.calledOnce(updatePointZonesFake)
+    })
 
-  it("should store the zone in the database on single zone post at /zones", async () => {
-    const result = await rest.post("http://localhost:3000/zones", { data: zones[0] })
-    expect(result.response.statusCode).to.equal(201)
-    const storedZones = await Zone.findAll()
-    expect(pick(storedZones[0], keys(zones[0]))).to.deep.equal(zones[0])
-  })
+    it("should store the zone in the database on single zone POST at /zones", async () => {
+      const result = await rest.post("http://localhost:3000/zones", { data: zones[0] })
+      expect(result.response.statusCode).to.equal(201)
+      const storedZones = await Zone.findAll()
+      expect(pick(storedZones[0], keys(zones[0]))).to.deep.equal(zones[0])
+    })
 
-  it("should return zone names in body and paths in location header on multiple zone post at " +
-    "/zones",
-    async () => {
+    it("should return zone names in body and paths in location header on multiple zone POST at " +
+      "/zones",
+      async () => {
+        const result = await rest.post("http://localhost:3000/zones", { data: zones })
+        expect(result.response.statusCode).to.equal(201)
+        expect(result.response.headers.location).to.equal(
+          "/zones/zone1; /zones/zone2; /zones/zone3"
+        )
+        expect(result.data).to.deep.equal([
+          "zone1",
+          "zone2",
+          "zone3"
+        ])
+      }
+    )
+
+    it("should call updatePointZones on multiple zone POST at /zones", async () => {
+      const updatePointZonesFake = sinon.spy()
+      const insertZonesStub = sinon.stub(storeData, "insertZones")
+        .callsFake(zones => insertZonesFake(zones, updatePointZonesFake))
+      proxyquire("../../src/server/zones", { insertZones: insertZonesStub })
       const result = await rest.post("http://localhost:3000/zones", { data: zones })
       expect(result.response.statusCode).to.equal(201)
-      expect(result.response.headers.location).to.equal(
-        "/zones/zone1; /zones/zone2; /zones/zone3"
-      )
-      expect(result.data).to.deep.equal([
-        "zone1",
-        "zone2",
-        "zone3"
-      ])
-    }
-  )
+      sinon.assert.calledOnce(insertZonesStub)
+      sinon.assert.calledOnce(updatePointZonesFake)
+    })
 
-  it("should store the zones in the database on multiple zone post at /zones", async () => {
-    const result = await rest.post("http://localhost:3000/zones", { data: zones })
-    expect(result.response.statusCode).to.equal(201)
-    const storedZonesQueryResult = await Zone.findAll()
-    const storedZones = storedZonesQueryResult.map(zone => pick(zone, keys(zones[0])))
-    expect(storedZones).to.deep.equal(zones)
+    it("should store the zones in the database on multiple zone POST at /zones", async () => {
+      const result = await rest.post("http://localhost:3000/zones", { data: zones })
+      expect(result.response.statusCode).to.equal(201)
+      const storedZonesQueryResult = await Zone.findAll()
+      const storedZones = storedZonesQueryResult.map(zone => pick(zone, keys(zones[0])))
+      expect(storedZones).to.deep.equal(zones)
+    })
+  })
+
+  describe("on DELETE", () => {
+    it("should return the deleted zone name on DELETE at /zones/zone-name",
+      async () => {
+        await Zone.bulkCreate(zones)
+
+        const result = await rest.del("http://localhost:3000/zones/zone1")
+
+        expect(result.data).to.equal("zone1")
+        expect(result.response.statusCode).to.equal(200)
+      }
+    )
+
+    it(
+      "should delete a zone on DELETE at /zones/zone-name",
+      async () => {
+        await Zone.bulkCreate(zones)
+
+        await rest.del("http://localhost:3000/zones/zone1")
+
+        const zone1 = await getZoneByName("zone1")
+        expect(zone1).to.equal(undefined)
+      }
+    )
+
+    it("should call updatePointZones when a zone is deleted", async () => {
+      await Zone.bulkCreate(zones)
+      const updatePointZonesStub = sinon.stub(storeData, "updatePointZones")
+      proxyquire("../../src/server/zones", { updatePointZones: updatePointZonesStub })
+
+      await rest.del("http://localhost:3000/zones/zone1")
+
+      sinon.assert.calledOnce(updatePointZonesStub)
+    })
   })
 })
+
+async function insertZoneFake(zone, updatePointZoneFake) {
+  await Zone.create(zone)
+  updatePointZoneFake()
+}
+
+async function insertZonesFake(zones, updatePointZoneFake) {
+  await Zone.bulkCreate(zones)
+  updatePointZoneFake()
+}
