@@ -135,6 +135,19 @@ exports.getPositionDataByExperiment = async function getPositionDataByExperiment
   })
 }
 
+exports.getPositionDataByPoint = async function getPositionDataByPoint(pointName) {
+  return await PositionData.findAll({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt",
+        "id"
+      ]
+    },
+    where: { pointName }
+  })
+}
+
 exports.getExperimentMetricsByName = async function getExperimentMetricsByName(experimentName) {
   const metrics = await ExperimentMetrics.findAll({
     attributes: {

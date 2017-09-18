@@ -1,12 +1,16 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const rest = require("restling")
-const { assign, keys, pick, sortBy } = require("lodash")
+const { assign, keys, pick, set, sortBy } = require("lodash")
+const { getPointByName } = require("../../src/getData")
+const Node = require("../../src/models/node")
+const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const { dbSync, dbDrop } = require("../helpers/db")
 const points = require("../testData/points.json")
+const positionsWithErrors = require("../testData/positionsWithErrors.json")
 const server = require("../../src/server")
-const { insertPoints } = require("../../src/storeData/index")
+const { insertExperiment, insertPoints, insertPositionData } = require("../../src/storeData/index")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -98,5 +102,48 @@ describe("Server for points", () => {
       pick(point, keys(expectedStoredPoints[0]))
     )
     expect(storedPoints).to.deep.equal(expectedStoredPoints)
+  })
+
+  it("should return the deleted point name on DELETE at /points/point-name",
+    async () => {
+      await insertPoints(points)
+
+      const result = await rest.del("http://localhost:3000/points/point1")
+
+      expect(result.data).to.equal("point1")
+      expect(result.response.statusCode).to.equal(200)
+    }
+  )
+
+  it(
+    "should delete a point on DELETE at /points/point-name",
+    async () => {
+      await insertPoints(points)
+
+      await rest.del("http://localhost:3000/points/point1")
+
+      const point1 = await getPointByName("point1")
+
+      expect(point1).to.equal(undefined)
+    }
+  )
+
+  it("should not delete a point when it has experimental data associated with it", async () => {
+    await insertPoints(points)
+    await Node.bulkCreate(nodes)
+    await insertExperiment("test-experiment")
+    await insertPositionData(
+      positionsWithErrors.map(position =>
+        set(assign({}, position), "experimentName", "test-experiment")
+      )
+    )
+
+    const result = await rest.del("http://localhost:3000/points/point1")
+
+    const point1 = await getPointByName("point1")
+    expect(result.data)
+      .to.equal("Point \"point1\" has associated experimental data and was not deleted")
+
+    expect(JSON.stringify(point1)).to.equal(JSON.stringify(points[0]))
   })
 })

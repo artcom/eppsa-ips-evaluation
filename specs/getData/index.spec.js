@@ -16,6 +16,7 @@ const {
   getNodePositions,
   getNodePositionByNodeName,
   getPositionDataByExperiment,
+  getPositionDataByPoint,
   getExperimentMetricsByName,
   getZones,
   getZoneByName
@@ -147,6 +148,19 @@ describe("getData", () => {
       await insertPositionData(positionsWithErrors)
       const storedPositionData = await getPositionDataByExperiment("test-experiment")
       checkPositionData(storedPositionData)
+    })
+  })
+
+  describe("getPositionDataByPoint", () => {
+    it("should return all position data for a given point", async () => {
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await insertPositionData(positionsWithErrors)
+      const storedPositionData = await getPositionDataByPoint("point1")
+      expect(storedPositionData).to.have.length(1)
+      expect(storedPositionData[0].pointName).to.equal("point1")
     })
   })
 
