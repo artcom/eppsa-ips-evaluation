@@ -3,7 +3,7 @@ const proxyquire = require("proxyquire")
 const sinon = require("sinon")
 const { expect } = require("chai")
 const rest = require("restling")
-const { keys, pick, sortBy } = require("lodash")
+const { keys, mapValues, pick, sortBy } = require("lodash")
 const { getZoneByName } = require("../../src/getData")
 const Zone = require("../../src/models/zone")
 const { dbSync, dbDrop } = require("../helpers/db")
@@ -50,14 +50,13 @@ describe("Server for zones", () => {
     )
 
     it("should call updatePointZones on single zone POST at /zones", async () => {
-      const updatePointZonesFake = sinon.spy()
       const insertZoneStub = sinon.stub(storeData, "insertZone")
-        .callsFake(zone => insertZoneFake(zone, updatePointZonesFake))
       proxyquire("../../src/server/zones", { insertZone: insertZoneStub })
       const result = await rest.post("http://localhost:3000/zones", { data: zones[0] })
       expect(result.response.statusCode).to.equal(201)
       sinon.assert.calledOnce(insertZoneStub)
-      sinon.assert.calledOnce(updatePointZonesFake)
+      sinon.assert.calledWith(insertZoneStub, mapValues(zones[0], value => value.toString()))
+      insertZoneStub.restore()
     })
 
     it("should store the zone in the database on single zone POST at /zones", async () => {
@@ -84,14 +83,16 @@ describe("Server for zones", () => {
     )
 
     it("should call updatePointZones on multiple zone POST at /zones", async () => {
-      const updatePointZonesFake = sinon.spy()
       const insertZonesStub = sinon.stub(storeData, "insertZones")
-        .callsFake(zones => insertZonesFake(zones, updatePointZonesFake))
       proxyquire("../../src/server/zones", { insertZones: insertZonesStub })
       const result = await rest.post("http://localhost:3000/zones", { data: zones })
       expect(result.response.statusCode).to.equal(201)
       sinon.assert.calledOnce(insertZonesStub)
-      sinon.assert.calledOnce(updatePointZonesFake)
+      sinon.assert.calledWith(
+        insertZonesStub,
+        zones.map(zone => mapValues(zone, value => value.toString()))
+      )
+      insertZonesStub.restore()
     })
 
     it("should store the zones in the database on multiple zone POST at /zones", async () => {
@@ -138,13 +139,3 @@ describe("Server for zones", () => {
     })
   })
 })
-
-async function insertZoneFake(zone, updatePointZoneFake) {
-  await Zone.create(zone)
-  updatePointZoneFake()
-}
-
-async function insertZonesFake(zones, updatePointZoneFake) {
-  await Zone.bulkCreate(zones)
-  updatePointZoneFake()
-}
