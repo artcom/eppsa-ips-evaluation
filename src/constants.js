@@ -4,6 +4,7 @@ if (process.env.DATABASE
   && process.env.DATABASE_HOST
   && process.env.DATABASE_PASSWORD
   && process.env.QUUPPA_SERVER
+  && process.env.GOINDOOR_SERVER
 ) {
   module.exports = {
     database: {
@@ -13,7 +14,8 @@ if (process.env.DATABASE
       host: process.env.DATABASE_HOST,
       password: process.env.DATABASE_PASSWORD
     },
-    quuppaServer: process.env.QUUPPA_SERVER
+    quuppaServer: process.env.QUUPPA_SERVER,
+    goIndoorServer: process.env.GOINDOOR_SERVER
   }
 } else {
   module.exports = require("../.config.json")

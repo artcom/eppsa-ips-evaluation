@@ -12,5 +12,6 @@
     "port": 5432,
     "host": "host_name"
   },
-  "quuppaServer": "quuppa_server_url"
+  "quuppaServer": "quuppa_server_url",
+  "goIndoorServer": "goIndoor_server_url"
 }
