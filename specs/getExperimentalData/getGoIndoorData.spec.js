@@ -11,6 +11,7 @@ const {
   getDataForAllNodes
 } = require("../../src/getExperimentalData/getGoIndoorData")
 const goIndoor = require("../../src/goIndoor")
+const { getFake } = require("../mocks/goIndoorServer")
 const mockGoIndoorData = require("../testData/mockGoIndoorData.json")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
@@ -76,18 +77,6 @@ describe("getGoIndoorData", () => {
     })
   })
 })
-
-async function getFake(url) {
-  if (url === "/") {
-    return { data: nodes.map(node => node.id) }
-  } else if (url === "/id/node1") {
-    return { data: mockGoIndoorData[0] }
-  } else if (url === "/id/node2") {
-    return { data: mockGoIndoorData[1] }
-  } else if (url === "/id/node3") {
-    return { data: mockGoIndoorData[2] }
-  }
-}
 
 function checkPositionData(queryResults) {
   expect(
