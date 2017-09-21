@@ -8,7 +8,7 @@ const Point = require("./point")
 const PositionData = db.define("position_data", {
   estCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
-  estCoordinateZ: { type: Sequelize.FLOAT, allowNull: false },
+  estCoordinateZ: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 1.2 },
   estZoneLabel: { type: Sequelize.STRING },
   latency: Sequelize.FLOAT,
   powerConsumption: Sequelize.FLOAT,

@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { sortBy, pick, keys, slice } = require("lodash")
+const { sortBy, pick, find, keys, slice } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const Node = require("../../src/models/node")
@@ -38,6 +38,23 @@ describe("Model PositionData", () => {
     for (const position of storedPositions) {
       expect(position.experiment.name).to.equal("test-experiment")
     }
+  })
+
+  it("sets default value for Z coordinate", async () => {
+    const newPosition = {
+      pointName: "point2",
+      experimentName: "test-experiment",
+      localizedNodeName: "Node3",
+      estCoordinateX: 3.3,
+      estCoordinateY: 4.2,
+      estZoneLabel: "zone1"
+    }
+    await PositionData.create(newPosition)
+    const queryResults = await PositionData.findAll()
+    const defaultZ = find(queryResults.map(queryResult =>
+      pick(queryResult, ["estCoordinateZ"])
+    ), { estCoordinateZ: 1.2 })
+    expect(defaultZ != null).to.equal(true)
   })
 
   it("has a one to one relationship with Point", async () => {
