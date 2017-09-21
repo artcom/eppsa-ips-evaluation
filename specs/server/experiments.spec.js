@@ -188,38 +188,38 @@ describe("Server for experiments", () => {
     expect(positionData2.map(position => position.experimentName))
       .to.deep.equal(new Array(3).fill("test-experiment2"))
   })
-})
 
-describe("Run a Quuppa experiment", () => {
-  beforeEach(async () => {
-    await dbDrop()
-    this.getMockQuuppaData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockQuuppaData)
-    proxyquire(
-      "../../src/runExperiment/quuppaExperiment",
-      { getQuuppaData: { getQuuppaData: this.getMockQuuppaData } }
-    )
-    this.server = server.listen(3000, () => console.log("server listening on port 3000"))
-  })
+  describe("Run a Quuppa experiment", () => {
+    let getQuuppaDataMock
 
-  afterEach(async () => {
-    await dbDrop()
-    getQuuppaData.getQuuppaData.restore()
-    this.server.close()
-  })
-
-  it("should acknowledge a post request at /experiment/run", async () => {
-    await initializeDb()
-    await insertExperiment("test-experiment")
-    await Zone.bulkCreate(zones)
-    await insertPoints(points)
-    await Node.bulkCreate(nodes)
-    await NodePosition.bulkCreate(nodePositions)
-    const result = await rest.post("http://localhost:3000/experiments/test-experiment/run", {
-      data: { experimentTypes: ["Quuppa"] }
+    beforeEach(async () => {
+      await dbDrop()
+      getQuuppaDataMock = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockQuuppaData)
+      proxyquire(
+        "../../src/runExperiment/quuppaExperiment",
+        { getQuuppaData: { getQuuppaData: getQuuppaDataMock } }
+      )
     })
-    sinon.assert.calledOnce(this.getMockQuuppaData)
-    expect(result.response.statusCode).to.equal(201)
-    expect(result.data).to.equal("started Quuppa experiment")
+
+    afterEach(async () => {
+      await dbDrop()
+      getQuuppaData.getQuuppaData.restore()
+    })
+
+    it("should acknowledge a post request at /experiment/run", async () => {
+      await initializeDb()
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await NodePosition.bulkCreate(nodePositions)
+      const result = await rest.post("http://localhost:3000/experiments/test-experiment/run", {
+        data: { experimentTypes: ["Quuppa"] }
+      })
+      sinon.assert.calledOnce(getQuuppaDataMock)
+      expect(result.response.statusCode).to.equal(201)
+      expect(result.data).to.equal("started Quuppa experiment")
+    })
   })
 })
 
