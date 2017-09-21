@@ -16,7 +16,7 @@ const {
   getPositionDataByExperiment
 } = require("../../src/getData")
 const getQuuppaData = require("../../src/getExperimentalData/getQuuppaData")
-const { getData } = require("../mocks/getExperimentalData")
+const { getMockQuuppaData } = require("../mocks/getExperimentalData")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
 const nodePositions = require("../testData/nodePositions.json")
@@ -193,10 +193,10 @@ describe("Server for experiments", () => {
 describe("Run a Quuppa experiment", () => {
   beforeEach(async () => {
     await dbDrop()
-    this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getData)
+    this.getMockQuuppaData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockQuuppaData)
     proxyquire(
       "../../src/runExperiment/quuppaExperiment",
-      { getQuuppaData: { getQuuppaData: this.getData } }
+      { getQuuppaData: { getQuuppaData: this.getMockQuuppaData } }
     )
     this.server = server.listen(3000, () => console.log("server listening on port 3000"))
   })
@@ -217,7 +217,7 @@ describe("Run a Quuppa experiment", () => {
     const result = await rest.post("http://localhost:3000/experiments/test-experiment/run", {
       data: { experimentTypes: ["Quuppa"] }
     })
-    sinon.assert.calledOnce(this.getData)
+    sinon.assert.calledOnce(this.getMockQuuppaData)
     expect(result.response.statusCode).to.equal(201)
     expect(result.data).to.equal("started Quuppa experiment")
   })

@@ -1,8 +1,8 @@
 const mockQuuppaData = require("../testData/mockQuuppaData.json")
 
 
-const getData = async function getData() {
+const getMockQuuppaData = async function getData() {
   return mockQuuppaData
 }
 
-exports.getData = getData
+exports.getMockQuuppaData = getMockQuuppaData

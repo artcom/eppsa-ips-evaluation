@@ -8,7 +8,7 @@ const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const getQuuppaData = require("../../src/getExperimentalData/getQuuppaData")
-const { getData } = require("../mocks/getExperimentalData")
+const { getMockQuuppaData } = require("../mocks/getExperimentalData")
 const goIndoor = require("../../src/goIndoor")
 const { getFake } = require("../mocks/goIndoorServer")
 const { initializeDb } = require("../../src/initializeDb")
@@ -23,6 +23,7 @@ const pointErrors = require("../testData/pointErrors.json")
 const PositionData = require("../../src/models/positionData")
 const positionsWithZones = require("../testData/positionsWithZones.json")
 const runGoIndoorExperiment = require("../../src/runExperiment/goIndoorExperiment")
+const runQuuppaExperiment = require("../../src/runExperiment/quuppaExperiment")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -54,11 +55,13 @@ describe("Run", () => {
   })
 
   describe("a Quuppa experiment", () => {
+    let getQuuppaDataStub
+
     beforeEach(() => {
-      this.getData = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getData)
-      this.runQuuppaExperiment = proxyquire(
+      getQuuppaDataStub = sinon.stub(getQuuppaData, "getQuuppaData").callsFake(getMockQuuppaData)
+      proxyquire(
         "../../src/runExperiment/quuppaExperiment",
-        { getQuuppaData: { getQuuppaData: this.getData } }
+        { getQuuppaData: { getQuuppaData: getQuuppaDataStub } }
       )
     })
 
@@ -74,8 +77,8 @@ describe("Run", () => {
         await insertPoints(points)
         await Node.bulkCreate(nodes)
         await NodePosition.bulkCreate(nodePositions)
-        await this.runQuuppaExperiment("test-experiment")
-        sinon.assert.calledOnce(this.getData)
+        await runQuuppaExperiment("test-experiment")
+        sinon.assert.calledOnce(getQuuppaDataStub)
         await testMetrics()
       })
     })
