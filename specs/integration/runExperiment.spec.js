@@ -22,7 +22,7 @@ const points = require("../testData/points.json")
 const pointErrors = require("../testData/pointErrors.json")
 const PositionData = require("../../src/models/positionData")
 const positionsWithZones = require("../testData/positionsWithZones.json")
-const runGoIndoorExperiment = require("../../src/runExperiment/goIndoorExperiment")
+const { runGoIndoorExperiment } = require("../../src/runExperiment/goIndoorExperiment")
 const runQuuppaExperiment = require("../../src/runExperiment/quuppaExperiment")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
@@ -87,7 +87,7 @@ describe("Run", () => {
   describe("a GoIndoor experiment", () => {
     let goIndoorServerGetMock
 
-    beforeEach(async () => {
+    beforeEach(() => {
       goIndoorServerGetMock = sinon.stub(goIndoor.goIndoorServer, "get").callsFake(getFake)
       proxyquire(
         "../../src/getExperimentalData/getGoIndoorData",
@@ -95,7 +95,7 @@ describe("Run", () => {
       )
     })
 
-    afterEach(async () => {
+    afterEach(() => {
       goIndoorServerGetMock.restore()
     })
 
