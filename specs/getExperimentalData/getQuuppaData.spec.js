@@ -38,7 +38,7 @@ describe("Get Quuppa data", () => {
     })
   })
 
-  describe("Get data for all tags", () => {
+  describe("Get data for all nodes", () => {
     it("retrieves Quuppa position data and stores it", async () => {
       await insertExperiment("test-experiment")
       await Zone.bulkCreate(zones)

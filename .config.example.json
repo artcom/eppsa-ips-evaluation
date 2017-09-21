@@ -13,5 +13,6 @@
     "host": "host_name"
   },
   "quuppaServer": "quuppa_server_url",
-  "goIndoorServer": "goIndoor_server_url"
+  "goIndoorServer": "goIndoor_server_url",
+  "defaultCoordinateZ": 1.2
 }

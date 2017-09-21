@@ -1,6 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const { sortBy, pick, find, keys, slice } = require("lodash")
+const config = require("../../src/constants")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const Node = require("../../src/models/node")
@@ -53,7 +54,7 @@ describe("Model PositionData", () => {
     const queryResults = await PositionData.findAll()
     const defaultZ = find(queryResults.map(queryResult =>
       pick(queryResult, ["estCoordinateZ"])
-    ), { estCoordinateZ: 1.2 })
+    ), { estCoordinateZ: config.defaultCoordinateZ })
     expect(defaultZ != null).to.equal(true)
   })
 

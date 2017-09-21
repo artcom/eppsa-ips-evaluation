@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize")
+const config = require("../constants")
 const db = require("../db")
 const Experiment = require("./experiment")
 const Node = require("./node")
@@ -8,7 +9,11 @@ const Point = require("./point")
 const PositionData = db.define("position_data", {
   estCoordinateX: { type: Sequelize.FLOAT, allowNull: false },
   estCoordinateY: { type: Sequelize.FLOAT, allowNull: false },
-  estCoordinateZ: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 1.2 },
+  estCoordinateZ: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+    defaultValue: config.defaultCoordinateZ
+  },
   estZoneLabel: { type: Sequelize.STRING },
   latency: Sequelize.FLOAT,
   powerConsumption: Sequelize.FLOAT,

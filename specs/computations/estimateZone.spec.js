@@ -19,7 +19,7 @@ describe("estimateZone", () => {
     const points = [
       { zone: "zone1", coordinates: [3, 3, 2] },
       { zone: "zone2", coordinates: [5, 6, 3] },
-      { zone: "zone3", coordinates: [1, 1, 0] }
+      { zone: "zone3", coordinates: [1, 1, 2] }
     ]
     await checkZones(points)
   })

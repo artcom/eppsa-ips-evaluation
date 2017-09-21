@@ -15,7 +15,8 @@ if (process.env.DATABASE
       password: process.env.DATABASE_PASSWORD
     },
     quuppaServer: process.env.QUUPPA_SERVER,
-    goIndoorServer: process.env.GOINDOOR_SERVER
+    goIndoorServer: process.env.GOINDOOR_SERVER,
+    defaultCoordinateZ: 1.2
   }
 } else {
   module.exports = require("../.config.json")

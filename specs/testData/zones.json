@@ -14,7 +14,7 @@
     "xMax": 8,
     "yMin": 5,
     "yMax": 7,
-    "zMin": 3,
+    "zMin": 1,
     "zMax": 6
   },
   {
@@ -23,7 +23,7 @@
     "xMax": 2,
     "yMin": 0,
     "yMax": 2,
-    "zMin": 0,
+    "zMin": 2,
     "zMax": 3
   }
 ]

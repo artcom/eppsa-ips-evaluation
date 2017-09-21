@@ -1,4 +1,5 @@
 const { assign, pick } = require("lodash")
+const config = require("../constants")
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePosition = require("../models/nodePosition")
@@ -81,7 +82,7 @@ exports.insertPositionData = async function insertPositionData(positions) {
           estZoneLabel: position.estZoneLabel || await estimatezone(
             position.estCoordinateX,
             position.estCoordinateY,
-            position.estCoordinateZ
+            position.estCoordinateZ || config.defaultCoordinateZ
           )
         }
       )
