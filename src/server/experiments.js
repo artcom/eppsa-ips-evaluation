@@ -4,6 +4,7 @@ const Experiment = require("../models/experiment")
 const { getExperiments, getExperimentByName } = require("../getData")
 const { insertExperiment } = require("../storeData/index")
 const quuppaExperiment = require("../runExperiment/quuppaExperiment")
+const goIndoorExperiment = require("../runExperiment/goIndoorExperiment")
 
 
 const upload = multer()
@@ -34,6 +35,10 @@ module.exports = function serveExperiments(server) {
     if (includes(experimentTypes, "Quuppa")) {
       await quuppaExperiment(request.params.name)
       repeat(quuppaExperiment, request.params.name, repeats, interval)
+    }
+    if (includes(experimentTypes, "GoIndoor")) {
+      await goIndoorExperiment.runGoIndoorExperiment(request.params.name)
+      repeat(goIndoorExperiment.runGoIndoorExperiment, request.params.name, repeats, interval)
     }
     response.status(201).send(`started ${experimentTypes.join(", ")} experiment`)
   })

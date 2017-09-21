@@ -17,6 +17,7 @@ const {
 } = require("../../src/getData")
 const getQuuppaData = require("../../src/getExperimentalData/getQuuppaData")
 const { getMockQuuppaData } = require("../mocks/getExperimentalData")
+const goIndoorExperiment = require("../../src/runExperiment/goIndoorExperiment")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
 const nodePositions = require("../testData/nodePositions.json")
@@ -219,6 +220,33 @@ describe("Server for experiments", () => {
       sinon.assert.calledOnce(getQuuppaDataMock)
       expect(result.response.statusCode).to.equal(201)
       expect(result.data).to.equal("started Quuppa experiment")
+    })
+  })
+
+  describe("Run a GoIndoor experiment", () => {
+    let runGoIndoorExperimentStub
+
+    beforeEach(() => {
+      runGoIndoorExperimentStub = sinon
+        .stub(goIndoorExperiment, "runGoIndoorExperiment")
+        .resolves("")
+      proxyquire(
+        "../../src/server/experiments",
+        { goIndoorExperiment: { runGoIndoorExperiment: runGoIndoorExperimentStub } }
+      )
+    })
+
+    afterEach(() => {
+      runGoIndoorExperimentStub.restore()
+    })
+
+    it("should call runGoIndoorExperiment on a POST request at /experiment/run with a GoIndoor " +
+      "payload", async () => {
+      await rest.post("http://localhost:3000/experiments/test-experiment/run", {
+        data: { experimentTypes: ["GoIndoor"] }
+      })
+      sinon.assert.calledOnce(runGoIndoorExperimentStub)
+      sinon.assert.calledWith(runGoIndoorExperimentStub, "test-experiment")
     })
   })
 })
