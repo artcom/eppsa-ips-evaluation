@@ -11,7 +11,7 @@ const getQuuppaData = async function getQuuppaData() {
   })
 }
 
-const getDataForAllTags = async function getDataForAllTags(experimentName, response) {
+const getDataForAllNodes = async function getDataForAllNodes(experimentName, response) {
   const nodePositions = await NodePosition.findAll({ where:
       { localizedNodeName: { $in: response.data.tags.map(tag => tag.name) }, experimentName }
   })
@@ -28,4 +28,4 @@ const getDataForAllTags = async function getDataForAllTags(experimentName, respo
 }
 
 exports.getQuuppaData = getQuuppaData
-exports.getDataForAllTags = getDataForAllTags
+exports.getDataForAllNodes = getDataForAllNodes
