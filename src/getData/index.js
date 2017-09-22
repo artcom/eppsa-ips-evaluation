@@ -105,7 +105,7 @@ exports.getNodePositions = async function getNodePositions(experimentName) {
   })
 }
 
-exports.getNodePositionByNodeName = async function getNodePositionByNodeId(
+exports.getNodePositionByNodeName = async function getNodePositionByNodeName(
   nodeName,
   experimentName
 ) {

@@ -1,10 +1,12 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const rest = require("restling")
-const { assign, keys, pick, set, sortBy } = require("lodash")
-const { getPointByName } = require("../../src/getData")
+const { assign, includes, keys, pick, set, sortBy } = require("lodash")
+const { getPointByName, getNodePositions } = require("../../src/getData")
 const Node = require("../../src/models/node")
+const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
+const nodePositions = require("../testData/nodePositions.json")
 const Point = require("../../src/models/point")
 const { dbSync, dbDrop } = require("../helpers/db")
 const points = require("../testData/points.json")
@@ -125,6 +127,40 @@ describe("Server for points", () => {
       const point1 = await getPointByName("point1")
 
       expect(point1).to.equal(undefined)
+    }
+  )
+
+  it(
+    "when a point is deleted all node positions associated with it should be deleted",
+    async () => {
+      await insertExperiment("test-experiment")
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await NodePosition.bulkCreate(nodePositions)
+
+      const initialPoint1Positions = await NodePosition.findAll({ where: { pointName: "point1" } })
+      await rest.del("http://localhost:3000/points/point1")
+      const finalPoint1Positions = await NodePosition.findAll({ where: { pointName: "point1" } })
+
+      expect(initialPoint1Positions.map(position => position.localizedNodeName))
+        .to.deep.equal(["Node1"])
+      expect(finalPoint1Positions).to.have.length(0)
+    }
+  )
+
+  it(
+    "when a point is deleted there should be no node positions with no associated point",
+    async () => {
+      await insertExperiment("test-experiment")
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await NodePosition.bulkCreate(nodePositions)
+
+      await rest.del("http://localhost:3000/points/point1")
+      const remainingNodePositions = await getNodePositions("test-experiment")
+
+      expect(!includes(remainingNodePositions.map(position => position.pointName != null), false))
+        .to.equal(true)
     }
   )
 

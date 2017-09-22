@@ -1,10 +1,12 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const rest = require("restling")
-const { assign, keys, pick, set, sortBy } = require("lodash")
-const { getNodeByName } = require("../../src/getData")
+const { assign, includes, keys, pick, set, sortBy } = require("lodash")
+const { getNodeByName, getNodePositionByNodeName, getNodePositions } = require("../../src/getData")
 const Node = require("../../src/models/node")
+const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
+const nodePositions = require("../testData/nodePositions.json")
 const points = require("../testData/points.json")
 const positionsWithErrors = require("../testData/positionsWithErrors.json")
 const { dbSync, dbDrop } = require("../helpers/db")
@@ -100,6 +102,41 @@ describe("Server for nodes", () => {
       const node1 = await getNodeByName("Node1")
 
       expect(node1).to.equal(undefined)
+    }
+  )
+
+  it(
+    "when a node is deleted all its node positions should be deleted",
+    async () => {
+      await insertExperiment("test-experiment")
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await NodePosition.bulkCreate(nodePositions)
+
+      const initialNode1Positions = await getNodePositionByNodeName("Node1", "test-experiment")
+      await rest.del("http://localhost:3000/nodes/Node1")
+      const finalNode1Positions = await getNodePositionByNodeName("Node1", "test-experiment")
+
+      expect(initialNode1Positions.localizedNodeName).to.equal("Node1")
+      expect(finalNode1Positions == null).to.equal(true)
+    }
+  )
+
+  it(
+    "when a node is deleted there should be no node positions with no associated node",
+    async () => {
+      await insertExperiment("test-experiment")
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await NodePosition.bulkCreate(nodePositions)
+
+      await rest.del("http://localhost:3000/nodes/Node1")
+      const remainingNodePositions = await getNodePositions("test-experiment")
+
+      expect(!includes(
+        remainingNodePositions.map(position => position.localizedNodeName != null),
+        false
+      )).to.equal(true)
     }
   )
 

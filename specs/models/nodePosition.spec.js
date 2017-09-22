@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { keys, pick, sortBy } = require("lodash")
+const { keys, includes, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const Node = require("../../src/models/node")
@@ -34,6 +34,26 @@ describe("Model NodePosition", () => {
       .map(storedPosition => pick(storedPosition, keys(nodePositions[0])))
     expect(sortBy(storedNodePositions, ["localizedNodeName"]))
       .to.deep.equal(sortBy(nodePositions, ["localizedNodeName"]))
+  })
+
+  it("removes node positions with no associated node", async () => {
+    await Node.destroy({ where: { name: "Node1" } })
+    const remainingNodePositions = await NodePosition
+      .findAll({ where: { experimentName: "test-experiment" } })
+    const associatedNodes = remainingNodePositions.map(position =>
+      position.localizedNodeName != null
+    )
+    expect(includes(associatedNodes, false)).to.equal(false)
+  })
+
+  it("removes node positions with no associated point", async () => {
+    await Point.destroy({ where: { name: "point1" } })
+    const remainingNodePositions = await NodePosition
+      .findAll({ where: { experimentName: "test-experiment" } })
+    const associatedPoints = remainingNodePositions.map(position =>
+      position.pointName != null
+    )
+    expect(includes(associatedPoints, false)).to.equal(false)
   })
 
   it("has a one to one relationship with Experiment", async () => {
