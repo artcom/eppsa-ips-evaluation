@@ -248,6 +248,31 @@ describe("Server for experiments", () => {
       sinon.assert.calledOnce(runGoIndoorExperimentStub)
       sinon.assert.calledWith(runGoIndoorExperimentStub, "test-experiment")
     })
+
+    it("should call runGoIndoorExperiment several times on a POST request at /experiment/run " +
+      "with the appropriate GoIndoor payload", done => {
+      rest.post("http://localhost:3000/experiments/test-experiment/run", {
+        data: { experimentTypes: ["GoIndoor"], repeats: 3, interval: 100 }
+      })
+      setTimeout(() => {
+        sinon.assert.calledOnce(runGoIndoorExperimentStub)
+        setTimeout(() => {
+          sinon.assert.calledTwice(runGoIndoorExperimentStub)
+          setTimeout(() => {
+            sinon.assert.calledThrice(runGoIndoorExperimentStub)
+            done()
+          }, 100)
+        }, 100)
+      }, 10)
+    })
+
+    it("should acknowledge a POST request with a GoIndoor payload at /experiment/run", async () => {
+      const result = await rest.post("http://localhost:3000/experiments/test-experiment/run", {
+        data: { experimentTypes: ["GoIndoor"] }
+      })
+      expect(result.response.statusCode).to.equal(201)
+      expect(result.data).to.equal("started GoIndoor experiment")
+    })
   })
 })
 
