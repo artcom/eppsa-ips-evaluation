@@ -1,6 +1,6 @@
-const { describe, it, before, after } = require("mocha")
+const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { keys, pick, sortBy } = require("lodash")
+const { keys, pick, slice, sortBy } = require("lodash")
 const { dbDrop, dbSync } = require("../helpers/db")
 const data = require("../testData/mockQuuppaData.json")
 const { insertExperiment, insertPoints } = require("../../src/storeData/index")
@@ -17,11 +17,11 @@ const zones = require("../testData/zones.json")
 
 
 describe("Get Quuppa data", () => {
-  before(async () => {
+  beforeEach(async () => {
     await dbSync()
   })
 
-  after(async () => {
+  afterEach(async () => {
     await dbDrop()
   })
 
@@ -48,6 +48,20 @@ describe("Get Quuppa data", () => {
       await getDataForAllNodes("test-experiment", data)
       const positionDataQueryResults = await PositionData.findAll()
       await checkPositionData(positionDataQueryResults)
+    })
+
+    it("retrieves Quuppa position data and stores it only for nodes that have a defined node " +
+      "position", async () => {
+      await insertExperiment("test-experiment")
+      await Zone.bulkCreate(zones)
+      await insertPoints(points)
+      await Node.bulkCreate(nodes)
+      await NodePosition.bulkCreate(slice(JSON.parse(JSON.stringify(nodePositions)), 0, 2))
+      await getDataForAllNodes("test-experiment", data)
+      const positionDataQueryResults = await PositionData.findAll()
+      expect(positionDataQueryResults).to.have.length(2)
+      expect(positionDataQueryResults.map(data => data.localizedNodeName))
+        .to.deep.equal(["Node1", "Node2"])
     })
   })
 })
