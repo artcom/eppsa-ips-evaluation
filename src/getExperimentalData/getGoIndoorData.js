@@ -33,17 +33,16 @@ const getDataForAllNodes = async function getDataForAllNodes(experimentName) {
   })
   const storedNodes = await Node.findAll()
   const positionData = await Promise.all(
-    nodesGoIndoor.map(async node => {
-      const data = getAverage(await getNodeData(node))
-      const localizedNodeName = storedNodes.find(storedNode => storedNode.id === node).name
+    nodePositions.map(async node => {
+      const localizedNodeId = storedNodes
+        .find(storedNode => storedNode.name === node.localizedNodeName).id
+      const data = getAverage(await getNodeData(localizedNodeId))
       return {
-        localizedNodeId: node,
-        localizedNodeName,
+        localizedNodeId,
+        localizedNodeName: node.localizedNodeName,
         estCoordinateX: data.x,
         estCoordinateY: data.y,
-        pointName: nodePositions.find(position =>
-          position.localizedNodeName === localizedNodeName
-        ).pointName,
+        pointName: node.pointName,
         experimentName
       }
     })
