@@ -27,8 +27,8 @@ describe("Model ZoneSet", () => {
       )
     )
     const sets = await ZoneSet.findAll({ include: [{ model: Zone }] })
-    const storedSets = sets
-      .map(set => sortBy(set.zones, ["name"]).map(zone => zone.name))
+    const storedSets = sortBy(sets
+      .map(set => sortBy(set.zones, ["name"]).map(zone => zone.name)), ["name"])
     expect(storedSets)
       .to.deep.equal(zoneSets.map(set => sortBy(set.zones, ["name"]).map(zone => zone.name)))
   })

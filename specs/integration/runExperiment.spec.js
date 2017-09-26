@@ -43,13 +43,13 @@ describe("Run", () => {
       await Zone.bulkCreate(zones)
       await insertPoints(points)
       const insertedPoints = await Point.findAll()
-      const storedPoints = insertedPoints.map(point => pick(point, [
+      const storedPoints = sortBy(insertedPoints.map(point => pick(point, [
         "name",
         "trueCoordinateX",
         "trueCoordinateY",
         "trueCoordinateZ",
         "trueZoneLabel"
-      ]))
+      ])), ["name"])
       expect(storedPoints).to.deep.equal(points)
     })
   })
