@@ -5,6 +5,7 @@ const NodePosition = require("./models/nodePosition")
 const Point = require("./models/point")
 const PositionData = require("./models/positionData")
 const Zone = require("./models/zone")
+const ZoneSet = require("./models/zoneSet")
 
 
 exports.initializeDb = async function initializeDb() {
@@ -14,5 +15,6 @@ exports.initializeDb = async function initializeDb() {
   await NodePosition.sync()
   await PositionData.sync()
   await ExperimentMetrics.sync()
+  await ZoneSet.sync()
   await Zone.sync()
 }

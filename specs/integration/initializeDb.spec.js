@@ -9,6 +9,7 @@ const NodePosition = require("../../src/models/nodePosition")
 const Point = require("../../src/models/point")
 const PositionData = require("../../src/models/positionData")
 const Zone = require("../../src/models/zone")
+const ZoneSet = require("../../src/models/zoneSet")
 
 describe("Initialize database", () => {
   after(async () => {
@@ -24,6 +25,7 @@ describe("Initialize database", () => {
     const points = await Point.findAll()
     const positionData = await PositionData.findAll()
     const zone = await Zone.findAll()
+    const zoneSet = await ZoneSet.findAll()
 
     expect(experiments).to.deep.equal([])
     expect(experimentMetrics).to.deep.equal([])
@@ -32,5 +34,6 @@ describe("Initialize database", () => {
     expect(points).to.deep.equal([])
     expect(positionData).to.deep.equal([])
     expect(zone).to.deep.equal([])
+    expect(zoneSet).to.deep.equal([])
   })
 })

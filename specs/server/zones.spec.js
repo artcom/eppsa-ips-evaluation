@@ -27,15 +27,18 @@ describe("Server for zones", () => {
     it("should return all zones at /zones", async () => {
       await Zone.bulkCreate(zones)
       const result = await rest.get("http://localhost:3000/zones")
+      const zonesRetrieved = sortBy(result.data, ["name"])
+        .map(zone => pick(zone, keys(zones[0])))
       expect(result.response.statusCode).to.equal(200)
-      expect(sortBy(result.data, ["name"])).to.deep.equal(sortBy(zones, ["name"]))
+      expect(zonesRetrieved)
+        .to.deep.equal(sortBy(zones, ["name"]))
     })
 
     it("should return zone data at /zones/zone-name", async () => {
       await Zone.bulkCreate(zones)
       const result = await rest.get("http://localhost:3000/zones/zone1")
       expect(result.response.statusCode).to.equal(200)
-      expect(result.data).to.deep.equal(zones[0])
+      expect(pick(result.data, keys(zones[0]))).to.deep.equal(zones[0])
     })
   })
 
