@@ -36,10 +36,10 @@ describe("Model ZoneSet", () => {
   it("can add a zone to an empty set", async () => {
     await Zone.bulkCreate(zones)
     await ZoneSet.create({ name: "set1" }, { include: Zone })
-    const zoneSet = await ZoneSet.findOrBuild({ where: { name: "set1" } })
-    await zoneSet[0].addZone(["zone1"])
-    const zoneSets = await ZoneSet.findAll({ include: [{ model: Zone }] })
-    expect(zoneSets.map(set => set.zones.map(zone => zone.name))).to.deep.equal([["zone1"]])
+    const zoneSet = await ZoneSet.findOne({ where: { name: "set1" } })
+    await zoneSet.addZone(["zone1"])
+    const zoneSet1 = await ZoneSet.findOne({ where: { name: "set1" }, include: [{ model: Zone }] })
+    expect(zoneSet1.zones.map(zone => zone.name)).to.deep.equal(["zone1"])
   })
 
   it("can add a zone to a non empty set", async () => {
@@ -59,10 +59,10 @@ describe("Model ZoneSet", () => {
     }
     await Zone.bulkCreate(zones)
     await ZoneSet.create(initialSet, { include: Zone })
-    const zoneSet = await ZoneSet.findOrBuild({ where: { name: "set1" } })
-    await zoneSet[0].addZone(["zone2"])
-    const zoneSets = await ZoneSet.findAll({ include: [{ model: Zone }] })
-    expect(zoneSets.map(set => set.zones.map(zone => zone.name).sort())[0])
+    const zoneSet = await ZoneSet.findOne({ where: { name: "set1" } })
+    await zoneSet.addZone(["zone2"])
+    const zoneSets = await ZoneSet.findOne({ where: { name: "set1" }, include: [{ model: Zone }] })
+    expect(zoneSets.zones.map(zone => zone.name).sort())
       .to.deep.equal(["zone2", "zone4"])
   })
 
