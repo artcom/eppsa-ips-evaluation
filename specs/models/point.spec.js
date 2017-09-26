@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { assign, keys, pick, sortBy } = require("lodash")
+const { keys, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
@@ -18,18 +18,23 @@ describe("Model Point", () => {
   })
 
   it("can create points", async () => {
-    const pointZones = [
-      { trueZoneLabel: "zone3" },
-      { trueZoneLabel: "zone1" },
-      { trueZoneLabel: "zone1" }
-    ]
-    const pointsWithZone = points.map((point, i) => assign(point, pointZones[i]))
-    await Zone.bulkCreate(zones)
-    await Point.bulkCreate(pointsWithZone)
+    await Point.bulkCreate(points)
     const queryResults = await Point.findAll()
     const storedPoints = queryResults
-      .map(queryResult => pick(queryResult, keys(pointsWithZone[0])))
-    expect(sortBy(storedPoints, ["pointId"]))
-      .to.deep.equal(sortBy(pointsWithZone, ["PointId"]))
+      .map(queryResult => pick(queryResult, keys(points[0])))
+    expect(sortBy(storedPoints, ["name"]))
+      .to.deep.equal(sortBy(points, ["name"]))
+  })
+
+  it("can add a zone to a point", async () => {
+    await Zone.bulkCreate(zones)
+    await Point.bulkCreate(points)
+    const point1 = await Point.findOne({ where: { name: "point1" } })
+    await point1.addZone(["zone1"])
+    const point1WithZone = await Point.findOne({
+      where: { name: "point1" },
+      include: [{ model: Zone }]
+    })
+    expect(point1WithZone.zones.map(zone => zone.name)).to.deep.equal(["zone1"])
   })
 })
