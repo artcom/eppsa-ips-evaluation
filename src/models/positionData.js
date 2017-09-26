@@ -4,6 +4,7 @@ const db = require("../db")
 const Experiment = require("./experiment")
 const Node = require("./node")
 const Point = require("./point")
+const Zone = require("./zone")
 
 
 const PositionData = db.define("position_data", {
@@ -25,5 +26,6 @@ const PositionData = db.define("position_data", {
 PositionData.belongsTo(Node, { as: "localizedNode" })
 PositionData.belongsTo(Point)
 PositionData.belongsTo(Experiment)
+PositionData.belongsToMany(Zone, { as: "EstZone", through: "ZonePosition" })
 
 module.exports = PositionData

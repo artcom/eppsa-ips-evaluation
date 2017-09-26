@@ -9,7 +9,7 @@ const nodes = require("../testData/nodes.json")
 const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
-const positionData = require("../testData/positionsWithZones.json")
+const positionData = require("../testData/positions.json")
 const { insertPoints } = require("../../src/storeData")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones")
@@ -22,7 +22,6 @@ describe("Model PositionData", () => {
     await Zone.bulkCreate(zones)
     await insertPoints(points)
     await Node.bulkCreate(nodes)
-    await PositionData.bulkCreate(positionData)
   })
 
   afterEach(async () => {
@@ -30,11 +29,13 @@ describe("Model PositionData", () => {
   })
 
   it("can create position data", async () => {
+    await PositionData.bulkCreate(positionData)
     const queryResults = await PositionData.findAll()
     checkPositions(queryResults)
   })
 
   it("has a one to one relationship with Experiment", async () => {
+    await PositionData.bulkCreate(positionData)
     const storedPositions = await PositionData.findAll({ include: [{ model: Experiment }] })
     for (const position of storedPositions) {
       expect(position.experiment.name).to.equal("test-experiment")
@@ -50,6 +51,7 @@ describe("Model PositionData", () => {
       estCoordinateY: 4.2,
       estZoneLabel: "zone1"
     }
+    await PositionData.bulkCreate(positionData)
     await PositionData.create(newPosition)
     const queryResults = await PositionData.findAll()
     const defaultZ = find(queryResults.map(queryResult =>
@@ -59,6 +61,7 @@ describe("Model PositionData", () => {
   })
 
   it("has a one to one relationship with Point", async () => {
+    await PositionData.bulkCreate(positionData)
     const storedPositions = await PositionData.findAll(
       {
         include: [
@@ -77,11 +80,23 @@ describe("Model PositionData", () => {
   })
 
   it("has a one to one relationship with Node", async () => {
+    await PositionData.bulkCreate(positionData)
     const storedPositions = await PositionData.findAll(
       { include: [{ model: Node, as: "localizedNode" }] }
     )
     expect(storedPositions.map(position => pick(position.localizedNode, keys(nodes[0]))))
       .to.deep.equal(slice(nodes, 0, 3))
+  })
+
+  it("can add a zone to a positionData", async () => {
+    await PositionData.bulkCreate(positionData)
+    const position1 = await PositionData.findOne({ where: { pointName: "point1" } })
+    await position1.addEstZone(["zone1"])
+    const position1WithZone = await PositionData.findOne({
+      where: { pointName: "point1" },
+      include: [{ model: Zone, as: "EstZone" }]
+    })
+    expect(position1WithZone.EstZone.map(zone => zone.name)).to.deep.equal(["zone1"])
   })
 })
 
