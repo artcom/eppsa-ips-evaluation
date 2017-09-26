@@ -11,7 +11,7 @@ const nodePositions = require("../testData/nodePositions.json")
 const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
-const positionsWithZones = require("../testData/positionsWithZones.json")
+const positions = require("../testData/positions.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -69,6 +69,6 @@ describe("Get Quuppa data", () => {
 function checkPositionData(queryResults) {
   expect(
     sortBy(queryResults, ["pointName"])
-      .map(position => pick(position, keys(positionsWithZones[0])))
-  ).to.deep.equal(positionsWithZones)
+      .map(position => pick(position, keys(positions[0])))
+  ).to.deep.equal(positions)
 }

@@ -78,7 +78,7 @@ describe("Server for points", () => {
     const result = await rest.post("http://localhost:3000/points", { data: points })
     expect(result.response.statusCode).to.equal(201)
     const storedPointsQueryResult = await Point.findAll()
-    const storedPoints = storedPointsQueryResult.map(point =>
+    const storedPoints = sortBy(storedPointsQueryResult, ["name"]).map(point =>
       pick(point, keys(points[0]))
     )
     expect(storedPoints).to.deep.equal(points)

@@ -20,7 +20,7 @@ const nodes = require("../testData/nodes.json")
 const nodesGoIndoor = require("../testData/nodesGoIndoor.json")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
-const positionsWithZones = require("../testData/positionsWithZones.json")
+const positions = require("../testData/positions.json")
 const { insertExperiment, insertPoints } = require("../../src/storeData/index")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
@@ -94,7 +94,7 @@ describe("getGoIndoorData", () => {
 function checkPositionData(queryResults) {
   expect(
     sortBy(queryResults, ["pointName"])
-      .map(position => omit(pick(position, keys(positionsWithZones[0])), ["estCoordinateZ"]))
-  ).to.deep.equal(positionsWithZones.map(position => omit(position, ["estCoordinateZ"])))
+      .map(position => omit(pick(position, keys(positions[0])), ["estCoordinateZ"]))
+  ).to.deep.equal(positions.map(position => omit(position, ["estCoordinateZ"])))
 }
 
