@@ -9,6 +9,6 @@ const Point = db.define("point", {
   trueCoordinateZ: { type: Sequelize.FLOAT, allowNull: false }
 })
 
-Point.hasMany(Zone)
+Point.belongsToMany(Zone, { through: "ZonePoint" })
 
 module.exports = Point
