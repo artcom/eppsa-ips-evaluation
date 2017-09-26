@@ -55,25 +55,25 @@ exports.upsertPrimaryMetrics = async function upsertPrimaryMetrics(primaryMetric
   }
 }
 
+const insertPoint = async function insertPoint(point) {
+  await Point.create(
+    pick(
+      point,
+      ["name", "trueCoordinateX", "trueCoordinateY", "trueCoordinateZ"]
+    )
+  )
+  const zones = await getZones(
+    point.trueCoordinateX,
+    point.trueCoordinateY,
+    point.trueCoordinateZ
+  )
+  const newPoint = await Point.findOne({ where: { name: point.name } })
+  await newPoint.addZones(zones)
+}
+
 exports.insertPoints = async function insertPoints(points) {
   await Promise.all(
-    points.map(
-      async point => {
-        Point.create(
-          pick(
-            point,
-            ["name", "trueCoordinateX", "trueCoordinateY", "trueCoordinateZ"]
-          )
-        )
-        const zones = await getZones(
-          point.trueCoordinateX,
-          point.trueCoordinateY,
-          point.trueCoordinateZ
-        )
-        const newPoint = await Point.findOne({ where: { name: point.name } })
-        await newPoint.addZones(zones)
-      }
-    )
+    points.map(insertPoint)
   )
 }
 
@@ -93,16 +93,6 @@ exports.insertPositionData = async function insertPositionData(positions) {
     )
   )
   await PositionData.bulkCreate(positionsWithZone)
-}
-
-exports.insertPoint = async function insertPoint(point) {
-  const pointZone = await estimateZone(
-    point.trueCoordinateX,
-    point.trueCoordinateY,
-    point.trueCoordinateZ
-  )
-  const pointWithZone = await assign(point, { trueZoneLabel: pointZone })
-  await Point.create(pointWithZone)
 }
 
 const updatePointZones = async function updatePointZones() {
@@ -138,4 +128,5 @@ exports.insertZone = async function insertZone(zone) {
   await updatePointZones()
 }
 
+exports.insertPoint = insertPoint
 exports.updatePointZones = updatePointZones

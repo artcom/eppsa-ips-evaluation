@@ -193,7 +193,7 @@ describe("Store data", () => {
   })
 
   describe("insertPoints", () => {
-    it("adds zone to points", async () => {
+    it("adds zones to points", async () => {
       const zone4 = {
         name: "zone4",
         xMin: 0,
@@ -221,17 +221,28 @@ describe("Store data", () => {
   })
 
   describe("insertPoint", () => {
-    it("adds zone to point", async () => {
-      const expectedStoredPoint = assign(
-        Object.assign({}, points[0]),
-        { trueZoneLabel: "zone3" }
-      )
-      await Zone.bulkCreate(zones)
+    it("adds zones to point", async () => {
+      const zone4 = {
+        name: "zone4",
+        xMin: 0,
+        xMax: 4,
+        yMin: 0,
+        yMax: 4,
+        zMin: 2,
+        zMax: 3
+      }
+      const pointZones = [
+        { zones: ["zone3", "zone4"], name: "point1" }
+      ]
+      await Zone.bulkCreate(concat(zones, zone4))
       await insertPoint(points[0])
-      const queryResults = await Point.findAll()
-      const storedPoint = pick(queryResults[0], keys(expectedStoredPoint))
-      expect(storedPoint)
-        .to.deep.equal(expectedStoredPoint)
+      const queryResults = await Point.findAll({ include: [{ model: Zone }] })
+      const storedPoints = queryResults.map(point => ({
+        name: point.name,
+        zones: point.zones.map(zone => zone.name).sort()
+      }))
+      expect(storedPoints)
+        .to.deep.equal(pointZones)
     })
   })
 
