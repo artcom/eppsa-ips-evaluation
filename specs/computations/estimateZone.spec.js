@@ -1,7 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const { dbSync, dbDrop } = require("../helpers/db")
-const { estimateZone, getZones } = require("../../src/computations/estimateZone")
+const { getZones } = require("../../src/computations/estimateZone")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -13,24 +13,6 @@ describe("estimateZone", () => {
 
   afterEach(async () => {
     await dbDrop()
-  })
-
-  it("should return the correct zone from coordinates", async () => {
-    const points = [
-      { zone: "zone1", coordinates: [3, 3, 2] },
-      { zone: "zone2", coordinates: [5, 6, 3] },
-      { zone: "zone3", coordinates: [1, 1, 2] }
-    ]
-    await checkZones(points)
-  })
-
-  it("should return null when point is outside of all defined zones", async () => {
-    const points = [
-      { zone: null, coordinates: [9, 3, 3] },
-      { zone: null, coordinates: [5, 3, 4] },
-      { zone: null, coordinates: [1, 1, -1] }
-    ]
-    await checkZones(points)
   })
 
   describe("getZones", () => {
@@ -63,12 +45,3 @@ describe("estimateZone", () => {
     })
   })
 })
-
-async function checkZones(points) {
-  const estimatedZones = await Promise.all(
-    points.map(point => estimateZone(...point.coordinates))
-  )
-
-  expect(estimatedZones)
-    .to.deep.equal(points.map(point => point.zone))
-}
