@@ -1,11 +1,10 @@
-const { assign, pick } = require("lodash")
-const config = require("../constants")
+const { pick } = require("lodash")
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
-const { estimateZone, getZones } = require("../computations/estimateZone")
+const { getZones } = require("../computations/estimateZone")
 const Zone = require("../models/zone")
 
 
@@ -81,22 +80,28 @@ exports.insertPoints = async function insertPoints(points) {
   )
 }
 
-exports.insertPositionData = async function insertPositionData(positions) {
-  const positionsWithZone = await Promise.all(
-    positions.map(async (position) =>
-      assign(
-        position,
-        {
-          estZoneLabel: position.estZoneLabel || await estimateZone(
-            position.estCoordinateX,
-            position.estCoordinateY,
-            position.estCoordinateZ || config.defaultCoordinateZ
-          )
-        }
-      )
-    )
+const updatePositionDataZones = async function updatePositionDataZones(position, id) {
+  const zones = await getZones(
+    position.estCoordinateX,
+    position.estCoordinateY,
+    position.estCoordinateZ
   )
-  await PositionData.bulkCreate(positionsWithZone)
+  const newPosition = await PositionData.findById(id)
+  await newPosition.setEstZone(zones)
+}
+
+const updateAllPositionDataZones = async function updateAllPositionDataZones() {
+  const positions = await PositionData.findAll()
+  await Promise.all(positions.map(async position => {
+    await updatePositionDataZones(position, position.id)
+  }))
+}
+
+exports.insertPositionData = async function insertPositionData(positions) {
+  await Promise.all(positions.map(async position => {
+    const createdPosition = await PositionData.create(position)
+    await updatePositionDataZones(position, createdPosition.id)
+  }))
 }
 
 const updatePointsZones = async function updatePointsZones() {
@@ -107,13 +112,16 @@ const updatePointsZones = async function updatePointsZones() {
 exports.insertZones = async function insertZones(zones) {
   await Zone.bulkCreate(zones)
   await updatePointsZones()
+  await updateAllPositionDataZones()
 }
 
 exports.insertZone = async function insertZone(zone) {
   await Zone.create(zone)
   await updatePointsZones()
+  await updateAllPositionDataZones()
 }
 
 exports.insertPoint = insertPoint
 exports.updatePointZones = updatePointZones
 exports.updatePointsZones = updatePointsZones
+exports.updatePositionDataZones = updatePositionDataZones

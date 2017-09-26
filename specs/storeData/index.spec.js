@@ -14,6 +14,7 @@ const {
   updatePointZones,
   updatePointsZones,
   insertPositionData,
+  updatePositionDataZones,
   upsertPrimaryMetrics,
   upsertNodePosition,
   upsertNodePositions
@@ -25,12 +26,21 @@ const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
 const positions = require("../testData/positions.json")
-const positionsWithZones = require("../testData/positionsWithZones.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
 
 describe("Store data", () => {
+  const zone4 = {
+    name: "zone4",
+    xMin: 0,
+    xMax: 4,
+    yMin: 0,
+    yMax: 4,
+    zMin: 2,
+    zMax: 3
+  }
+
   beforeEach(async () => {
     await dbSync()
   })
@@ -199,15 +209,6 @@ describe("Store data", () => {
   })
 
   describe("points", () => {
-    const zone4 = {
-      name: "zone4",
-      xMin: 0,
-      xMax: 4,
-      yMin: 0,
-      yMax: 4,
-      zMin: 2,
-      zMax: 3
-    }
     const pointZones = [
       { zones: ["zone3", "zone4"], name: "point1" },
       { zones: ["zone1"], name: "point2" },
@@ -252,7 +253,7 @@ describe("Store data", () => {
     })
 
     describe("insertZones", () => {
-      it("updates zones of points when a new zone is created", async () => {
+      it("updates zones of points when new zones are created", async () => {
         await Point.bulkCreate(points)
         await insertZones(concat(zones, zone4))
         await checkPointZones(pointZones)
@@ -269,31 +270,53 @@ describe("Store data", () => {
     })
   })
 
-  describe("insertPositionData", () => {
-    it("adds zone to positionData when no zone is specified", async () => {
-      await insertExperiment("test-experiment")
-      await Zone.bulkCreate(zones)
-      await insertPoints(points)
-      await Node.bulkCreate(nodes)
-      await insertPositionData(positions)
-      const queryResults = await PositionData.findAll()
-      const storedPositionData = queryResults
-        .map(queryResult => pick(queryResult, keys(positionsWithZones[0])))
-      expect(sortBy(storedPositionData, ["localizedNodeName"]))
-        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeName"]))
+  describe("position data", () => {
+    const expectedZones = [[], ["zone1", "zone4"], ["zone1"]]
+
+    describe("insertPositionData", () => {
+      it("adds zone to positionData when no zone is specified", async () => {
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(concat(zones, zone4))
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        await insertPositionData(positions)
+        await checkPositionDataZones(expectedZones)
+      })
     })
 
-    it("stores positionData as is when zone is specified", async () => {
-      await insertExperiment("test-experiment")
-      await Zone.bulkCreate(zones)
-      await insertPoints(points)
-      await Node.bulkCreate(nodes)
-      await insertPositionData(positionsWithZones)
-      const queryResults = await PositionData.findAll()
-      const storedPositionData = queryResults
-        .map(queryResult => pick(queryResult, keys(positionsWithZones[0])))
-      expect(sortBy(storedPositionData, ["localizedNodeName"]))
-        .to.deep.equal(sortBy(positionsWithZones, ["localizedNodeName"]))
+    describe("updatePositionDataZones", () => {
+      it("updates zones of position data when new zones are created", async () => {
+        await insertExperiment("test-experiment")
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        const createdPositionData = await PositionData.create(positions[1])
+        await Zone.bulkCreate(concat(zones, zone4))
+        await updatePositionDataZones(positions[1], createdPositionData.id)
+        await checkPositionDataZones([expectedZones[1]])
+      })
+    })
+
+    describe("insertZones", () => {
+      it("updates zones of points when a new zone is created", async () => {
+        await insertExperiment("test-experiment")
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        await insertPositionData(positions)
+        await insertZones(concat(zones, zone4))
+        await checkPositionDataZones(expectedZones)
+      })
+    })
+
+    describe("insertZone", () => {
+      it("updates zones of points when a new zone is created", async () => {
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(zones)
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        await insertPositionData(positions)
+        await insertZone(zone4)
+        await checkPositionDataZones(expectedZones)
+      })
     })
   })
 })
@@ -318,4 +341,13 @@ async function checkPointZones(pointZones) {
   })), ["name"])
   expect(storedPoints)
     .to.deep.equal(pointZones)
+}
+
+async function checkPositionDataZones(expectedZones) {
+  const queryResults = await PositionData
+    .findAll({ include: [{ model: Zone, as: "EstZone" }, { model: Node, as: "localizedNode" }] })
+  const storedPositionData = sortBy(queryResults, ["localizedNodeName"])
+      .map(queryResult => queryResult.EstZone.map(zone => zone.name).sort())
+  expect(storedPositionData)
+    .to.deep.equal(expectedZones)
 }
