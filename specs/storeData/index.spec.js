@@ -1,6 +1,6 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { assign, keys, omit, pick, sortBy } = require("lodash")
+const { assign, concat, keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
@@ -194,20 +194,29 @@ describe("Store data", () => {
 
   describe("insertPoints", () => {
     it("adds zone to points", async () => {
+      const zone4 = {
+        name: "zone4",
+        xMin: 0,
+        xMax: 4,
+        yMin: 0,
+        yMax: 4,
+        zMin: 2,
+        zMax: 3
+      }
       const pointZones = [
-        { trueZoneLabel: "zone3" },
-        { trueZoneLabel: "zone1" },
-        { trueZoneLabel: "zone1" }
+        { zones: ["zone3", "zone4"], name: "point1" },
+        { zones: ["zone1"], name: "point2" },
+        { zones: ["zone1"], name: "point3" }
       ]
-      const pointsCopy = JSON.parse(JSON.stringify(points))
-      const expectedStoredPoints = pointsCopy.map((point, i) => assign(point, pointZones[i]))
-      await Zone.bulkCreate(zones)
+      await Zone.bulkCreate(concat(zones, zone4))
       await insertPoints(points)
-      const queryResults = await Point.findAll()
-      const storedPoints = queryResults
-        .map(queryResult => pick(queryResult, keys(expectedStoredPoints[0])))
-      expect(sortBy(storedPoints, ["pointId"]))
-        .to.deep.equal(sortBy(expectedStoredPoints, ["PointId"]))
+      const queryResults = await Point.findAll({ include: [{ model: Zone }] })
+      const storedPoints = queryResults.map(point => ({
+        name: point.name,
+        zones: point.zones.map(zone => zone.name).sort()
+      }))
+      expect(storedPoints)
+        .to.deep.equal(pointZones)
     })
   })
 

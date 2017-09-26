@@ -5,7 +5,7 @@ const ExperimentMetrics = require("../models/experimentMetrics")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
-const estimatezone = require("../computations/estimateZone")
+const { estimateZone, getZones } = require("../computations/estimateZone")
 const Zone = require("../models/zone")
 
 
@@ -56,21 +56,25 @@ exports.upsertPrimaryMetrics = async function upsertPrimaryMetrics(primaryMetric
 }
 
 exports.insertPoints = async function insertPoints(points) {
-  const pointsWithZone = await Promise.all(
-    points.map(async (point) =>
-      assign(
-        point,
-        {
-          trueZoneLabel: await estimatezone(
-            point.trueCoordinateX,
-            point.trueCoordinateY,
-            point.trueCoordinateZ
+  await Promise.all(
+    points.map(
+      async point => {
+        Point.create(
+          pick(
+            point,
+            ["name", "trueCoordinateX", "trueCoordinateY", "trueCoordinateZ"]
           )
-        }
-      )
+        )
+        const zones = await getZones(
+          point.trueCoordinateX,
+          point.trueCoordinateY,
+          point.trueCoordinateZ
+        )
+        const newPoint = await Point.findOne({ where: { name: point.name } })
+        await newPoint.addZones(zones)
+      }
     )
   )
-  await Point.bulkCreate(pointsWithZone)
 }
 
 exports.insertPositionData = async function insertPositionData(positions) {
@@ -79,7 +83,7 @@ exports.insertPositionData = async function insertPositionData(positions) {
       assign(
         position,
         {
-          estZoneLabel: position.estZoneLabel || await estimatezone(
+          estZoneLabel: position.estZoneLabel || await estimateZone(
             position.estCoordinateX,
             position.estCoordinateY,
             position.estCoordinateZ || config.defaultCoordinateZ
@@ -92,7 +96,7 @@ exports.insertPositionData = async function insertPositionData(positions) {
 }
 
 exports.insertPoint = async function insertPoint(point) {
-  const pointZone = await estimatezone(
+  const pointZone = await estimateZone(
     point.trueCoordinateX,
     point.trueCoordinateY,
     point.trueCoordinateZ
@@ -108,7 +112,7 @@ const updatePointZones = async function updatePointZones() {
       assign(
         point,
         {
-          trueZoneLabel: await estimatezone(
+          trueZoneLabel: await estimateZone(
             point.trueCoordinateX,
             point.trueCoordinateY,
             point.trueCoordinateZ

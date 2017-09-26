@@ -49,6 +49,7 @@ describe("estimateZone", () => {
         { zones: ["zone1", "zone4"], coordinates: [3, 3, 2] },
         { zones: ["zone2"], coordinates: [5, 6, 3] },
         { zones: ["zone3", "zone4"], coordinates: [1, 1, 2] },
+        { zones: ["zone1"], coordinates: [2, 2, 3] },
         { zones: [], coordinates: [9, 3, 3] },
         { zones: [], coordinates: [5, 3, 4] },
         { zones: [], coordinates: [1, 1, -1] }
