@@ -55,6 +55,16 @@ exports.upsertPrimaryMetrics = async function upsertPrimaryMetrics(primaryMetric
   }
 }
 
+const updatePointZones = async function updatePointZone(point) {
+  const zones = await getZones(
+    point.trueCoordinateX,
+    point.trueCoordinateY,
+    point.trueCoordinateZ
+  )
+  const newPoint = await Point.findOne({ where: { name: point.name } })
+  await newPoint.setZones(zones)
+}
+
 const insertPoint = async function insertPoint(point) {
   await Point.create(
     pick(
@@ -62,13 +72,7 @@ const insertPoint = async function insertPoint(point) {
       ["name", "trueCoordinateX", "trueCoordinateY", "trueCoordinateZ"]
     )
   )
-  const zones = await getZones(
-    point.trueCoordinateX,
-    point.trueCoordinateY,
-    point.trueCoordinateZ
-  )
-  const newPoint = await Point.findOne({ where: { name: point.name } })
-  await newPoint.addZones(zones)
+  await updatePointZones(point)
 }
 
 exports.insertPoints = async function insertPoints(points) {
@@ -95,38 +99,21 @@ exports.insertPositionData = async function insertPositionData(positions) {
   await PositionData.bulkCreate(positionsWithZone)
 }
 
-const updatePointZones = async function updatePointZones() {
+const updatePointsZones = async function updatePointsZones() {
   const points = await Point.findAll()
-  const pointsWithZone = await Promise.all(
-    points.map(async (point) =>
-      assign(
-        point,
-        {
-          trueZoneLabel: await estimateZone(
-            point.trueCoordinateX,
-            point.trueCoordinateY,
-            point.trueCoordinateZ
-          )
-        }
-      )
-    )
-  )
-  await Promise.all(
-    pointsWithZone.map(async (point) => {
-      await Point.update(pick(point, ["name", "trueZoneLabel"]), { where: { name: point.name } })
-    })
-  )
+  await Promise.all(points.map(updatePointZones))
 }
 
 exports.insertZones = async function insertZones(zones) {
   await Zone.bulkCreate(zones)
-  await updatePointZones()
+  await updatePointsZones()
 }
 
 exports.insertZone = async function insertZone(zone) {
   await Zone.create(zone)
-  await updatePointZones()
+  await updatePointsZones()
 }
 
 exports.insertPoint = insertPoint
 exports.updatePointZones = updatePointZones
+exports.updatePointsZones = updatePointsZones

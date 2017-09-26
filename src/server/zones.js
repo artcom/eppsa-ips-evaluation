@@ -35,7 +35,7 @@ module.exports = function serveZones(server) {
 
   server.delete("/zones/:name", async (request, response) => {
     await Zone.destroy({ where: { name: request.params.name } })
-    await storeData.updatePointZones()
+    await storeData.updatePointsZones()
     response.send(request.params.name)
   })
 

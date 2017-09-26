@@ -52,7 +52,7 @@ describe("Server for zones", () => {
       }
     )
 
-    it("should call updatePointZones on single zone POST at /zones", async () => {
+    it("should call updatePointsZones on single zone POST at /zones", async () => {
       const insertZoneStub = sinon.stub(storeData, "insertZone")
       proxyquire("../../src/server/zones", { insertZone: insertZoneStub })
       const result = await rest.post("http://localhost:3000/zones", { data: zones[0] })
@@ -85,7 +85,7 @@ describe("Server for zones", () => {
       }
     )
 
-    it("should call updatePointZones on multiple zone POST at /zones", async () => {
+    it("should call updatePointsZones on multiple zone POST at /zones", async () => {
       const insertZonesStub = sinon.stub(storeData, "insertZones")
       proxyquire("../../src/server/zones", { insertZones: insertZonesStub })
       const result = await rest.post("http://localhost:3000/zones", { data: zones })
@@ -131,10 +131,10 @@ describe("Server for zones", () => {
       }
     )
 
-    it("should call updatePointZones when a zone is deleted", async () => {
+    it("should call updatePointsZones when a zone is deleted", async () => {
       await Zone.bulkCreate(zones)
-      const updatePointZonesStub = sinon.stub(storeData, "updatePointZones")
-      proxyquire("../../src/server/zones", { updatePointZones: updatePointZonesStub })
+      const updatePointZonesStub = sinon.stub(storeData, "updatePointsZones")
+      proxyquire("../../src/server/zones", { updatePointsZones: updatePointZonesStub })
 
       await rest.del("http://localhost:3000/zones/zone1")
 
