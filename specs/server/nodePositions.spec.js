@@ -5,6 +5,7 @@ const { keys, omit, pick, sortBy } = require("lodash")
 const { dbSync, dbDrop } = require("../helpers/db")
 const nodePositions = require("../testData/nodePositions.json")
 const server = require("../../src/server")
+const { getNodePositionByNodeName } = require("../../src/getData")
 const {
   insertExperiment,
   insertPoints
@@ -163,6 +164,38 @@ describe("Server for node positions", () => {
         .map(nodePosition => pick(nodePosition, keys(nodePositions[0])))
       expect(sortBy(storedNodePosition, ["localizedNodeName"]))
         .to.deep.equal(sortBy(updatedNodePositions, ["localizedNodeName"]))
+    }
+  )
+
+  it("should return the node name corresponding to the deleted node position on DELETE at " +
+    "/node-positions/node-name",
+    async () => {
+      await NodePosition.bulkCreate(nodePositions)
+
+      const result = await rest.del(
+        "http://localhost:3000/experiments/test-experiment/node-positions/Node1"
+      )
+
+      expect(result.data).to.equal("Node1")
+      expect(result.response.statusCode).to.equal(200)
+    }
+  )
+
+  it(
+    "should delete the node position corresponding to the node on DELETE at " +
+    "/node-positions/node-name",
+    async () => {
+      await NodePosition.bulkCreate(nodePositions)
+      const initialNode1 = await getNodePositionByNodeName("Node1", "test-experiment")
+      expect(initialNode1.localizedNodeName).to.equal("Node1")
+
+      await rest.del(
+        "http://localhost:3000/experiments/test-experiment/node-positions/Node1"
+      )
+
+      const node1 = await getNodePositionByNodeName("Node1", "test-experiment")
+
+      expect(node1).to.equal(undefined)
     }
   )
 })

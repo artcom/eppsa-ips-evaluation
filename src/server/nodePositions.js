@@ -1,6 +1,7 @@
 const multer = require("multer")
 const { assign, keys } = require("lodash")
 const { getNodePositions, getNodePositionByNodeName } = require("../getData")
+const NodePosition = require("../models/nodePosition")
 const { upsertNodePosition, upsertNodePositions } = require("../storeData")
 
 
@@ -49,6 +50,14 @@ module.exports = function serveNodePositions(server) {
           .status(201)
           .send(nodeName)
       }
+    }
+  )
+
+  server.delete(
+    "/experiments/:experimentName/node-positions/:nodeName",
+    async (request, response) => {
+      await NodePosition.destroy({ where: { localizedNodeName: request.params.nodeName } })
+      response.send(request.params.nodeName)
     }
   )
 
