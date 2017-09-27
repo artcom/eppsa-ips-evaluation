@@ -38,7 +38,6 @@ const primaryMetrics = function primaryMetrics(processedData, data, experimentNa
     error3dRMS: rootMeanSquare(error3d),
     error3dPercentile75: percentile(error3d, 0.75),
     error3dPercentile90: percentile(error3d, 0.9),
-    zoneAccuracyAverage: mean(processedData.map(processedDatum => processedDatum.zoneAccuracy)),
     latencyAverage: mean(latency),
     latencyMin: min(latency),
     latencyMax: max(latency),

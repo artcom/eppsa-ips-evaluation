@@ -55,8 +55,7 @@ function checkPrimaryMetrics(metrics) {
     "error3dMedian",
     "error3dRMS",
     "error3dPercentile75",
-    "error3dPercentile90",
-    "zoneAccuracyAverage"
+    "error3dPercentile90"
   ]
   expect(metrics.experimentName).to.equal("test-experiment")
   for (const key of errorKeys) {

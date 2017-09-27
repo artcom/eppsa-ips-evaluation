@@ -85,7 +85,7 @@ describe("getGoIndoorData", () => {
       await getDataForAllNodes("test-experiment")
       const positionDataQueryResults = await PositionData.findAll()
       expect(positionDataQueryResults).to.have.length(2)
-      expect(positionDataQueryResults.map(data => data.localizedNodeName))
+      expect(positionDataQueryResults.map(data => data.localizedNodeName).sort())
         .to.deep.equal(["Node1", "Node2"])
     })
   })

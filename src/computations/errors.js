@@ -20,10 +20,6 @@ const error3d = function error3d(datum) {
   )
 }
 
-const zoneAccuracy = function zoneAccuracy(datum) {
-  return datum.point.trueZoneLabel === datum.estZoneLabel ? 1 : 0
-}
-
 const errors = function errors(data) {
   return data.map(datum => ({
     id: datum.id,
@@ -31,12 +27,10 @@ const errors = function errors(data) {
     localizedNodeId: datum.localizedNodeId,
     localizedNodeName: datum.localizedNodeName,
     localizationError2d: error2d(datum),
-    localizationError3d: error3d(datum),
-    zoneAccuracy: zoneAccuracy(datum)
+    localizationError3d: error3d(datum)
   }))
 }
 
 exports.error2d = error2d
 exports.error3d = error3d
-exports.zoneAccuracy = zoneAccuracy
 exports.errors = errors

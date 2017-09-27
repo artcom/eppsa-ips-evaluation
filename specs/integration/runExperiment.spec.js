@@ -21,7 +21,7 @@ const Point = require("../../src/models/point")
 const points = require("../testData/points.json")
 const pointErrors = require("../testData/pointErrors.json")
 const PositionData = require("../../src/models/positionData")
-const positionsWithZones = require("../testData/positionsWithZones.json")
+const positions = require("../testData/positions.json")
 const { runGoIndoorExperiment } = require("../../src/runExperiment/goIndoorExperiment")
 const runQuuppaExperiment = require("../../src/runExperiment/quuppaExperiment")
 const Zone = require("../../src/models/zone")
@@ -115,8 +115,8 @@ describe("Run", () => {
 
 function checkPositionData(queryResults, with3d) {
   const errorKeys = with3d
-    ? ["localizationError2d", "localizationError3d", "zoneAccuracy"]
-    : ["localizationError2d", "zoneAccuracy"]
+    ? ["localizationError2d", "localizationError3d"]
+    : ["localizationError2d"]
   const omitKeys = with3d ? [] : ["estCoordinateZ"]
   const storedPositionErrors = sortBy(
     queryResults
@@ -125,8 +125,8 @@ function checkPositionData(queryResults, with3d) {
   )
   expect(
     sortBy(queryResults, ["pointName"])
-      .map(position => omit(pick(position, keys(positionsWithZones[0])), omitKeys))
-  ).to.deep.equal(positionsWithZones.map(position => omit(position, omitKeys)))
+      .map(position => omit(pick(position, keys(positions[0])), omitKeys))
+  ).to.deep.equal(positions.map(position => omit(position, omitKeys)))
   for (const storedPosition of storedPositionErrors) {
     const index = storedPositionErrors.indexOf(storedPosition)
     for (const key of errorKeys) {
@@ -168,8 +168,7 @@ function checkPrimaryMetrics(metrics, with3d) {
       "error3dMedian",
       "error3dRMS",
       "error3dPercentile75",
-      "error3dPercentile90",
-      "zoneAccuracyAverage"
+      "error3dPercentile90"
     ]
     : [
       "error2dAverage",
@@ -179,8 +178,7 @@ function checkPrimaryMetrics(metrics, with3d) {
       "error2dMedian",
       "error2dRMS",
       "error2dPercentile75",
-      "error2dPercentile90",
-      "zoneAccuracyAverage"
+      "error2dPercentile90"
     ]
   expect(metrics[0].experimentName).to.equal("test-experiment")
   for (const key of errorKeys) {

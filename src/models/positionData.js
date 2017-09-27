@@ -15,12 +15,10 @@ const PositionData = db.define("position_data", {
     allowNull: false,
     defaultValue: config.defaultCoordinateZ
   },
-  estZoneLabel: { type: Sequelize.STRING },
   latency: Sequelize.FLOAT,
   powerConsumption: Sequelize.FLOAT,
   localizationError2d: Sequelize.FLOAT,
-  localizationError3d: Sequelize.FLOAT,
-  zoneAccuracy: Sequelize.INTEGER
+  localizationError3d: Sequelize.FLOAT
 })
 
 PositionData.belongsTo(Node, { as: "localizedNode" })

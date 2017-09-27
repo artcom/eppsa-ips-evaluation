@@ -15,6 +15,5 @@
   "error3dPercentile75": 0.6896015257087864,
   "error3dPercentile90": 0.8788629979276219,
   "error3dRMS": 0.63511153876045,
-  "error3dVariance": 0.11027002193643715,
-  "zoneAccuracyAverage": 0.6666666666666666
+  "error3dVariance": 0.11027002193643715
 }

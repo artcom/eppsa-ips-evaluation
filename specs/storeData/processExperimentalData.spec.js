@@ -61,7 +61,7 @@ describe("Process experimental data", () => {
 })
 
 function checkPositionData(queryResults) {
-  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
+  const errorKeys = ["localizationError2d", "localizationError3d"]
   const storedPositionErrors = sortBy(
     queryResults
       .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),

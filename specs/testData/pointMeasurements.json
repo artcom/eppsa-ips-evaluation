@@ -7,7 +7,6 @@
     "estCoordinateX": 1.1,
     "estCoordinateY": 1.01,
     "estCoordinateZ": 3,
-    "estZoneLabel": "NA",
     "point": {
       "trueCoordinateX": 1,
       "trueCoordinateY": 1,
@@ -25,7 +24,6 @@
     "estCoordinateX": 2.1,
     "estCoordinateY": 2.2,
     "estCoordinateZ": 2.9,
-    "estZoneLabel": "zone1",
     "point": {
       "trueCoordinateX": 2,
       "trueCoordinateY": 2,
@@ -43,7 +41,6 @@
     "estCoordinateX": 3.3,
     "estCoordinateY": 4.2,
     "estCoordinateZ": 1.9,
-    "estZoneLabel": "zone1",
     "point": {
       "trueCoordinateX": 3,
       "trueCoordinateY": 4,

@@ -3,7 +3,6 @@ const { expect } = require("chai")
 const expectedPointErrors = require("../testData/pointErrors.json")
 const pointMeasurements = require("../testData/pointMeasurements.json")
 const {
-  zoneAccuracy,
   error2d,
   error3d,
   errors
@@ -11,28 +10,6 @@ const {
 
 
 describe("Error computations", () => {
-  describe("Room accuracy computation", () => {
-    it("returns the room accuracy for a point", () => {
-      const rightPoint = {
-        estZoneLabel: "zone3",
-        point: {
-          trueZoneLabel: "zone3"
-        }
-      }
-      const wrongPoint = {
-        estZoneLabel: "zone1",
-        point: {
-          trueZoneLabel: "zone3"
-        }
-      }
-      const rightZone = zoneAccuracy(rightPoint)
-      const wrongZone = zoneAccuracy(wrongPoint)
-
-      expect(rightZone).to.equal(1)
-      expect(wrongZone).to.equal(0)
-    })
-  })
-
   describe("Localization error in 2D", () => {
     it("returns the 2D localization error of a point", () => {
       const experimentalPoint = pointMeasurements[0]

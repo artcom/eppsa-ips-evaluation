@@ -6,10 +6,8 @@
     "estCoordinateX": 0.9,
     "estCoordinateY": 1.01,
     "estCoordinateZ": 3,
-    "estZoneLabel": null,
     "localizationError2d": 0.10049875621120899,
-    "localizationError3d": 1.0050373127401788,
-    "zoneAccuracy": 0
+    "localizationError3d": 1.0050373127401788
   },
   {
     "pointName": "point2",
@@ -18,10 +16,8 @@
     "estCoordinateX": 2.1,
     "estCoordinateY": 2.2,
     "estCoordinateZ": 2.9,
-    "estZoneLabel": "zone1",
     "localizationError2d": 0.22360679774997916,
-    "localizationError3d": 0.24494897427831802,
-    "zoneAccuracy": 1
+    "localizationError3d": 0.24494897427831802
   },
   {
     "pointName": "point3",
@@ -30,9 +26,7 @@
     "estCoordinateX": 3.3,
     "estCoordinateY": 4.2,
     "estCoordinateZ": 1.9,
-    "estZoneLabel": "zone1",
     "localizationError2d": 0.3605551275463989,
-    "localizationError3d": 0.3741657386773941,
-    "zoneAccuracy": 1
+    "localizationError3d": 0.3741657386773941
   }
 ]

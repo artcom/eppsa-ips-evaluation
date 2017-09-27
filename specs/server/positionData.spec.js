@@ -7,8 +7,8 @@ const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
 const points = require("../testData/points.json")
 const pointErrors = require("../testData/pointErrors.json")
+const positions = require("../testData/positions.json")
 const positionsWithErrors = require("../testData/positionsWithErrors.json")
-const positionsWithZones = require("../testData/positionsWithZones.json")
 const server = require("../../src/server")
 const { insertExperiment, insertPoints, insertPositionData } = require("../../src/storeData/index")
 const Zone = require("../../src/models/zone")
@@ -43,7 +43,7 @@ describe("Server for position data", () => {
 })
 
 function checkPositionData(queryResults) {
-  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
+  const errorKeys = ["localizationError2d", "localizationError3d"]
   const storedPositionErrors = sortBy(
     queryResults
       .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
@@ -52,7 +52,7 @@ function checkPositionData(queryResults) {
   expect(
     sortBy(queryResults, ["pointName"])
       .map(position => omit(position, concat(["latency", "powerConsumption"], errorKeys)))
-  ).to.deep.equal(positionsWithZones)
+  ).to.deep.equal(positions)
   for (const storedPosition of storedPositionErrors) {
     const index = storedPositionErrors.indexOf(storedPosition)
     for (const key of errorKeys) {

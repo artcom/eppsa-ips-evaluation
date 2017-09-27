@@ -28,8 +28,8 @@ const NodePosition = require("../../src/models/nodePosition")
 const nodePositions = require("../testData/nodePositions.json")
 const points = require("../testData/points.json")
 const pointErrors = require("../testData/pointErrors.json")
+const positions = require("../testData/positions.json")
 const positionsWithErrors = require("../testData/positionsWithErrors.json")
-const positionsWithZones = require("../testData/positionsWithZones.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -190,7 +190,7 @@ describe("getData", () => {
 })
 
 function checkPositionData(queryResults) {
-  const errorKeys = ["localizationError2d", "localizationError3d", "zoneAccuracy"]
+  const errorKeys = ["localizationError2d", "localizationError3d"]
   const storedPositionErrors = sortBy(
     queryResults
       .map(queryResult => pick(queryResult, concat(errorKeys, "pointName"))),
@@ -198,8 +198,8 @@ function checkPositionData(queryResults) {
   )
   expect(
     sortBy(queryResults, ["pointName"])
-      .map(position => pick(position, keys(positionsWithZones[0])))
-  ).to.deep.equal(positionsWithZones)
+      .map(position => pick(position, keys(positions[0])))
+  ).to.deep.equal(positions)
   for (const storedPosition of storedPositionErrors) {
     const index = storedPositionErrors.indexOf(storedPosition)
     for (const key of errorKeys) {
@@ -230,8 +230,7 @@ function checkPrimaryMetrics(metrics) {
     "error3dMedian",
     "error3dRMS",
     "error3dPercentile75",
-    "error3dPercentile90",
-    "zoneAccuracyAverage"
+    "error3dPercentile90"
   ]
   expect(metrics.experimentName).to.equal("test-experiment")
   for (const key of errorKeys) {
