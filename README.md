@@ -1,6 +1,6 @@
 # Indoor Positioning Systems Evaluation Backend
 
-Tools for the evaluation of the quality / accuracy of indoor positioning systems
+Tools for the evaluation of the quality / accuracy of indoor positioning systems. Node.js application.
 
 ## Usage
 
