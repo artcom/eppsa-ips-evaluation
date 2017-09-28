@@ -1,11 +1,14 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const { assign, concat, keys, omit, pick, sortBy } = require("lodash")
+const proxyquire = require("proxyquire")
+const sinon = require("sinon")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
 const {
+  addZonesToSet,
   insertExperiment,
   insertPoint,
   insertPoints,
@@ -19,6 +22,7 @@ const {
   upsertNodePosition,
   upsertNodePositions
 } = require("../../src/storeData")
+const updateData = require("../../src/storeData/updateData")
 const Node = require("../../src/models/node")
 const NodePosition = require("../../src/models/nodePosition")
 const nodes = require("../testData/nodes.json")
@@ -28,6 +32,7 @@ const PositionData = require("../../src/models/positionData")
 const positions = require("../testData/positions.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
+const ZoneSet = require("../../src/models/zoneSet")
 
 
 describe("Store data", () => {
@@ -316,6 +321,37 @@ describe("Store data", () => {
         await insertPositionData(positions)
         await insertZone(zone4)
         await checkPositionDataZones(expectedZones)
+      })
+    })
+
+    describe("addZonesToSet", () => {
+      it("adds a zone to a zone set", async () => {
+        await Zone.bulkCreate(zones)
+        await ZoneSet.create({ name: "set1" })
+        await addZonesToSet("set1", ["zone2", "zone3"])
+        const storedSet1 = await ZoneSet.findOne({
+          where: { name: "set1" },
+          include: [{ model: Zone }]
+        })
+        expect(storedSet1.zones.map(zone => zone.name).sort())
+          .to.deep.equal(["zone2", "zone3"])
+      })
+
+      it("calls updateData.zoneAccuracy when a zone is added to a set", async () => {
+        const zoneAccuracyStub = sinon.stub(updateData, "zoneAccuracy")
+        proxyquire(
+          "../../src/storeData",
+          { updateData: { zoneAccuracy: zoneAccuracyStub } }
+        )
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(zones)
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        await insertPositionData(positions)
+        await ZoneSet.create({ name: "set1" })
+        await addZonesToSet("set1", ["zone2", "zone3"])
+        sinon.assert.calledOnce(zoneAccuracyStub)
+        zoneAccuracyStub.restore()
       })
     })
   })

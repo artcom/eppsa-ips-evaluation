@@ -5,7 +5,9 @@ const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const { getZones } = require("../computations/estimateZone")
+const updateData = require("./updateData")
 const Zone = require("../models/zone")
+const ZoneSet = require("../models/zoneSet")
 
 
 exports.insertExperiment = async function insertExperiment(experimentName) {
@@ -119,6 +121,12 @@ exports.insertZone = async function insertZone(zone) {
   await Zone.create(zone)
   await updatePointsZones()
   await updateAllPositionDataZones()
+}
+
+exports.addZonesToSet = async function addZonesToSet(set, zones) {
+  const zoneSet = await ZoneSet.findOne({ where: { name: set } })
+  await zoneSet.addZone(zones)
+  await updateData.zoneAccuracy()
 }
 
 exports.insertPoint = insertPoint
