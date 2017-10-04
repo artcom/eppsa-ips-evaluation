@@ -3,6 +3,7 @@ const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const { primaryMetrics } = require("../computations/primaryMetrics")
 const { upsertPrimaryMetrics } = require("../storeData")
+const updateData = require("./updateData")
 
 
 const updatePositionDataErrors = async function updatePositionDataErrors(
@@ -26,6 +27,7 @@ const processData = async function processData(experimentName) {
   const experimentPrimaryMetrics = primaryMetrics(processedData, positionData, experimentName)
   await updatePositionDataErrors(processedData, experimentName)
   await upsertPrimaryMetrics(experimentPrimaryMetrics)
+  await updateData.experimentZoneAccuracy(experimentName)
 }
 
 exports.updatePositionDataErrors = updatePositionDataErrors

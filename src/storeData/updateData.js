@@ -24,3 +24,5 @@ exports.zoneAccuracy = async function zoneAccuracy(set) {
     zoneSetName: set
   })))
 }
+
+exports.experimentZoneAccuracy = async function experimentZoneAccuracy() {}

@@ -1,6 +1,8 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
 const { concat, keys, omit, pick, sortBy } = require("lodash")
+const proxyquire = require("proxyquire")
+const sinon = require("sinon")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
@@ -16,6 +18,7 @@ const {
   updatePositionDataErrors,
   processData
 } = require("../../src/storeData/processExperimentalData")
+const updateData = require("../../src/storeData/updateData")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 
@@ -56,6 +59,18 @@ describe("Process experimental data", () => {
         include: { model: Experiment }
       })
       checkPrimaryMetrics(experimentMetrics)
+    })
+
+    it("calls experimentZoneAccuracy", async () => {
+      const experimentZoneAccuracyStub = sinon.stub(updateData, "experimentZoneAccuracy")
+      proxyquire(
+        "../../src/storeData",
+        { updateData: { experimentZoneAccuracy: experimentZoneAccuracyStub } }
+      )
+      await processData("test-experiment")
+      sinon.assert.calledOnce(experimentZoneAccuracyStub)
+      sinon.assert.calledWith(experimentZoneAccuracyStub, "test-experiment")
+      experimentZoneAccuracyStub.restore()
     })
   })
 })
