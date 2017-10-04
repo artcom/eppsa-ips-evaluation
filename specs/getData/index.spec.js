@@ -20,7 +20,8 @@ const {
   getPositionDataByPoint,
   getExperimentMetricsByName,
   getZones,
-  getZoneByName
+  getZoneByName,
+  getZoneSets
 } = require("../../src/getData")
 const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
@@ -32,6 +33,8 @@ const positions = require("../testData/positions.json")
 const positionsWithErrors = require("../testData/positionsWithErrors.json")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
+const ZoneSet = require("../../src/models/zoneSet")
+const zoneSets = require("../testData/zoneSets.json")
 
 
 describe("getData", () => {
@@ -109,6 +112,21 @@ describe("getData", () => {
       await Zone.bulkCreate(zones)
       const storedZone = await getZoneByName("zone2")
       expect(pick(storedZone, keys(zones[0]))).to.deep.equal(zones[1])
+    })
+  })
+
+  describe("getZoneSets", () => {
+    it("should return all stored zone sets", async () => {
+      await Promise.all(
+        zoneSets.map(zoneSet =>
+          ZoneSet.create(
+            zoneSet,
+            { include: Zone }
+          )
+        )
+      )
+      const storedZoneSets = await getZoneSets()
+      expect(storedZoneSets).to.deep.equal(zoneSets)
     })
   })
 

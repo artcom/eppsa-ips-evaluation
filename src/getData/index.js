@@ -1,4 +1,4 @@
-const { pick } = require("lodash")
+const { pick, sortBy } = require("lodash")
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
 const Node = require("../models/node")
@@ -6,6 +6,7 @@ const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const Zone = require("../models/zone")
+const ZoneSet = require("../models/zoneSet")
 
 
 exports.getExperiments = async function getExperiments() {
@@ -90,6 +91,18 @@ exports.getZoneByName = async function getZones(name) {
     where: { name }
   })
   return queryResult[0]
+}
+
+exports.getZoneSets = async function getZoneSets() {
+  return await ZoneSet.findAll({ include: [{ model: Zone }] })
+    .map(zoneSet => (
+      {
+        name: zoneSet.name,
+        zones: sortBy(zoneSet.zones.map(zone =>
+          pick(zone, ["name", "xMax", "xMin", "yMax", "yMin", "zMax", "zMin"])
+        ), ["name"])
+      })
+    )
 }
 
 exports.getNodePositions = async function getNodePositions(experimentName) {
