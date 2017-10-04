@@ -1,12 +1,13 @@
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const { expect } = require("chai")
-const { assign, concat, keys, omit, pick, sortBy } = require("lodash")
+const { assign, concat, isEqual, keys, omit, pick, sortBy } = require("lodash")
 const proxyquire = require("proxyquire")
 const sinon = require("sinon")
 const { dbSync, dbDrop } = require("../helpers/db")
 const Experiment = require("../../src/models/experiment")
 const ExperimentMetrics = require("../../src/models/experimentMetrics")
 const experimentPrimaryMetrics = require("../testData/experimentPrimaryMetrics.json")
+const ExperimentZoneAccuracy = require("../../src/models/experimentZoneAccuracy")
 const {
   addZonesToSet,
   insertExperiment,
@@ -18,9 +19,11 @@ const {
   updatePointsZones,
   insertPositionData,
   updatePositionDataZones,
+  upsertExperimentZoneAccuracy,
   upsertPrimaryMetrics,
   upsertNodePosition,
-  upsertNodePositions
+  upsertNodePositions,
+  upsertZoneAccuracy
 } = require("../../src/storeData")
 const updateData = require("../../src/storeData/updateData")
 const Node = require("../../src/models/node")
@@ -31,6 +34,7 @@ const points = require("../testData/points.json")
 const PositionData = require("../../src/models/positionData")
 const positions = require("../testData/positions.json")
 const Zone = require("../../src/models/zone")
+const ZoneAccuracy = require("../../src/models/zoneAccuracy")
 const zones = require("../testData/zones.json")
 const ZoneSet = require("../../src/models/zoneSet")
 
@@ -79,33 +83,6 @@ describe("Store data", () => {
         expect(experimentMetrics.length).to.equal(1)
         checkPrimaryMetrics(experimentMetrics)
       })
-
-      it("updates a node position when same node ID and experiment name is present", async () => {
-        await insertExperiment("test-experiment")
-        await Zone.bulkCreate(zones)
-        await insertPoints(points)
-        await Node.bulkCreate(nodes)
-        const initialPosition = {
-          localizedNodeName: "Node1",
-          pointName: "point1",
-          experimentName: "test-experiment"
-        }
-        const upsertedPosition = {
-          localizedNodeName: "Node1",
-          pointName: "point2",
-          experimentName: "test-experiment"
-        }
-        await NodePosition.create(initialPosition)
-        await upsertNodePosition(upsertedPosition)
-        const insertedNodes = await NodePosition.findAll({
-          where: {
-            localizedNodeName: "Node1",
-            experimentName: "test-experiment"
-          }
-        })
-        expect(insertedNodes.length).to.equal(1)
-        expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
-      })
     })
   })
 
@@ -138,6 +115,33 @@ describe("Store data", () => {
           expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
         }
       )
+
+      it("updates a node position when same node ID and experiment name is present", async () => {
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(zones)
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        const initialPosition = {
+          localizedNodeName: "Node1",
+          pointName: "point1",
+          experimentName: "test-experiment"
+        }
+        const upsertedPosition = {
+          localizedNodeName: "Node1",
+          pointName: "point2",
+          experimentName: "test-experiment"
+        }
+        await NodePosition.create(initialPosition)
+        await upsertNodePosition(upsertedPosition)
+        const insertedNodes = await NodePosition.findAll({
+          where: {
+            localizedNodeName: "Node1",
+            experimentName: "test-experiment"
+          }
+        })
+        expect(insertedNodes.length).to.equal(1)
+        expect(pick(insertedNodes[0], keys(upsertedPosition))).to.deep.equal(upsertedPosition)
+      })
 
       it("should insert node positions when not present", async () => {
         await insertExperiment("test-experiment")
@@ -310,6 +314,56 @@ describe("Store data", () => {
       })
     })
 
+    describe("upsertZoneAccuracy", () => {
+      it("should insert a zone accuracy when not already present", async () => {
+        const positionData = await PositionData.create(
+          pick(positions[0], ["estCoordinateX", "estCoordinateY", "estCoordinateZ"])
+        )
+        await ZoneSet.create({ name: "set1" })
+        const newZoneAccuracy = {
+          zoneSetName: "set1",
+          positionDatumId: positionData.id,
+          accuracy: true
+        }
+        await upsertZoneAccuracy(newZoneAccuracy)
+        const zoneAccuracy = await ZoneAccuracy.findAll()
+        const storedZoneAccuracy = pick(
+          zoneAccuracy[0],
+          ["zoneSetName", "positionDatumId", "accuracy"]
+        )
+        expect(zoneAccuracy).to.have.length(1)
+        expect(isEqual(storedZoneAccuracy, newZoneAccuracy))
+          .to.equal(true)
+      })
+
+      it("should update a zone accuracy when already present", async () => {
+        const positionData = await PositionData.create(
+          pick(positions[0], ["estCoordinateX", "estCoordinateY", "estCoordinateZ"])
+        )
+        await ZoneSet.create({ name: "set1" })
+        const oldZoneAccuracy = {
+          zoneSetName: "set1",
+          positionDatumId: positionData.id,
+          accuracy: false
+        }
+        const newZoneAccuracy = {
+          zoneSetName: "set1",
+          positionDatumId: positionData.id,
+          accuracy: true
+        }
+        await ZoneAccuracy.create(oldZoneAccuracy)
+        await upsertZoneAccuracy(newZoneAccuracy)
+        const zoneAccuracy = await ZoneAccuracy.findAll()
+        const storedZoneAccuracy = pick(
+          zoneAccuracy[0],
+          ["zoneSetName", "positionDatumId", "accuracy"]
+        )
+        expect(zoneAccuracy).to.have.length(1)
+        expect(isEqual(storedZoneAccuracy, newZoneAccuracy))
+          .to.equal(true, storedZoneAccuracy)
+      })
+    })
+
     describe("updatePositionDataZones", () => {
       it("updates zones of position data when new zones are created", async () => {
         await insertExperiment("test-experiment")
@@ -374,6 +428,51 @@ describe("Store data", () => {
         sinon.assert.calledOnce(zoneAccuracyStub)
         sinon.assert.calledWith(zoneAccuracyStub, "set1")
         zoneAccuracyStub.restore()
+      })
+    })
+
+    describe("upsertExperimentZoneAccuracy", () => {
+      it("should insert a zone accuracy when not already present", async () => {
+        const newAverage = {
+          zoneSetName: "set1",
+          accuracyAverage: 0.42,
+          experimentName: "test-experiment"
+        }
+        await insertExperiment("test-experiment")
+        await ZoneSet.create({ name: "set1" })
+        await upsertExperimentZoneAccuracy(newAverage)
+        const experimentZoneAccuracy = await ExperimentZoneAccuracy.findAll()
+        const storedExperimentZoneAccuracy = pick(
+          experimentZoneAccuracy[0],
+          ["zoneSetName", "accuracyAverage", "experimentName"]
+        )
+        expect(experimentZoneAccuracy).to.have.length(1)
+        expect(isEqual(storedExperimentZoneAccuracy, newAverage))
+          .to.equal(true, storedExperimentZoneAccuracy)
+      })
+
+      it("should update a zone accuracy when already present", async () => {
+        const oldAverage = {
+          zoneSetName: "set1",
+          accuracyAverage: 0.42,
+          experimentName: "test-experiment"
+        }
+        const newAverage = {
+          zoneSetName: "set1",
+          accuracyAverage: 0.32,
+          experimentName: "test-experiment"
+        }
+        await insertExperiment("test-experiment")
+        await ZoneSet.create({ name: "set1" })
+        await ExperimentZoneAccuracy.create(oldAverage)
+        await upsertExperimentZoneAccuracy(newAverage)
+        const experimentZoneAccuracy = await ExperimentZoneAccuracy.findAll()
+        const storedExperimentZoneAccuracy = pick(
+          experimentZoneAccuracy[0],
+          ["zoneSetName", "accuracyAverage", "experimentName"]
+        )
+        expect(experimentZoneAccuracy).to.have.length(1)
+        expect(isEqual(storedExperimentZoneAccuracy, newAverage)).to.equal(true)
       })
     })
   })

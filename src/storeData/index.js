@@ -1,11 +1,13 @@
 const { pick } = require("lodash")
 const Experiment = require("../models/experiment")
 const ExperimentMetrics = require("../models/experimentMetrics")
+const ExperimentZoneAccuracy = require("../models/experimentZoneAccuracy")
 const NodePosition = require("../models/nodePosition")
 const Point = require("../models/point")
 const PositionData = require("../models/positionData")
 const { getZones } = require("../computations/estimateZone")
 const updateData = require("./updateData")
+const ZoneAccuracy = require("../models/zoneAccuracy")
 const Zone = require("../models/zone")
 const ZoneSet = require("../models/zoneSet")
 
@@ -53,6 +55,26 @@ exports.upsertPrimaryMetrics = async function upsertPrimaryMetrics(primaryMetric
         experimentName: primaryMetrics.experimentName
       }
     })
+  }
+}
+
+exports.upsertExperimentZoneAccuracy = async function upsertExperimentZoneAccuracy(zoneAccuracy) {
+  const { zoneSetName, experimentName } = zoneAccuracy
+  const present = await ExperimentZoneAccuracy.findAll({ where: { zoneSetName, experimentName } })
+  if (present.length === 0) {
+    await ExperimentZoneAccuracy.create(zoneAccuracy)
+  } else {
+    await ExperimentZoneAccuracy.update(zoneAccuracy, { where: { zoneSetName, experimentName } })
+  }
+}
+
+exports.upsertZoneAccuracy = async function upsertZoneAccuracy(zoneAccuracy) {
+  const { zoneSetName, positionDatumId } = zoneAccuracy
+  const present = await ZoneAccuracy.findAll({ where: { zoneSetName, positionDatumId } })
+  if (present.length === 0) {
+    await ZoneAccuracy.create(zoneAccuracy)
+  } else {
+    await ZoneAccuracy.update(zoneAccuracy, { where: { zoneSetName, positionDatumId } })
   }
 }
 
