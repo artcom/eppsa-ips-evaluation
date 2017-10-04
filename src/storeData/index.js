@@ -104,6 +104,9 @@ exports.insertPositionData = async function insertPositionData(positions) {
     const createdPosition = await PositionData.create(position)
     await updatePositionDataZones(position, createdPosition.id)
   }))
+  const zoneSets = await ZoneSet.findAll()
+  const sets = zoneSets.map(set => set.name)
+  await Promise.all(sets.map(async set => await updateData.zoneAccuracy(set)))
 }
 
 const updatePointsZones = async function updatePointsZones() {
@@ -126,7 +129,7 @@ exports.insertZone = async function insertZone(zone) {
 exports.addZonesToSet = async function addZonesToSet(set, zones) {
   const zoneSet = await ZoneSet.findOne({ where: { name: set } })
   await zoneSet.addZone(zones)
-  await updateData.zoneAccuracy()
+  await updateData.zoneAccuracy(set)
 }
 
 exports.insertPoint = insertPoint

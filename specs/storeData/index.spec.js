@@ -287,6 +287,27 @@ describe("Store data", () => {
         await insertPositionData(positions)
         await checkPositionDataZones(expectedZones)
       })
+
+      it("updates zoneAccuracies when a positionData is created", async () => {
+        const zoneAccuracyStub = sinon.stub(updateData, "zoneAccuracy")
+        proxyquire(
+          "../../src/storeData",
+          { updateData: { zoneAccuracy: zoneAccuracyStub } }
+        )
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(concat(zones, zone4))
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        const zoneSet1 = await ZoneSet.create({ name: "set1" })
+        await zoneSet1.addZone(["zone1", "zone3"])
+        const zoneSet2 = await ZoneSet.create({ name: "set2" })
+        await zoneSet2.addZone(["zone2"])
+        await insertPositionData(positions)
+        sinon.assert.calledTwice(zoneAccuracyStub)
+        sinon.assert.calledWith(zoneAccuracyStub, "set1")
+        sinon.assert.calledWith(zoneAccuracyStub, "set2")
+        zoneAccuracyStub.restore()
+      })
     })
 
     describe("updatePositionDataZones", () => {
@@ -351,6 +372,7 @@ describe("Store data", () => {
         await ZoneSet.create({ name: "set1" })
         await addZonesToSet("set1", ["zone2", "zone3"])
         sinon.assert.calledOnce(zoneAccuracyStub)
+        sinon.assert.calledWith(zoneAccuracyStub, "set1")
         zoneAccuracyStub.restore()
       })
     })
