@@ -38,20 +38,16 @@ describe("updateData", () => {
       const zoneSet = await ZoneSet.create({ name: "set1" })
       await zoneSet.addZone(["zone1", "zone3"])
       await updateData.zoneAccuracy("set1")
-      const zoneAccuracies = await ZoneAccuracy.findAll({ include: [{
-        model: PositionData,
-        include: {
-          model: Zone, as: "EstZone", through: "ZonePosition"
-        }
-      }] })
+      const zoneAccuracies = await ZoneAccuracy.findAll({ include: [{ model: PositionData }] })
       const storedAccuracies = sortBy(zoneAccuracies.map(zoneAccuracy => ({
         accuracy: zoneAccuracy.accuracy,
-        positionDatumId: zoneAccuracy.position_datum.id
+        positionDatumId: zoneAccuracy.position_datum.id,
+        zoneSetName: zoneAccuracy.zoneSetName
       })), ["positionDatumId"])
       const expectedAccuracies = [
-        { positionDatumId: 1, accuracy: false },
-        { positionDatumId: 2, accuracy: true },
-        { positionDatumId: 3, accuracy: true }
+        { positionDatumId: 1, accuracy: false, zoneSetName: "set1" },
+        { positionDatumId: 2, accuracy: true, zoneSetName: "set1" },
+        { positionDatumId: 3, accuracy: true, zoneSetName: "set1" }
       ]
       expect(zoneAccuracies).to.have.length(positions.length)
       expect(storedAccuracies).to.deep.equal(expectedAccuracies)

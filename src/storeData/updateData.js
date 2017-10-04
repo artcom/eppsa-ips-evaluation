@@ -20,6 +20,7 @@ exports.zoneAccuracy = async function zoneAccuracy(set) {
   }))
   await Promise.all(positions.map(async position => await ZoneAccuracy.create({
     accuracy: isEqual(position.estZone, position.trueZone),
-    positionDatumId: position.id
+    positionDatumId: position.id,
+    zoneSetName: set
   })))
 }
