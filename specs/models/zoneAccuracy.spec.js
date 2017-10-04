@@ -22,8 +22,7 @@ describe("Model ZoneAccuracy", () => {
     await insertPoints(points)
     await Node.bulkCreate(nodes)
     await insertPositionData(positions)
-    await ZoneSet.create({ name: "set1" }, { include: Zone })
-    const zoneSet = await ZoneSet.findOne({ where: { name: "set1" } })
+    const zoneSet = await ZoneSet.create({ name: "set1" })
     await zoneSet.addZone(["zone1", "zone2"])
   })
 
