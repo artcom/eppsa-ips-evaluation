@@ -152,6 +152,10 @@ exports.addZonesToSet = async function addZonesToSet(set, zones) {
   const zoneSet = await ZoneSet.findOne({ where: { name: set } })
   await zoneSet.addZone(zones)
   await updateData.zoneAccuracy(set)
+  const experiments = await Experiment.findAll().map(experiment => experiment.name)
+  await Promise.all(experiments.map(async experiment => {
+    await updateData.experimentZoneAccuracy(experiment)
+  }))
 }
 
 exports.insertPoint = insertPoint
