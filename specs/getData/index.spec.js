@@ -21,7 +21,8 @@ const {
   getExperimentMetricsByName,
   getZones,
   getZoneByName,
-  getZoneSets
+  getZoneSets,
+  getZoneSetByName
 } = require("../../src/getData")
 const Node = require("../../src/models/node")
 const nodes = require("../testData/nodes.json")
@@ -127,6 +128,21 @@ describe("getData", () => {
       )
       const storedZoneSets = await getZoneSets()
       expect(storedZoneSets).to.deep.equal(zoneSets)
+    })
+  })
+
+  describe("getZoneSetByName", () => {
+    it("should return the expected zone set", async () => {
+      await Promise.all(
+        zoneSets.map(zoneSet =>
+          ZoneSet.create(
+            zoneSet,
+            { include: Zone }
+          )
+        )
+      )
+      const storedZoneSets = await getZoneSetByName("set1")
+      expect(storedZoneSets).to.deep.equal(zoneSets[0])
     })
   })
 

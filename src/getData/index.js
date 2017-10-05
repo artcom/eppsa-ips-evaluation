@@ -95,14 +95,22 @@ exports.getZoneByName = async function getZones(name) {
 
 exports.getZoneSets = async function getZoneSets() {
   return await ZoneSet.findAll({ include: [{ model: Zone }] })
-    .map(zoneSet => (
-      {
-        name: zoneSet.name,
-        zones: sortBy(zoneSet.zones.map(zone =>
-          pick(zone, ["name", "xMax", "xMin", "yMax", "yMin", "zMax", "zMin"])
-        ), ["name"])
-      })
-    )
+    .map(zoneSet => ({
+      name: zoneSet.name,
+      zones: sortBy(zoneSet.zones.map(zone =>
+        pick(zone, ["name", "xMax", "xMin", "yMax", "yMin", "zMax", "zMin"])
+      ), ["name"])
+    }))
+}
+
+exports.getZoneSetByName = async function getZoneSetByName(name) {
+  const zoneSet = await ZoneSet.findOne({ where: { name }, include: [{ model: Zone }] })
+  return {
+    name: zoneSet.name,
+    zones: sortBy(zoneSet.zones.map(zone =>
+      pick(zone, ["name", "xMax", "xMin", "yMax", "yMin", "zMax", "zMin"])
+    ), ["name"])
+  }
 }
 
 exports.getNodePositions = async function getNodePositions(experimentName) {
