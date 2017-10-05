@@ -1,9 +1,12 @@
 const { expect } = require("chai")
 const { isEqual } = require("lodash")
 const { describe, it, beforeEach, afterEach } = require("mocha")
+const proxyquire = require("proxyquire")
 const rest = require("restling")
+const sinon = require("sinon")
 const { dbSync, dbDrop } = require("../helpers/db")
 const server = require("../../src/server")
+const storeData = require("../../src/storeData")
 const Zone = require("../../src/models/zone")
 const zones = require("../testData/zones.json")
 const ZoneSet = require("../../src/models/zoneSet")
@@ -98,6 +101,20 @@ describe("Server for zone sets", () => {
       const zoneSets = await ZoneSet.findAll({ include: [{ model: Zone }] })
       expect(zoneSets).to.have.length(1)
       expect(zoneSets[0].zones.map(zone => zone.name)).to.deep.equal(["zone1"])
+    })
+
+    it("should call addZonesToSet on POST at /zone-sets/zone-set-name", async () => {
+      const addZonesToSetStub = sinon.stub(storeData, "addZonesToSet")
+      proxyquire("../../src/server/zoneSets", { storeData: { addZonesToSet: addZonesToSetStub } })
+      await ZoneSet.create({ name: "set1" })
+      await Zone.bulkCreate(zones)
+      await rest.post(
+        "http://localhost:3000/zone-sets/set1",
+        { data: { zoneName: "zone1" } }
+      )
+      sinon.assert.calledOnce(addZonesToSetStub)
+      sinon.assert.calledWith(addZonesToSetStub, "set1", ["zone1"])
+      addZonesToSetStub.restore()
     })
   })
 })

@@ -1,5 +1,6 @@
 const multer = require("multer")
 const { getZoneSets, getZoneSetByName } = require("../getData")
+const storeData = require("../storeData")
 const ZoneSet = require("../models/zoneSet")
 
 
@@ -28,8 +29,7 @@ module.exports = function serveZoneSets(server) {
   server.post("/zone-sets/:zoneSetName", async (request, response) => {
     const zoneSetName = request.params.zoneSetName
     const zoneName = request.body.zoneName
-    const zoneSet = await ZoneSet.findOne({ where: { name: zoneSetName } })
-    await zoneSet.addZone([zoneName])
+    await storeData.addZonesToSet(zoneSetName, [zoneName])
     response
       .append("location", `/zone-sets/${zoneSetName}/${zoneName}`)
       .status(201).send({ zoneSetName, zoneName })
