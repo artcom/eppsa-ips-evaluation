@@ -136,5 +136,45 @@ describe("Server for zone sets", () => {
       const zoneSets = await ZoneSet.findAll({ include: [{ model: Zone }] })
       expect(zoneSets).to.have.length(0)
     })
+
+    it("should return the deleted zone and set names on DELETE at " +
+      "/zone-sets/zone-set-name/zone-name", async () => {
+      await Zone.bulkCreate(zones)
+      const zoneSet1 = await ZoneSet.create({ name: "set1" })
+      await zoneSet1.addZone(["zone1", "zone2"])
+      const result = await rest.del("http://localhost:3000/zone-sets/set1/zone1")
+      expect(result.response.statusCode).to.equal(200)
+      expect(isEqual(result.data, { zoneSetName: "set1", zoneName: "zone1" })).to.equal(true)
+    })
+
+    it("should delete the zone from the set on DELETE at " +
+      "/zone-sets/zone-set-name/zone-name", async () => {
+      await Zone.bulkCreate(zones)
+      const zoneSet1 = await ZoneSet.create({ name: "set1" })
+      await zoneSet1.addZone(["zone1", "zone2"])
+      await rest.del("http://localhost:3000/zone-sets/set1/zone1")
+      const storedSet1 = await ZoneSet.findOne({
+        where: { name: "set1" },
+        include: [{ model: Zone }]
+      })
+      const storedSet1Zones = storedSet1.zones.map(zone => zone.name)
+      expect(storedSet1Zones).to.deep.equal(["zone2"])
+    })
+
+    it("should call removeZonesFromSet on DELETE at " +
+      "/zone-sets/zone-set-name/zone-name", async () => {
+      const removeZonesFromSetStub = sinon.stub(storeData, "removeZonesFromSet")
+      proxyquire(
+        "../../src/server/zoneSets",
+        { storeData: { removeZonesFromSet: removeZonesFromSetStub } }
+      )
+      await Zone.bulkCreate(zones)
+      const zoneSet1 = await ZoneSet.create({ name: "set1" })
+      await zoneSet1.addZone(["zone1", "zone2"])
+      await rest.del("http://localhost:3000/zone-sets/set1/zone1")
+      sinon.assert.calledOnce(removeZonesFromSetStub)
+      sinon.assert.calledWith(removeZonesFromSetStub, "set1", ["zone1"])
+      removeZonesFromSetStub.restore()
+    })
   })
 })

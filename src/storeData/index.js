@@ -158,6 +158,16 @@ exports.addZonesToSet = async function addZonesToSet(set, zones) {
   }))
 }
 
+exports.removeZonesFromSet = async function removeZonesFromSet(set, zones) {
+  const zoneSet = await ZoneSet.findOne({ where: { name: set } })
+  await zoneSet.removeZone(zones)
+  await updateData.zoneAccuracy(set)
+  const experiments = await Experiment.findAll().map(experiment => experiment.name)
+  await Promise.all(experiments.map(async experiment => {
+    await updateData.experimentZoneAccuracy(experiment)
+  }))
+}
+
 exports.insertPoint = insertPoint
 exports.updatePointZones = updatePointZones
 exports.updatePointsZones = updatePointsZones

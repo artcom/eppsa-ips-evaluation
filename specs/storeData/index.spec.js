@@ -15,9 +15,10 @@ const {
   insertPoints,
   insertZone,
   insertZones,
+  insertPositionData,
   updatePointZones,
   updatePointsZones,
-  insertPositionData,
+  removeZonesFromSet,
   updatePositionDataZones,
   upsertExperimentZoneAccuracy,
   upsertPrimaryMetrics,
@@ -443,6 +444,59 @@ describe("Store data", () => {
         await insertPositionData(positions)
         await ZoneSet.create({ name: "set1" })
         await addZonesToSet("set1", ["zone2", "zone3"])
+        sinon.assert.calledOnce(experimentZoneAccuracyStub)
+        sinon.assert.calledWith(experimentZoneAccuracyStub, "test-experiment")
+        experimentZoneAccuracyStub.restore()
+      })
+    })
+
+    describe("removeZonesFromSetStub", () => {
+      it("removes a zone from a set", async () => {
+        await Zone.bulkCreate(zones)
+        const zoneSet1 = await ZoneSet.create({ name: "set1" })
+        await zoneSet1.addZone(["zone1", "zone2"])
+        await removeZonesFromSet("set1", ["zone1"])
+        const storedSet1 = await ZoneSet.findOne({
+          where: { name: "set1" },
+          include: [{ model: Zone }]
+        })
+        expect(storedSet1.zones.map(zone => zone.name).sort())
+          .to.deep.equal(["zone2"])
+      })
+
+      it("calls updateData.zoneAccuracy when a zone is removed from a set", async () => {
+        const zoneAccuracyStub = sinon.stub(updateData, "zoneAccuracy")
+        proxyquire(
+          "../../src/storeData",
+          { updateData: { zoneAccuracy: zoneAccuracyStub } }
+        )
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(zones)
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        await insertPositionData(positions)
+        const zoneSet1 = await ZoneSet.create({ name: "set1" })
+        await zoneSet1.addZone(["zone1", "zone2"])
+        await removeZonesFromSet("set1", ["zone1"])
+        sinon.assert.calledOnce(zoneAccuracyStub)
+        sinon.assert.calledWith(zoneAccuracyStub, "set1")
+        zoneAccuracyStub.restore()
+      })
+
+      it("calls updateData.experimentZoneAccuracy when a zone is removed from a set", async () => {
+        const experimentZoneAccuracyStub = sinon.stub(updateData, "experimentZoneAccuracy")
+        proxyquire(
+          "../../src/storeData",
+          { updateData: { experimentZoneAccuracy: experimentZoneAccuracyStub } }
+        )
+        await insertExperiment("test-experiment")
+        await Zone.bulkCreate(zones)
+        await insertPoints(points)
+        await Node.bulkCreate(nodes)
+        await insertPositionData(positions)
+        const zoneSet1 = await ZoneSet.create({ name: "set1" })
+        await zoneSet1.addZone(["zone1", "zone2"])
+        await removeZonesFromSet("set1", ["zone1"])
         sinon.assert.calledOnce(experimentZoneAccuracyStub)
         sinon.assert.calledWith(experimentZoneAccuracyStub, "test-experiment")
         experimentZoneAccuracyStub.restore()
