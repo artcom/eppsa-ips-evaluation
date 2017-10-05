@@ -35,5 +35,10 @@ module.exports = function serveZoneSets(server) {
       .status(201).send({ zoneSetName, zoneName })
   })
 
+  server.delete("/zone-sets/:zoneSetName", async (request, response) => {
+    await ZoneSet.destroy({ where: { name: request.params.zoneSetName } })
+    response.send(request.params.zoneSetName)
+  })
+
   return server
 }

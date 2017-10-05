@@ -129,6 +129,11 @@ describe("getData", () => {
       const storedZoneSets = await getZoneSets()
       expect(storedZoneSets).to.deep.equal(zoneSets)
     })
+
+    it("should return an empty array if no zone sets are present", async () => {
+      const storedZoneSets = await getZoneSets()
+      expect(storedZoneSets).to.deep.equal([])
+    })
   })
 
   describe("getZoneSetByName", () => {

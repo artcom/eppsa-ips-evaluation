@@ -39,6 +39,12 @@ describe("Server for zone sets", () => {
       expect(result.data).to.deep.equal(zoneSets)
     })
 
+    it("should return an empty array when no zones are stored at /zone-sets", async () => {
+      const result = await rest.get("http://localhost:3000/zone-sets")
+      expect(result.response.statusCode).to.equal(200)
+      expect(result.data).to.deep.equal([])
+    })
+
     it("should return the zone set at /zone-sets/zone-set-name", async () => {
       await Promise.all(
         zoneSets.map(zoneSet =>
@@ -115,6 +121,20 @@ describe("Server for zone sets", () => {
       sinon.assert.calledOnce(addZonesToSetStub)
       sinon.assert.calledWith(addZonesToSetStub, "set1", ["zone1"])
       addZonesToSetStub.restore()
+    })
+
+    it("should return the deleted zone set name on DELETE at /zone-sets/set-name", async () => {
+      await ZoneSet.create({ name: "set1" })
+      const result = await rest.del("http://localhost:3000/zone-sets/set1")
+      expect(result.data).to.equal("set1")
+      expect(result.response.statusCode).to.equal(200)
+    })
+
+    it("should delete the zone set on DELETE at /zone-sets/set-name", async () => {
+      await ZoneSet.create({ name: "set1" })
+      await rest.del("http://localhost:3000/zone-sets/set1")
+      const zoneSets = await ZoneSet.findAll({ include: [{ model: Zone }] })
+      expect(zoneSets).to.have.length(0)
     })
   })
 })
