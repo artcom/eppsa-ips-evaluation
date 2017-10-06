@@ -39,7 +39,7 @@ describe("Server for zone sets", () => {
       expect(result.data).to.deep.equal(zoneSets)
     })
 
-    it("should return an empty array when no zones are stored at /zone-sets", async () => {
+    it("should return an empty array when no zone sets are stored at /zone-sets", async () => {
       const result = await rest.get("http://localhost:3000/zone-sets")
       expect(result.response.statusCode).to.equal(200)
       expect(result.data).to.deep.equal([])
