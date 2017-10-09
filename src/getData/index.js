@@ -144,16 +144,36 @@ exports.getNodePositionByNodeName = async function getNodePositionByNodeName(
 }
 
 exports.getPositionDataByExperiment = async function getPositionDataByExperiment(experimentName) {
+  const positionDataKeys = [
+    "estCoordinateX",
+    "estCoordinateY",
+    "estCoordinateZ",
+    "latency",
+    "powerConsumption",
+    "localizationError2d",
+    "localizationError3d",
+    "localizedNodeName",
+    "pointName",
+    "experimentName"
+  ]
+  const pointKeys = [
+    "name",
+    "trueCoordinateX",
+    "trueCoordinateY",
+    "trueCoordinateZ"
+  ]
+  const nodeKeys = ["id", "name", "type"]
   return await PositionData.findAll({
-    attributes: {
-      exclude: [
-        "createdAt",
-        "updatedAt",
-        "id"
-      ]
-    },
+    include: [
+      { model: Point },
+      { model: Node, as: "localizedNode" }
+    ],
     where: { experimentName }
-  })
+  }).map(position => ({
+    ...pick(position, positionDataKeys),
+    point: pick(position.point, pointKeys),
+    node: pick(position.localizedNode, nodeKeys)
+  }))
 }
 
 exports.getPositionDataByPoint = async function getPositionDataByPoint(pointName) {

@@ -1,0 +1,59 @@
+[
+  {
+    "estCoordinateX": 0.9,
+    "estCoordinateY": 1.01,
+    "estCoordinateZ": 3,
+    "experimentName": "test-experiment",
+    "localizedNodeName": "Node1",
+    "node": {
+      "id": "node1",
+      "name": "Node1",
+      "type": "quuppa"
+    },
+    "point": {
+      "name": "point1",
+      "trueCoordinateX": 1,
+      "trueCoordinateY": 1,
+      "trueCoordinateZ": 2
+    },
+    "pointName": "point1"
+  },
+  {
+    "estCoordinateX": 2.1,
+    "estCoordinateY": 2.2,
+    "estCoordinateZ": 2.9,
+    "experimentName": "test-experiment",
+    "localizedNodeName": "Node2",
+    "node": {
+      "id": "node2",
+      "name": "Node2",
+      "type": "quuppa"
+    },
+    "point": {
+      "name": "point2",
+      "trueCoordinateX": 2,
+      "trueCoordinateY": 2,
+      "trueCoordinateZ": 3
+    },
+    "pointName": "point2"
+  },
+  {
+    "estCoordinateX": 3.3,
+    "estCoordinateY": 4.2,
+    "estCoordinateZ": 1.9,
+    "experimentName": "test-experiment",
+    "localizedNodeName": "Node3",
+    "node": {
+      "id": "node3",
+      "name": "Node3",
+      "type": "quuppa"
+    },
+    "point": {
+      "name": "point3",
+      "trueCoordinateX": 3,
+      "trueCoordinateY": 4,
+      "trueCoordinateZ": 2
+    },
+    "pointName": "point3"
+  }
+]

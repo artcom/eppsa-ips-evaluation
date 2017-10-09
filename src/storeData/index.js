@@ -172,3 +172,4 @@ exports.insertPoint = insertPoint
 exports.updatePointZones = updatePointZones
 exports.updatePointsZones = updatePointsZones
 exports.updatePositionDataZones = updatePositionDataZones
+exports.updateAllPositionDataZones = updateAllPositionDataZones
