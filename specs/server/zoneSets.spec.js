@@ -1,5 +1,5 @@
 const { expect } = require("chai")
-const { isEqual } = require("lodash")
+const { isEqual, sortBy } = require("lodash")
 const { describe, it, beforeEach, afterEach } = require("mocha")
 const proxyquire = require("proxyquire")
 const rest = require("restling")
@@ -36,7 +36,7 @@ describe("Server for zone sets", () => {
       )
       const result = await rest.get("http://localhost:3000/zone-sets")
       expect(result.response.statusCode).to.equal(200)
-      expect(result.data).to.deep.equal(zoneSets)
+      expect(sortBy(result.data, ["name"])).to.deep.equal(zoneSets)
     })
 
     it("should return an empty array when no zone sets are stored at /zone-sets", async () => {
