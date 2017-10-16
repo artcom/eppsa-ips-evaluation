@@ -294,7 +294,8 @@ A single zone set can be retrieved:
       "yMax": "float",
       "zMin": "float",
       "zMax": "float"
-    }
+    },
+    ...
   ]
 }
 ```
