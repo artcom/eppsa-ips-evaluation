@@ -93,9 +93,20 @@ Accepts GET requests. Returns the position data for all point measures for the e
 [
   {
     "pointName": "point_name",
+    "point": {
+      "name": "point_name",
+      "trueCoordinateX": "float",
+      "trueCoordinateY": "float",
+      "trueCoordinateZ": "float"
+    },
     "experimentName": "experiment_name",
     "localizedNodeId": "node_id",
     "localizedNodeName": "node_name",
+    "node": {
+      "id": "node_id",
+      "name": "node_name",
+      "type": "node_type"
+    },
     "estCoordinateX": "float",
     "estCoordinateY": "float",
     "estCoordinateZ": "float",
@@ -103,8 +114,7 @@ Accepts GET requests. Returns the position data for all point measures for the e
     "latency": "float",
     "powerConsumption": "float",
     "localizationError2d": "float",
-    "localizationError3d": "float",
-    "zoneAccuracy": "0 || 1"
+    "localizationError3d": "float"
   },
   ...
 ]
@@ -229,6 +239,93 @@ Zones can be retrieved:
 ]
 ```
 
+#### Create zone sets
+
+End point: ```/zone-sets```
+
+Accepts GET, POST and DELETE requests.
+
+New zone sets can be created:
+
+- using a POST request to ```/zone-sets``` with:
+
+```json
+{ "name": "set_name" }
+```
+
+All zones sets can be retrieved:
+
+- using a GET request to ```/zone-sets``` and will return:
+
+```json
+[
+  {
+    "name": "set_name",
+    "zones": [
+      {
+        "name": "zone_name",
+        "xMin": "float",
+        "xMax": "float",
+        "yMin": "float",
+        "yMax": "float",
+        "zMin": "float",
+        "zMax": "float"
+      },
+      ...
+    ]
+  },
+  ...
+]
+```
+
+A single zone set can be retrieved:
+
+- using a GET request to ```/zone-sets/set-name``` and will return:
+
+```json
+{
+  "name": "set_name",
+  "zones": [
+    {
+      "name": "zone_name",
+      "xMin": "float",
+      "xMax": "float",
+      "yMin": "float",
+      "yMax": "float",
+      "zMin": "float",
+      "zMax": "float"
+    }
+  ]
+}
+```
+
+A set can be deleted:
+
+-using a DELETE request to ```/zone-sets/set-name``` and will return:
+
+```json
+{ "zoneSetName": "set_name" }
+```
+
+A zone can be added to a set:
+
+- using a POST request to ```/zone-sets/set-name``` with:
+
+```json
+{ "zoneName": "zone_name" }
+```
+
+A zone can be removed from a set:
+
+- using a DELETE request to ```/zone-sets/set-name/zone-name``` and will return:
+
+```json
+{
+  "zoneSetName": "set_name",
+  "zoneName": "zone_name"
+}
+```
+
 #### Create points with known coordinates
 
 End point: ```/points```
@@ -283,14 +380,11 @@ Points can be retrieved:
         "name": "point_name",
         "trueCoordinateX": "float",
         "trueCoordinateY": "float",
-        "trueCoordinateZ": "float",
-        "trueZoneLabel": "zone_name"
+        "trueCoordinateZ": "float"
     },
     ...
 ]
 ```
-
-The ```trueZoneLabel``` will be computed from the zones.
 
 #### Create nodes to be positioned
 
