@@ -126,7 +126,7 @@ describe("Server for zone sets", () => {
     it("should return the deleted zone set name on DELETE at /zone-sets/set-name", async () => {
       await ZoneSet.create({ name: "set1" })
       const result = await rest.del("http://localhost:3000/zone-sets/set1")
-      expect(result.data).to.equal("set1")
+      expect(result.data.zoneSetName).to.equal("set1")
       expect(result.response.statusCode).to.equal(200)
     })
 
